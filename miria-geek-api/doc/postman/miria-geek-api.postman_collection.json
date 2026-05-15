@@ -1,0 +1,315 @@
+{
+  "info": {
+    "name": "Miria Geek API",
+    "description": "Collection da API REST da Miria Geek Store.\n\n**Variáveis da collection:**\n- `baseUrl` — URL base da API (padrão: `http://localhost:8080`)\n- `accessToken` — JWT Bearer token (preenchido após login)\n- `verificationToken` — UUID do token de verificação de e-mail\n\n**Como usar:**\n1. Configure `baseUrl` ou use o valor padrão.\n2. Execute `Register Customer` para criar um usuário.\n3. Copie o `verificationToken` do Kafka UI e execute `Verify Email`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string",
+      "description": "URL base da API. Altere para o ambiente desejado."
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT Bearer token. Preenchido após autenticação via Keycloak."
+    },
+    {
+      "key": "verificationToken",
+      "value": "",
+      "type": "string",
+      "description": "UUID do token de verificação de e-mail. Copiar do Kafka UI (tópico identity.user-registered) após o cadastro."
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Endpoints de autenticação e cadastro de clientes.",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Cadastra um novo cliente na plataforma.\n\n**Regras de negócio:**\n- `fullName` deve ter entre 3 e 255 caracteres\n- `email` deve ser único\n- `password` deve ter no mínimo 8 caracteres com letras e números\n- `password` e `passwordConfirmation` devem ser iguais\n\n**Resposta de sucesso:** `201 Created`"
+          },
+          "response": [
+            {
+              "name": "201 - Customer registered",
+              "status": "Created",
+              "code": 201,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"PENDING_VERIFICATION\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "400 - Validation error",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"VALIDATION_ERROR\",\n  \"message\": \"email: Invalid email format\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"\",\n  \"email\": \"email-invalido\",\n  \"password\": \"123\",\n  \"passwordConfirmation\": \"456\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "409 - Email already exists",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"EMAIL_CONFLICT\",\n  \"message\": \"Email already registered\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "verify-email"],
+              "query": [{"key": "token", "value": "{{verificationToken}}", "description": "UUID do token de verificação recebido por e-mail"}]
+            },
+            "description": "Verifica o e-mail do cliente e ativa a conta.\n\nCopie o `verificationToken` do Kafka UI (tópico `identity.user-registered`) e cole na variável da collection.\n\n**Respostas:**\n- `200 OK` — conta ativada\n- `404 Not Found` — token inexistente\n- `409 Conflict` — e-mail já verificado\n- `410 Gone` — token expirado (válido por 24h)"
+          },
+          "response": [
+            {
+              "name": "200 - Email verified",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"message\": \"Email verified successfully. Your account is now active.\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "verify-email"], "query": [{"key": "token", "value": "{{verificationToken}}"}]}
+              }
+            },
+            {
+              "name": "404 - Token not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"TOKEN_NOT_FOUND\",\n  \"message\": \"Verification token not found\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/verify-email?token=00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "verify-email"], "query": [{"key": "token", "value": "00000000-0000-0000-0000-000000000000"}]}
+              }
+            },
+            {
+              "name": "409 - Already verified",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"ALREADY_VERIFIED\",\n  \"message\": \"Email has already been verified\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "verify-email"], "query": [{"key": "token", "value": "{{verificationToken}}"}]}
+              }
+            },
+            {
+              "name": "410 - Token expired",
+              "status": "Gone",
+              "code": 410,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"TOKEN_EXPIRED\",\n  \"message\": \"Verification token has expired. Please request a new verification email.\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "verify-email"], "query": [{"key": "token", "value": "{{verificationToken}}"}]}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Resend Verification Email",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/resend-verification",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "resend-verification"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Reenvia o e-mail de verificação para contas com status `PENDING_VERIFICATION`.\n\n**Segurança:** Sempre retorna `204 No Content`, independentemente de o e-mail existir ou não na base.\n\n**Rate limit:** máximo 3 reenvios por hora por e-mail."
+          },
+          "response": [
+            {
+              "name": "204 - Sent (or silently ignored)",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": "",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/resend-verification", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "resend-verification"]},
+                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('userEmail', json.email);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Autentica o cliente e retorna os tokens JWT via cookies HttpOnly.\n\n**Cookies retornados:**\n- `access_token` (HttpOnly, SameSite=Strict, 15 min)\n- `refresh_token` (HttpOnly, SameSite=Strict, path `/api/v1/auth/refresh`, 30 dias)\n\n**Regras de bloqueio:** 5 tentativas incorretas → conta bloqueada por 15 minutos.\n\n**Respostas:**\n- `200 OK` — login efetuado\n- `401 Unauthorized` — credenciais inválidas\n- `403 Forbidden` — conta não ativa (e-mail não verificado ou desativada)\n- `423 Locked` — conta bloqueada por excesso de tentativas"
+          },
+          "response": [
+            {
+              "name": "200 - Login successful",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {"key": "Content-Type", "value": "application/json"},
+                {"key": "Set-Cookie", "value": "access_token=<jwt>; Path=/; HttpOnly; SameSite=Strict; Max-Age=900"},
+                {"key": "Set-Cookie", "value": "refresh_token=<token>; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=2592000"}
+              ],
+              "body": "{\n  \"email\": \"maria.silva@email.com\",\n  \"roles\": [\"ROLE_CUSTOMER\"]\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"]},
+                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "401 - Invalid credentials",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"INVALID_CREDENTIALS\",\n  \"message\": \"Invalid email or password\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"]},
+                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"wrong\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "403 - Account not active",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"ACCOUNT_NOT_ACTIVE\",\n  \"message\": \"Confirme seu e-mail para continuar\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"]},
+                "body": {"mode": "raw", "raw": "{\n  \"email\": \"pending@email.com\",\n  \"password\": \"Senha@123\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "423 - Account locked",
+              "status": "Locked",
+              "code": 423,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"ACCOUNT_LOCKED\",\n  \"message\": \"Account temporarily locked due to too many failed attempts. Try again in 15 minutes.\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"]},
+                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"wrong\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "description": "Endpoints de monitoramento e observabilidade.",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "health"]
+            },
+            "description": "Verifica o status da aplicação e de todas as suas dependências (DB, Kafka, Mail)."
+          },
+          "response": []
+        },
+        {
+          "name": "Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/swagger-ui",
+              "host": ["{{baseUrl}}"],
+              "path": ["swagger-ui"]
+            },
+            "description": "Interface gráfica da documentação OpenAPI."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
