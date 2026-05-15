@@ -12,6 +12,7 @@ import br.com.miriageekstore.identity.domain.port.in.RegisterUserCommand;
 import br.com.miriageekstore.identity.domain.port.in.RegisterUserResult;
 import br.com.miriageekstore.identity.domain.port.in.RegisterUserUseCase;
 import br.com.miriageekstore.identity.domain.port.out.DomainEventPublisher;
+import br.com.miriageekstore.identity.domain.port.out.EmailSender;
 import br.com.miriageekstore.identity.domain.port.out.PasswordHasher;
 import br.com.miriageekstore.identity.domain.port.out.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
     private final UserRepository userRepository;
     private final PasswordHasher passwordHasher;
     private final DomainEventPublisher eventPublisher;
+    private final EmailSender emailSender;
 
     @Override
     @Transactional
@@ -54,6 +56,10 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCase {
                 saved.getVerificationToken().token(),
                 Instant.now()
         ));
+        emailSender.sendVerificationEmail(
+                saved.getEmail().value(),
+                saved.getName().value(),
+                saved.getVerificationToken().token());
 
         return new RegisterUserResult(
                 saved.getId().value(),

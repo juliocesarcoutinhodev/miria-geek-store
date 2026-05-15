@@ -13,6 +13,7 @@ import br.com.miriageekstore.identity.domain.model.UserRole;
 import br.com.miriageekstore.identity.domain.model.UserStatus;
 import br.com.miriageekstore.identity.domain.port.in.LoginCommand;
 import br.com.miriageekstore.identity.domain.port.out.DomainEventPublisher;
+import br.com.miriageekstore.identity.domain.port.out.EmailSender;
 import br.com.miriageekstore.identity.domain.port.out.JwtTokenService;
 import br.com.miriageekstore.identity.domain.port.out.LoginAttemptTracker;
 import br.com.miriageekstore.identity.domain.port.out.PasswordHasher;
@@ -45,6 +46,7 @@ class LoginUseCaseTest {
     @Mock JwtTokenService jwtTokenService;
     @Mock RefreshTokenRepository refreshTokenRepository;
     @Mock DomainEventPublisher eventPublisher;
+    @Mock EmailSender emailSender;
 
     @InjectMocks
     LoginUseCaseImpl useCase;

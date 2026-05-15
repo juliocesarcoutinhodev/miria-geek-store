@@ -11,6 +11,7 @@ import br.com.miriageekstore.identity.domain.port.in.LoginCommand;
 import br.com.miriageekstore.identity.domain.port.in.LoginResult;
 import br.com.miriageekstore.identity.domain.port.in.LoginUseCase;
 import br.com.miriageekstore.identity.domain.port.out.DomainEventPublisher;
+import br.com.miriageekstore.identity.domain.port.out.EmailSender;
 import br.com.miriageekstore.identity.domain.port.out.JwtTokenService;
 import br.com.miriageekstore.identity.domain.port.out.LoginAttemptTracker;
 import br.com.miriageekstore.identity.domain.port.out.PasswordHasher;
@@ -37,6 +38,7 @@ public class LoginUseCaseImpl implements LoginUseCase {
     private final JwtTokenService jwtTokenService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final DomainEventPublisher eventPublisher;
+    private final EmailSender emailSender;
 
     @Value("${app.jwt.refresh-token-expiry-seconds:2592000}")
     private long refreshTokenExpirySeconds;
@@ -78,8 +80,12 @@ public class LoginUseCaseImpl implements LoginUseCase {
         );
         refreshTokenRepository.save(refreshToken);
 
+        var now = Instant.now();
         eventPublisher.publish(new UserLoggedIn(
-                user.getId().value(), user.getEmail().value(), Instant.now()));
+                user.getId().value(), user.getEmail().value(), user.getName().value(), now));
+        emailSender.sendLoginNotificationEmail(
+                user.getEmail().value(), user.getName().value(),
+                command.ipAddress(), command.userAgent(), now);
 
         var roles = user.getRoles().stream()
                 .map(Enum::name)

@@ -5,6 +5,7 @@ import br.com.miriageekstore.identity.domain.model.Email;
 import br.com.miriageekstore.identity.domain.model.UserStatus;
 import br.com.miriageekstore.identity.domain.port.in.ResendVerificationUseCase;
 import br.com.miriageekstore.identity.domain.port.out.DomainEventPublisher;
+import br.com.miriageekstore.identity.domain.port.out.EmailSender;
 import br.com.miriageekstore.identity.domain.port.out.ResendRateLimiter;
 import br.com.miriageekstore.identity.domain.port.out.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class ResendVerificationUseCaseImpl implements ResendVerificationUseCase 
     private final UserRepository userRepository;
     private final DomainEventPublisher eventPublisher;
     private final ResendRateLimiter rateLimiter;
+    private final EmailSender emailSender;
 
     @Override
     @Transactional
@@ -42,5 +44,9 @@ public class ResendVerificationUseCaseImpl implements ResendVerificationUseCase 
                 saved.getVerificationToken().token(),
                 Instant.now()
         ));
+        emailSender.sendVerificationEmail(
+                saved.getEmail().value(),
+                saved.getName().value(),
+                saved.getVerificationToken().token());
     }
 }

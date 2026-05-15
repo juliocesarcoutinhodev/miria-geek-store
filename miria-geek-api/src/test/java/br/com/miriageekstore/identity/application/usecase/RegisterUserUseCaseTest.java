@@ -9,6 +9,7 @@ import br.com.miriageekstore.identity.domain.model.User;
 import br.com.miriageekstore.identity.domain.model.UserStatus;
 import br.com.miriageekstore.identity.domain.port.in.RegisterUserCommand;
 import br.com.miriageekstore.identity.domain.port.out.DomainEventPublisher;
+import br.com.miriageekstore.identity.domain.port.out.EmailSender;
 import br.com.miriageekstore.identity.domain.port.out.PasswordHasher;
 import br.com.miriageekstore.identity.domain.port.out.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,12 +32,13 @@ class RegisterUserUseCaseTest {
     @Mock UserRepository userRepository;
     @Mock PasswordHasher passwordHasher;
     @Mock DomainEventPublisher eventPublisher;
+    @Mock EmailSender emailSender;
 
     RegisterUserUseCaseImpl useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new RegisterUserUseCaseImpl(userRepository, passwordHasher, eventPublisher);
+        useCase = new RegisterUserUseCaseImpl(userRepository, passwordHasher, eventPublisher, emailSender);
     }
 
     @Test

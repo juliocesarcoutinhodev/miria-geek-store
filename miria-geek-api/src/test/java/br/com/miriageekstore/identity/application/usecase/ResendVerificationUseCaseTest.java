@@ -10,6 +10,7 @@ import br.com.miriageekstore.identity.domain.model.UserRole;
 import br.com.miriageekstore.identity.domain.model.UserStatus;
 import br.com.miriageekstore.identity.domain.model.VerificationToken;
 import br.com.miriageekstore.identity.domain.port.out.DomainEventPublisher;
+import br.com.miriageekstore.identity.domain.port.out.EmailSender;
 import br.com.miriageekstore.identity.domain.port.out.ResendRateLimiter;
 import br.com.miriageekstore.identity.domain.port.out.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,9 @@ class ResendVerificationUseCaseTest {
 
     @Mock
     ResendRateLimiter rateLimiter;
+
+    @Mock
+    EmailSender emailSender;
 
     @InjectMocks
     ResendVerificationUseCaseImpl useCase;

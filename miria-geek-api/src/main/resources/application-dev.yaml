@@ -77,3 +77,6 @@ app:
   cookie:
     domain: ${COOKIE_DOMAIN:localhost}
     secure: ${COOKIE_SECURE:false}
+  mail:
+    from: ${MAIL_FROM:juliocesar.coutinhodev@gmail.com}
+  base-url: ${BASE_URL:http://localhost:8080}

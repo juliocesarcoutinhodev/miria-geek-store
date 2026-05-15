@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confirme seu e-mail — Miria Geek Store</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0a0a1a;font-family:'Segoe UI',Arial,sans-serif;">
+
+<!-- Wrapper -->
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#0a0a1a"
+       style="background-color:#0a0a1a;">
+  <tr>
+    <td align="center" style="padding:40px 16px;">
+
+      <!-- Card -->
+      <table width="600" cellpadding="0" cellspacing="0"
+             style="max-width:600px;width:100%;background-color:#12122a;border-radius:16px;overflow:hidden;border:1px solid #7c3aed;">
+
+        <!-- ── HEADER ─────────────────────────────────────────────── -->
+        <tr>
+          <td align="center"
+              style="padding:0;background:linear-gradient(135deg,#1e0533 0%,#0e1133 50%,#011033 100%);">
+            <!-- Decorative top bar -->
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="height:4px;background:linear-gradient(90deg,#7c3aed,#ec4899,#06b6d4,#7c3aed);"></td>
+              </tr>
+            </table>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding:40px 32px 32px;">
+                  <!-- Logo area -->
+                  <p style="margin:0 0 12px 0;font-size:13px;letter-spacing:6px;color:#a855f7;text-transform:uppercase;font-weight:700;">
+                    ⚔&nbsp;&nbsp;MIRIA GEEK STORE&nbsp;&nbsp;⚔
+                  </p>
+                  <!-- Decorative circle icon -->
+                  <table cellpadding="0" cellspacing="0" style="margin:0 auto 20px;">
+                    <tr>
+                      <td align="center"
+                          style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);border:3px solid #ec4899;line-height:80px;font-size:36px;text-align:center;">
+                        ✉
+                      </td>
+                    </tr>
+                  </table>
+                  <h1 style="margin:0;font-size:26px;font-weight:800;color:#f1f5f9;letter-spacing:1px;line-height:1.3;">
+                    Seu portal aguarda,<br/>
+                    <span style="background:linear-gradient(90deg,#a855f7,#ec4899);-webkit-background-clip:text;color:#a855f7;">
+                      Guerreiro! ✨
+                    </span>
+                  </h1>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ── BODY ───────────────────────────────────────────────── -->
+        <tr>
+          <td style="padding:40px 40px 32px;background-color:#12122a;">
+
+            <!-- Greeting -->
+            <p style="margin:0 0 20px 0;font-size:16px;color:#cbd5e1;line-height:1.6;">
+              Olá, <strong style="color:#e2e8f0;">{{FULL_NAME}}</strong>! 🌸
+            </p>
+            <p style="margin:0 0 28px 0;font-size:15px;color:#94a3b8;line-height:1.7;">
+              Você está a um passo de acessar o universo da <strong style="color:#a855f7;">Miria Geek Store</strong>
+              — sua loja favorita de mangás, action figures, pôsteres e tudo do mundo geek e otaku! 🎮🐉
+            </p>
+
+            <!-- Info box -->
+            <table width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#1e1b4b;border-radius:12px;border:1px solid #4c1d95;margin-bottom:28px;">
+              <tr>
+                <td style="padding:20px 24px;">
+                  <p style="margin:0 0 8px 0;font-size:13px;color:#7c3aed;letter-spacing:3px;text-transform:uppercase;font-weight:700;">
+                    ▸ Missão
+                  </p>
+                  <p style="margin:0;font-size:15px;color:#c4b5fd;line-height:1.6;">
+                    Confirme seu endereço de e-mail para ativar sua conta e começar a explorar nossa loja. Clique no botão abaixo antes que o token expire.
+                  </p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- CTA Button -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+              <tr>
+                <td align="center">
+                  <a href="{{VERIFICATION_URL}}"
+                     style="display:inline-block;padding:16px 48px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#ffffff;font-size:16px;font-weight:800;text-decoration:none;border-radius:50px;letter-spacing:1px;box-shadow:0 0 20px rgba(168,85,247,0.4);">
+                    ⚡ VERIFICAR MEU E-MAIL
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Expiry warning -->
+            <table width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#1a1025;border-radius:8px;border-left:3px solid #ec4899;margin-bottom:28px;">
+              <tr>
+                <td style="padding:14px 18px;">
+                  <p style="margin:0;font-size:13px;color:#f9a8d4;line-height:1.5;">
+                    ⏱ <strong>Atenção:</strong> Este link expira em <strong>24 horas</strong>.
+                    Caso expire, acesse o app e solicite um novo e-mail de verificação.
+                  </p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Fallback URL -->
+            <p style="margin:0 0 8px 0;font-size:13px;color:#64748b;">
+              Se o botão não funcionar, copie e cole este link no seu navegador:
+            </p>
+            <p style="margin:0;font-size:12px;color:#6366f1;word-break:break-all;line-height:1.5;">
+              {{VERIFICATION_URL}}
+            </p>
+          </td>
+        </tr>
+
+        <!-- ── DIVIDER ─────────────────────────────────────────────── -->
+        <tr>
+          <td style="padding:0 40px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="height:1px;background:linear-gradient(90deg,transparent,#7c3aed,transparent);"></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ── FOOTER ─────────────────────────────────────────────── -->
+        <tr>
+          <td style="padding:28px 40px 36px;background-color:#0d0d20;border-radius:0 0 16px 16px;">
+            <p style="margin:0 0 8px 0;font-size:13px;color:#64748b;text-align:center;line-height:1.6;">
+              Você recebeu este e-mail porque se cadastrou na Miria Geek Store.<br/>
+              Se não foi você, ignore esta mensagem com segurança.
+            </p>
+            <p style="margin:16px 0 0 0;font-size:12px;color:#334155;text-align:center;letter-spacing:2px;">
+              ✦ &nbsp; MIRIA GEEK STORE &nbsp; ✦ &nbsp; {{YEAR}} &nbsp; ✦
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
