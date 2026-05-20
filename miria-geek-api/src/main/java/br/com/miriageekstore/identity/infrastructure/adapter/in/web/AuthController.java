@@ -1,9 +1,7 @@
 package br.com.miriageekstore.identity.infrastructure.adapter.in.web;
 
-import br.com.miriageekstore.identity.domain.port.in.LoginCommand;
 import br.com.miriageekstore.identity.domain.port.in.LoginUseCase;
 import br.com.miriageekstore.identity.domain.port.in.RefreshTokenUseCase;
-import br.com.miriageekstore.identity.domain.port.in.RegisterUserCommand;
 import br.com.miriageekstore.identity.domain.port.in.RegisterUserUseCase;
 import br.com.miriageekstore.identity.domain.port.in.ResendVerificationUseCase;
 import br.com.miriageekstore.identity.domain.port.in.VerifyEmailUseCase;
@@ -39,18 +37,14 @@ public class AuthController {
     private final LoginUseCase loginUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final CookieFactory cookieFactory;
+    private final AuthMapper authMapper;
 
     @Operation(summary = "Cadastrar novo cliente")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
-        var result = registerUserUseCase.execute(new RegisterUserCommand(
-                request.fullName(),
-                request.email(),
-                request.password(),
-                request.passwordConfirmation()
-        ));
-        return RegisterResponse.from(result);
+        var result = registerUserUseCase.execute(authMapper.toCommand(request));
+        return authMapper.toResponse(result);
     }
 
     @Operation(summary = "Verificar e-mail do cliente")
@@ -72,16 +66,14 @@ public class AuthController {
     @PostMapping("/login")
     ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request,
                                         HttpServletRequest httpRequest) {
-        var result = loginUseCase.execute(new LoginCommand(
-                request.email(),
-                request.password(),
+        var result = loginUseCase.execute(authMapper.toCommand(
+                request,
                 httpRequest.getRemoteAddr(),
-                httpRequest.getHeader("User-Agent")
-        ));
+                httpRequest.getHeader("User-Agent")));
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.accessToken(result.accessToken()).toString())
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.refreshToken(result.refreshToken()).toString())
-                .body(new LoginResponse(result.id(), result.name(), result.email(), result.roles(), result.status()));
+                .body(authMapper.toResponse(result));
     }
 
     @Operation(summary = "Renovar tokens de acesso")
@@ -96,6 +88,6 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.accessToken(result.accessToken()).toString())
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.refreshToken(result.refreshToken()).toString())
-                .body(new LoginResponse(result.id(), result.name(), result.email(), result.roles(), result.status()));
+                .body(authMapper.toResponse(result));
     }
 }
