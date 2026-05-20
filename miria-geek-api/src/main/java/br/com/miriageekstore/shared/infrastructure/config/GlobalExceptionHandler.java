@@ -6,10 +6,14 @@ import br.com.miriageekstore.identity.domain.exception.EmailAlreadyExistsExcepti
 import br.com.miriageekstore.identity.domain.exception.InvalidCredentialsException;
 import br.com.miriageekstore.identity.domain.exception.InvalidEmailException;
 import br.com.miriageekstore.identity.domain.exception.InvalidPasswordPolicyException;
+import br.com.miriageekstore.identity.domain.exception.InvalidRefreshTokenException;
 import br.com.miriageekstore.identity.domain.exception.PasswordConfirmationException;
 import br.com.miriageekstore.identity.domain.exception.UserAlreadyVerifiedException;
 import br.com.miriageekstore.identity.domain.exception.VerificationTokenExpiredException;
 import br.com.miriageekstore.identity.domain.exception.VerificationTokenNotFoundException;
+import br.com.miriageekstore.identity.infrastructure.config.CookieFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,7 +23,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final CookieFactory cookieFactory;
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     ResponseEntity<ErrorResponse> handle(EmailAlreadyExistsException ex) {
@@ -61,6 +68,14 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(AccountLockedException ex) {
         return ResponseEntity.status(423)
                 .body(new ErrorResponse("ACCOUNT_LOCKED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    ResponseEntity<ErrorResponse> handle(InvalidRefreshTokenException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.clearAccessToken().toString())
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.clearRefreshToken().toString())
+                .body(new ErrorResponse("INVALID_TOKEN", ex.getMessage()));
     }
 
     @ExceptionHandler({PasswordConfirmationException.class, InvalidPasswordPolicyException.class,

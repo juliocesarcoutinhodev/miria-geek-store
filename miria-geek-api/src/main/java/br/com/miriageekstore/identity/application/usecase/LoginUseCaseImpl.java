@@ -22,10 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,7 +68,7 @@ public class LoginUseCaseImpl implements LoginUseCase {
 
         var accessToken = jwtTokenService.generateAccessToken(user);
         var rawRefreshToken = jwtTokenService.generateRefreshToken();
-        var tokenHash = sha256(rawRefreshToken);
+        var tokenHash = TokenHasher.sha256(rawRefreshToken);
 
         var refreshToken = RefreshToken.create(
                 user.getId(), tokenHash,
@@ -99,12 +96,4 @@ public class LoginUseCaseImpl implements LoginUseCase {
         );
     }
 
-    private static String sha256(String input) {
-        try {
-            var digest = MessageDigest.getInstance("SHA-256");
-            return Base64.getEncoder().encodeToString(digest.digest(input.getBytes()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-256 not available", e);
-        }
-    }
 }

@@ -38,4 +38,13 @@ class RefreshTokenEntity {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @Column(name = "family_id", nullable = false)
+    private UUID familyId;
+
+    @Column(name = "revoked", nullable = false)
+    private boolean revoked;
+
+    @Column(name = "revoked_at")
+    private Instant revokedAt;
 }

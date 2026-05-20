@@ -2,20 +2,21 @@ package br.com.miriageekstore.identity.infrastructure.adapter.in.web;
 
 import br.com.miriageekstore.identity.domain.port.in.LoginCommand;
 import br.com.miriageekstore.identity.domain.port.in.LoginUseCase;
+import br.com.miriageekstore.identity.domain.port.in.RefreshTokenUseCase;
 import br.com.miriageekstore.identity.domain.port.in.RegisterUserCommand;
 import br.com.miriageekstore.identity.domain.port.in.RegisterUserUseCase;
 import br.com.miriageekstore.identity.domain.port.in.ResendVerificationUseCase;
 import br.com.miriageekstore.identity.domain.port.in.VerifyEmailUseCase;
+import br.com.miriageekstore.identity.infrastructure.config.CookieFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,15 +37,8 @@ public class AuthController {
     private final VerifyEmailUseCase verifyEmailUseCase;
     private final ResendVerificationUseCase resendVerificationUseCase;
     private final LoginUseCase loginUseCase;
-
-    @Value("${app.cookie.domain:localhost}")
-    private String cookieDomain;
-
-    @Value("${app.cookie.secure:false}")
-    private boolean cookieSecure;
-
-    @Value("${app.jwt.refresh-token-expiry-seconds:2592000}")
-    private long refreshTokenExpirySeconds;
+    private final RefreshTokenUseCase refreshTokenUseCase;
+    private final CookieFactory cookieFactory;
 
     @Operation(summary = "Cadastrar novo cliente")
     @PostMapping("/register")
@@ -84,28 +78,24 @@ public class AuthController {
                 httpRequest.getRemoteAddr(),
                 httpRequest.getHeader("User-Agent")
         ));
-
-        var accessCookie = ResponseCookie.from("access_token", result.accessToken())
-                .httpOnly(true)
-                .secure(cookieSecure)
-                .path("/")
-                .domain(cookieDomain)
-                .sameSite("Strict")
-                .maxAge(900)
-                .build();
-
-        var refreshCookie = ResponseCookie.from("refresh_token", result.refreshToken())
-                .httpOnly(true)
-                .secure(cookieSecure)
-                .path("/api/v1/auth/refresh")
-                .domain(cookieDomain)
-                .sameSite("Strict")
-                .maxAge(refreshTokenExpirySeconds)
-                .build();
-
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.accessToken(result.accessToken()).toString())
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.refreshToken(result.refreshToken()).toString())
+                .body(new LoginResponse(result.id(), result.name(), result.email(), result.roles(), result.status()));
+    }
+
+    @Operation(summary = "Renovar tokens de acesso")
+    @PostMapping("/refresh")
+    ResponseEntity<LoginResponse> refresh(
+            @CookieValue(name = "refresh_token", required = false) String rawRefreshToken,
+            HttpServletRequest httpRequest) {
+        var result = refreshTokenUseCase.execute(
+                rawRefreshToken,
+                httpRequest.getRemoteAddr(),
+                httpRequest.getHeader("User-Agent"));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.accessToken(result.accessToken()).toString())
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.refreshToken(result.refreshToken()).toString())
                 .body(new LoginResponse(result.id(), result.name(), result.email(), result.roles(), result.status()));
     }
 }
