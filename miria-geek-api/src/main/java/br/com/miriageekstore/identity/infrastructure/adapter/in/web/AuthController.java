@@ -106,6 +106,6 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body(new LoginResponse(result.email(), result.roles()));
+                .body(new LoginResponse(result.id(), result.name(), result.email(), result.roles(), result.status()));
     }
 }

@@ -66,8 +66,11 @@ class LoginUseCaseTest {
         var result = useCase.execute(CMD);
 
         assertThat(result.accessToken()).isEqualTo("access-token");
+        assertThat(result.id()).isNotNull();
+        assertThat(result.name()).isEqualTo("User Test");
         assertThat(result.email()).isEqualTo("user@email.com");
         assertThat(result.roles()).contains("ROLE_CUSTOMER");
+        assertThat(result.status()).isEqualTo("ACTIVE");
         verify(refreshTokenRepository).save(any());
         verify(eventPublisher).publish(any(UserLoggedIn.class));
         verify(attemptTracker).resetFailures(CMD.email());

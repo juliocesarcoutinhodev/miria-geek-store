@@ -73,7 +73,7 @@ app:
     secret: ${JWT_SECRET}
     issuer: miria-geek-api
     access-token-expiry-seconds: 900
-    refresh-token-expiry-seconds: 2592000
+    refresh-token-expiry-seconds: 604800
   cookie:
     domain: ${COOKIE_DOMAIN:localhost}
     secure: ${COOKIE_SECURE:false}

@@ -91,7 +91,12 @@ public class LoginUseCaseImpl implements LoginUseCase {
                 .map(Enum::name)
                 .collect(Collectors.toSet());
 
-        return new LoginResult(accessToken, rawRefreshToken, user.getEmail().value(), roles);
+        return new LoginResult(
+                accessToken, rawRefreshToken,
+                user.getId().value(), user.getName().value(),
+                user.getEmail().value(), roles,
+                user.getStatus().name()
+        );
     }
 
     private static String sha256(String input) {
