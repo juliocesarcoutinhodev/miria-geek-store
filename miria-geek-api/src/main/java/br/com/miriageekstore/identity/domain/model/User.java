@@ -11,7 +11,7 @@ public class User {
     private final UserId id;
     private final FullName name;
     private final Email email;
-    private final Password password;
+    private Password password;
     private UserStatus status;
     private final Set<UserRole> roles;
     private VerificationToken verificationToken;
@@ -47,6 +47,10 @@ public class User {
                                     UserStatus status, Set<UserRole> roles,
                                     VerificationToken verificationToken, Instant createdAt) {
         return new User(id, name, email, password, status, roles, verificationToken, createdAt);
+    }
+
+    public void changePassword(Password newPassword) {
+        this.password = newPassword;
     }
 
     public void regenerateVerificationToken() {

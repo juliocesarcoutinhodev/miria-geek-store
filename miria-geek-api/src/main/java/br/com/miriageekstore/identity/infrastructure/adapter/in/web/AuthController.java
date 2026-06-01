@@ -1,11 +1,15 @@
 package br.com.miriageekstore.identity.infrastructure.adapter.in.web;
 
+import br.com.miriageekstore.identity.domain.port.in.ForgotPasswordCommand;
+import br.com.miriageekstore.identity.domain.port.in.ForgotPasswordUseCase;
 import br.com.miriageekstore.identity.domain.port.in.LoginUseCase;
 import br.com.miriageekstore.identity.domain.port.in.LogoutAllUseCase;
 import br.com.miriageekstore.identity.domain.port.in.LogoutUseCase;
 import br.com.miriageekstore.identity.domain.port.in.RefreshTokenUseCase;
 import br.com.miriageekstore.identity.domain.port.in.RegisterUserUseCase;
 import br.com.miriageekstore.identity.domain.port.in.ResendVerificationUseCase;
+import br.com.miriageekstore.identity.domain.port.in.ResetPasswordCommand;
+import br.com.miriageekstore.identity.domain.port.in.ResetPasswordUseCase;
 import br.com.miriageekstore.identity.domain.port.in.VerifyEmailUseCase;
 import br.com.miriageekstore.identity.infrastructure.config.CookieFactory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +44,8 @@ public class AuthController {
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final LogoutUseCase logoutUseCase;
     private final LogoutAllUseCase logoutAllUseCase;
+    private final ForgotPasswordUseCase forgotPasswordUseCase;
+    private final ResetPasswordUseCase resetPasswordUseCase;
     private final CookieFactory cookieFactory;
     private final AuthMapper authMapper;
 
@@ -115,5 +121,20 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.clearAccessToken().toString())
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.clearRefreshToken().toString())
                 .build();
+    }
+
+    @Operation(summary = "Solicitar redefinição de senha")
+    @PostMapping("/forgot-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        forgotPasswordUseCase.execute(new ForgotPasswordCommand(request.email()));
+    }
+
+    @Operation(summary = "Redefinir senha com token")
+    @PostMapping("/reset-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        resetPasswordUseCase.execute(new ResetPasswordCommand(
+                request.token(), request.newPassword(), request.passwordConfirmation()));
     }
 }

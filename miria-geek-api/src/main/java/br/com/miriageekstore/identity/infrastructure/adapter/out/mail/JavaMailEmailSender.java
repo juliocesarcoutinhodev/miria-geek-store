@@ -63,6 +63,18 @@ class JavaMailEmailSender implements EmailSender {
         send(to, "🔐 Novo acesso detectado em sua conta — Miria Geek Store", html);
     }
 
+    @Override
+    @Async
+    public void sendPasswordResetEmail(String to, String fullName, UUID resetToken) {
+        var resetUrl = baseUrl + "/reset-password?token=" + resetToken;
+        var html = loadTemplate("password-reset.html")
+                .replace("{{FULL_NAME}}", fullName)
+                .replace("{{RESET_URL}}", resetUrl)
+                .replace("{{YEAR}}", String.valueOf(java.time.Year.now().getValue()));
+
+        send(to, "🔑 Redefinição de senha — Miria Geek Store", html);
+    }
+
     private void send(String to, String subject, String html) {
         try {
             MimeMessage message = mailSender.createMimeMessage();

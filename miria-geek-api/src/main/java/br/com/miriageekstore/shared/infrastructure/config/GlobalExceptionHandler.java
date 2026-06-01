@@ -3,6 +3,9 @@ package br.com.miriageekstore.shared.infrastructure.config;
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
 import br.com.miriageekstore.identity.domain.exception.AccountNotActiveException;
 import br.com.miriageekstore.identity.domain.exception.EmailAlreadyExistsException;
+import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenAlreadyUsedException;
+import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenExpiredException;
+import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenNotFoundException;
 import br.com.miriageekstore.identity.domain.exception.InvalidCredentialsException;
 import br.com.miriageekstore.identity.domain.exception.InvalidEmailException;
 import br.com.miriageekstore.identity.domain.exception.InvalidPasswordPolicyException;
@@ -68,6 +71,24 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(AccountLockedException ex) {
         return ResponseEntity.status(423)
                 .body(new ErrorResponse("ACCOUNT_LOCKED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(PasswordResetTokenNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(PasswordResetTokenNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("RESET_TOKEN_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(PasswordResetTokenExpiredException.class)
+    ResponseEntity<ErrorResponse> handle(PasswordResetTokenExpiredException ex) {
+        return ResponseEntity.status(HttpStatus.GONE)
+                .body(new ErrorResponse("RESET_TOKEN_EXPIRED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(PasswordResetTokenAlreadyUsedException.class)
+    ResponseEntity<ErrorResponse> handle(PasswordResetTokenAlreadyUsedException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("RESET_TOKEN_ALREADY_USED", ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidRefreshTokenException.class)
