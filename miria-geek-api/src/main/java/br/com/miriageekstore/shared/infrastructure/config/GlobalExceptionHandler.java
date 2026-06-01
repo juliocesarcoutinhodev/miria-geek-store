@@ -6,6 +6,7 @@ import br.com.miriageekstore.identity.domain.exception.EmailAlreadyExistsExcepti
 import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenAlreadyUsedException;
 import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenExpiredException;
 import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenNotFoundException;
+import br.com.miriageekstore.identity.domain.exception.UserNotFoundException;
 import br.com.miriageekstore.identity.domain.exception.InvalidCredentialsException;
 import br.com.miriageekstore.identity.domain.exception.InvalidEmailException;
 import br.com.miriageekstore.identity.domain.exception.InvalidPasswordPolicyException;
@@ -71,6 +72,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(AccountLockedException ex) {
         return ResponseEntity.status(423)
                 .body(new ErrorResponse("ACCOUNT_LOCKED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("USER_NOT_FOUND", ex.getMessage()));
     }
 
     @ExceptionHandler(PasswordResetTokenNotFoundException.class)

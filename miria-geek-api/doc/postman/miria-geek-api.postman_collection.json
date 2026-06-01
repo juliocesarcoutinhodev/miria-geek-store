@@ -449,6 +449,51 @@
       ]
     },
     {
+      "name": "Users",
+      "description": "Endpoints de usuário autenticado. Requerem cookie `access_token` válido.",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me"]
+            },
+            "description": "Retorna os dados do usuário autenticado.\n\n**Autenticação:** Lê o cookie `access_token` automaticamente.\n\n**Resposta:** `200 OK` com id, nome, e-mail, status, roles e dataCadastro.\n\nNão retorna senha nem tokens."
+          },
+          "response": [
+            {
+              "name": "200 - Profile returned",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"roles\": [\"ROLE_CUSTOMER\"],\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]}
+              }
+            },
+            {
+              "name": "401 - Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"INVALID_CREDENTIALS\",\n  \"message\": \"Invalid email or password\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Health",
       "description": "Endpoints de monitoramento e observabilidade.",
       "item": [
