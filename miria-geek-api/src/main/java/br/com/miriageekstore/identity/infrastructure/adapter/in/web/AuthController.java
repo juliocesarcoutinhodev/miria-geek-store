@@ -1,6 +1,8 @@
 package br.com.miriageekstore.identity.infrastructure.adapter.in.web;
 
 import br.com.miriageekstore.identity.domain.port.in.LoginUseCase;
+import br.com.miriageekstore.identity.domain.port.in.LogoutAllUseCase;
+import br.com.miriageekstore.identity.domain.port.in.LogoutUseCase;
 import br.com.miriageekstore.identity.domain.port.in.RefreshTokenUseCase;
 import br.com.miriageekstore.identity.domain.port.in.RegisterUserUseCase;
 import br.com.miriageekstore.identity.domain.port.in.ResendVerificationUseCase;
@@ -36,6 +38,8 @@ public class AuthController {
     private final ResendVerificationUseCase resendVerificationUseCase;
     private final LoginUseCase loginUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
+    private final LogoutUseCase logoutUseCase;
+    private final LogoutAllUseCase logoutAllUseCase;
     private final CookieFactory cookieFactory;
     private final AuthMapper authMapper;
 
@@ -89,5 +93,27 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.accessToken(result.accessToken()).toString())
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.refreshToken(result.refreshToken()).toString())
                 .body(authMapper.toResponse(result));
+    }
+
+    @Operation(summary = "Encerrar sessão atual")
+    @PostMapping("/logout")
+    ResponseEntity<Void> logout(
+            @CookieValue(name = "refresh_token", required = false) String rawRefreshToken) {
+        logoutUseCase.execute(rawRefreshToken);
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.clearAccessToken().toString())
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.clearRefreshToken().toString())
+                .build();
+    }
+
+    @Operation(summary = "Encerrar sessão em todos os dispositivos")
+    @PostMapping("/logout-all")
+    ResponseEntity<Void> logoutAll(
+            @CookieValue(name = "refresh_token", required = false) String rawRefreshToken) {
+        logoutAllUseCase.execute(rawRefreshToken);
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.clearAccessToken().toString())
+                .header(HttpHeaders.SET_COOKIE, cookieFactory.clearRefreshToken().toString())
+                .build();
     }
 }

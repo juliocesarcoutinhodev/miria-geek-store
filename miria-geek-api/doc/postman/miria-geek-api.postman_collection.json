@@ -274,6 +274,66 @@
               }
             }
           ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            },
+            "description": "Encerra a sessão atual revogando o refresh token do cookie.\n\n- Lê o cookie `refresh_token` automaticamente\n- Revoga o token no banco de dados\n- Limpa os cookies `access_token` e `refresh_token` (Max-Age=0)\n- Funciona mesmo se o access token já estiver expirado\n\n**Resposta:** `204 No Content`"
+          },
+          "response": [
+            {
+              "name": "204 - Logout successful",
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {"key": "Set-Cookie", "value": "access_token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0"},
+                {"key": "Set-Cookie", "value": "refresh_token=; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=0"}
+              ],
+              "body": "",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/logout", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "logout"]}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout All Devices",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout-all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout-all"]
+            },
+            "description": "Encerra a sessão em **todos os dispositivos** do usuário.\n\n- Identifica o usuário pelo cookie `refresh_token`\n- Revoga todos os refresh tokens ativos desse usuário no banco\n- Limpa os cookies `access_token` e `refresh_token` do dispositivo atual\n\n**Resposta:** `204 No Content`"
+          },
+          "response": [
+            {
+              "name": "204 - All sessions revoked",
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {"key": "Set-Cookie", "value": "access_token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0"},
+                {"key": "Set-Cookie", "value": "refresh_token=; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=0"}
+              ],
+              "body": "",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/auth/logout-all", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "logout-all"]}
+              }
+            }
+          ]
         }
       ]
     },
