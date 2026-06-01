@@ -2,14 +2,18 @@ package br.com.miriageekstore.identity.application.usecase;
 
 import br.com.miriageekstore.identity.domain.event.AdminUserCreated;
 import br.com.miriageekstore.identity.domain.exception.EmailAlreadyExistsException;
+import br.com.miriageekstore.identity.domain.model.AuditAction;
+import br.com.miriageekstore.identity.domain.model.AuditLog;
 import br.com.miriageekstore.identity.domain.model.Email;
 import br.com.miriageekstore.identity.domain.model.FullName;
 import br.com.miriageekstore.identity.domain.model.Password;
 import br.com.miriageekstore.identity.domain.model.User;
 import br.com.miriageekstore.identity.domain.model.UserId;
+import br.com.miriageekstore.identity.domain.model.UserRole;
 import br.com.miriageekstore.identity.domain.port.in.CreateAdminUserCommand;
 import br.com.miriageekstore.identity.domain.port.in.CreateAdminUserResult;
 import br.com.miriageekstore.identity.domain.port.in.CreateAdminUserUseCase;
+import br.com.miriageekstore.identity.domain.port.out.AuditLogRepository;
 import br.com.miriageekstore.identity.domain.port.out.DomainEventPublisher;
 import br.com.miriageekstore.identity.domain.port.out.EmailSender;
 import br.com.miriageekstore.identity.domain.port.out.PasswordHasher;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -29,6 +34,7 @@ public class CreateAdminUserUseCaseImpl implements CreateAdminUserUseCase {
     private final PasswordHasher passwordHasher;
     private final DomainEventPublisher eventPublisher;
     private final EmailSender emailSender;
+    private final AuditLogRepository auditLogRepository;
 
     @Override
     @Transactional
@@ -38,10 +44,11 @@ public class CreateAdminUserUseCaseImpl implements CreateAdminUserUseCase {
             throw new EmailAlreadyExistsException(email.value());
         }
 
+        var role = UserRole.valueOf(command.role());
         var tempPassword = generateTempPassword();
         var password = Password.hash(tempPassword, passwordHasher);
         var name = FullName.of(command.fullName());
-        var user = User.createAdmin(name, email, password, createdByAdminId);
+        var user = User.createByAdmin(name, email, password, Set.of(role), createdByAdminId);
         var saved = userRepository.save(user);
 
         eventPublisher.publish(new AdminUserCreated(
@@ -51,9 +58,12 @@ public class CreateAdminUserUseCaseImpl implements CreateAdminUserUseCase {
         emailSender.sendAdminWelcomeEmail(
                 saved.getEmail().value(), saved.getName().value(), tempPassword);
 
+        auditLogRepository.save(AuditLog.create(
+                saved.getId().value(), createdByAdminId.value(), AuditAction.USER_CREATED));
+
         return new CreateAdminUserResult(
                 saved.getId().value(), saved.getName().value(), saved.getEmail().value(),
-                saved.getStatus().name(), "ROLE_ADMIN",
+                saved.getStatus().name(), role.name(),
                 saved.getCreatedAt(), createdByAdminId.value()
         );
     }

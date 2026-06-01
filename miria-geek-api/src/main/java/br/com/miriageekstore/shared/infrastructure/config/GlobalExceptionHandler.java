@@ -1,6 +1,7 @@
 package br.com.miriageekstore.shared.infrastructure.config;
 
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
+import br.com.miriageekstore.identity.domain.exception.CannotChangeOwnRoleException;
 import br.com.miriageekstore.identity.domain.exception.AccountNotActiveException;
 import br.com.miriageekstore.identity.domain.exception.AddressLinkedToActiveOrderException;
 import br.com.miriageekstore.identity.domain.exception.CannotDeactivateOwnAccountException;
@@ -84,6 +85,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(CannotDeactivateOwnAccountException ex) {
         return ResponseEntity.status(422)
                 .body(new ErrorResponse("CANNOT_DEACTIVATE_OWN_ACCOUNT", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CannotChangeOwnRoleException.class)
+    ResponseEntity<ErrorResponse> handle(CannotChangeOwnRoleException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("CANNOT_CHANGE_OWN_ROLE", ex.getMessage()));
     }
 
     @ExceptionHandler(AddressLimitExceededException.class)

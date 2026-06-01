@@ -62,7 +62,7 @@ class UserVerifyEmailTest {
                 UserStatus.PENDING_VERIFICATION,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 token,
-                Instant.now(), null
+                Instant.now(), null, null
         );
     }
 
@@ -75,7 +75,7 @@ class UserVerifyEmailTest {
                 UserStatus.ACTIVE,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 validToken(),
-                Instant.now(), null
+                Instant.now(), null, null
         );
     }
 

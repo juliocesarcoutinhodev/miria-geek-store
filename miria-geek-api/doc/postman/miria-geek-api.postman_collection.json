@@ -724,10 +724,110 @@
     },
     {
       "name": "Admin",
-      "description": "Endpoints de administração. Requerem `ROLE_ADMIN` — cookie `access_token` de um usuário administrador.",
+      "description": "Endpoints de administração. Requerem `ROLE_ADMIN` — cookie `access_token` de um usuário administrador.\n\nTodas as operações de escrita são registradas na tabela `audit_log`.",
       "item": [
         {
-          "name": "Create Admin User",
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users?page=0&size=20&sort=createdAt&direction=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users"],
+              "query": [
+                {"key": "page", "value": "0", "description": "Número da página (base 0)"},
+                {"key": "size", "value": "20", "description": "Itens por página"},
+                {"key": "sort", "value": "createdAt", "description": "Campo de ordenação: createdAt, fullName, email, status"},
+                {"key": "direction", "value": "desc", "description": "Direção: asc | desc"},
+                {"key": "nome", "value": "", "description": "Busca parcial case-insensitive no nome", "disabled": true},
+                {"key": "email", "value": "", "description": "Busca parcial case-insensitive no e-mail", "disabled": true},
+                {"key": "status", "value": "", "description": "Filtro de status: ACTIVE | INACTIVE | PENDING_VERIFICATION", "disabled": true},
+                {"key": "role", "value": "", "description": "Filtro de role: ROLE_CUSTOMER | ROLE_ADMIN", "disabled": true}
+              ]
+            },
+            "description": "Lista usuários com paginação e filtros opcionais.\n\n**Requer:** `ROLE_ADMIN`\n\n**Parâmetros de filtro (todos opcionais):**\n- `nome` — busca parcial case-insensitive no nome\n- `email` — busca parcial case-insensitive no e-mail\n- `status` — `ACTIVE` | `INACTIVE` | `PENDING_VERIFICATION`\n- `role` — `ROLE_CUSTOMER` | `ROLE_ADMIN`\n\n**Resposta:** `200 OK` com lista paginada."
+          },
+          "response": [
+            {
+              "name": "200 - Users listed",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"fullName\": \"Maria Silva\",\n      \"email\": \"maria.silva@email.com\",\n      \"role\": \"ROLE_CUSTOMER\",\n      \"status\": \"ACTIVE\",\n      \"createdAt\": \"2026-05-15T19:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users?page=0&size=20&sort=createdAt&direction=desc", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}, {"key": "sort", "value": "createdAt"}, {"key": "direction", "value": "desc"}]}
+              }
+            },
+            {
+              "name": "200 - Filtered by status and role",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"fullName\": \"Carlos Administrador\",\n      \"email\": \"carlos.admin@miriageek.com.br\",\n      \"role\": \"ROLE_ADMIN\",\n      \"status\": \"ACTIVE\",\n      \"createdAt\": \"2026-05-15T18:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users?status=ACTIVE&role=ROLE_ADMIN&page=0&size=20", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"], "query": [{"key": "status", "value": "ACTIVE"}, {"key": "role", "value": "ROLE_ADMIN"}, {"key": "page", "value": "0"}, {"key": "size", "value": "20"}]}
+              }
+            },
+            {
+              "name": "403 - Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"error\": \"Forbidden\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]
+            },
+            "description": "Busca um usuário pelo ID com dados estendidos.\n\n**Requer:** `ROLE_ADMIN`\n\n**Campos retornados além do sumário:**\n- `totalPedidos` — total de pedidos do usuário\n- `ultimoLogin` — data/hora do último login\n\n**Respostas:**\n- `200 OK` — usuário encontrado\n- `404 Not Found` — usuário inexistente"
+          },
+          "response": [
+            {
+              "name": "200 - User found",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"status\": \"ACTIVE\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\",\n  \"totalPedidos\": 3,\n  \"ultimoLogin\": \"2026-05-31T22:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]}
+              }
+            },
+            {
+              "name": "404 - User not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "00000000-0000-0000-0000-000000000000"]}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create User",
           "request": {
             "method": "POST",
             "header": [{"key": "Content-Type", "value": "application/json"}],
@@ -738,14 +838,14 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}",
+              "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}",
               "options": {"raw": {"language": "json"}}
             },
-            "description": "Cria um novo usuário administrador.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Conta criada com status `ACTIVE` e role `ROLE_ADMIN`\n- Senha temporária gerada automaticamente e enviada por e-mail\n- Registro de auditoria com ID do admin criador\n- Não exige verificação de e-mail\n\n**Respostas:**\n- `201 Created` — admin criado\n- `409 Conflict` — e-mail já cadastrado\n- `403 Forbidden` — usuário não tem ROLE_ADMIN"
+            "description": "Cria um novo usuário (admin ou customer) pela interface administrativa.\n\n**Requer:** `ROLE_ADMIN`\n\n**Campo `role`:** `ROLE_ADMIN` | `ROLE_CUSTOMER`\n\n**Comportamento:**\n- Conta criada com status `ACTIVE` (sem verificação de e-mail)\n- Senha temporária gerada automaticamente e enviada por e-mail\n- Registro de auditoria: id do admin criador + timestamp\n\n**Respostas:**\n- `201 Created` — usuário criado\n- `400 Bad Request` — role inválida ou campos em branco\n- `409 Conflict` — e-mail já cadastrado\n- `403 Forbidden` — usuário não tem ROLE_ADMIN"
           },
           "response": [
             {
-              "name": "201 - Admin created",
+              "name": "201 - Admin criado",
               "status": "Created",
               "code": 201,
               "header": [{"key": "Content-Type", "value": "application/json"}],
@@ -754,7 +854,20 @@
                 "method": "POST",
                 "header": [{"key": "Content-Type", "value": "application/json"}],
                 "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}", "options": {"raw": {"language": "json"}}}
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "201 - Customer criado",
+              "status": "Created",
+              "code": 201,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"João Customer\",\n  \"email\": \"joao.customer@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\",\n  \"createdByAdminId\": \"1fa85f64-5717-4562-b3fc-2c963f66afa6\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"João Customer\",\n  \"email\": \"joao.customer@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
               }
             },
             {
@@ -767,7 +880,20 @@
                 "method": "POST",
                 "header": [{"key": "Content-Type", "value": "application/json"}],
                 "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}", "options": {"raw": {"language": "json"}}}
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "400 - Role inválida",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"VALIDATION_ERROR\",\n  \"message\": \"role: must match \\\"ROLE_CUSTOMER|ROLE_ADMIN\\\"\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Test\",\n  \"email\": \"test@email.com\",\n  \"role\": \"ROLE_INVALID\"\n}", "options": {"raw": {"language": "json"}}}
               }
             },
             {
@@ -780,7 +906,164 @@
                 "method": "POST",
                 "header": [{"key": "Content-Type", "value": "application/json"}],
                 "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}", "options": {"raw": {"language": "json"}}}
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update User (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Substitui todos os campos editáveis do usuário (atualização completa).\n\n**Requer:** `ROLE_ADMIN`\n\nTodos os campos são obrigatórios. Registro de auditoria registrado.\n\n**Regras:**\n- Admin não pode alterar a própria role\n- E-mail alterado para um já existente retorna 409\n\n**Respostas:**\n- `200 OK` — usuário atualizado\n- `404 Not Found` — usuário inexistente\n- `409 Conflict` — e-mail já em uso\n- `422 Unprocessable Entity` — admin tentando alterar a própria role"
+          },
+          "response": [
+            {
+              "name": "200 - User updated",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "404 - User not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "00000000-0000-0000-0000-000000000000"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Test\",\n  \"email\": \"test@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "409 - Email conflict",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"EMAIL_CONFLICT\",\n  \"message\": \"Email already registered\"\n}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria\",\n  \"email\": \"outro.usuario@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "422 - Cannot change own role",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"CANNOT_CHANGE_OWN_ROLE\",\n  \"message\": \"Admin cannot change their own role\"\n}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Admin Self\",\n  \"email\": \"admin@miriageek.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Patch User (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Maria Silva Parcial\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Atualiza apenas os campos enviados no body (atualização parcial).\n\n**Requer:** `ROLE_ADMIN`\n\nTodos os campos são opcionais. Apenas os campos presentes são alterados. Registro de auditoria registrado.\n\n**Campos opcionais:** `fullName`, `email`, `role`\n\n**Regras:**\n- Admin não pode alterar a própria role\n- E-mail alterado para um já existente retorna 409\n\n**Respostas:**\n- `200 OK` — usuário atualizado\n- `404 Not Found` — usuário inexistente\n- `409 Conflict` — e-mail já em uso\n- `422 Unprocessable Entity` — admin tentando alterar a própria role"
+          },
+          "response": [
+            {
+              "name": "200 - Nome atualizado",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva Parcial\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva Parcial\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "200 - Role atualizada",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_ADMIN\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
+                "body": {"mode": "raw", "raw": "{\n  \"role\": \"ROLE_ADMIN\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "404 - User not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "00000000-0000-0000-0000-000000000000"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Test\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "409 - Email conflict",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"EMAIL_CONFLICT\",\n  \"message\": \"Email already registered\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
+                "body": {"mode": "raw", "raw": "{\n  \"email\": \"outro.usuario@email.com\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "422 - Cannot change own role",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"CANNOT_CHANGE_OWN_ROLE\",\n  \"message\": \"Admin cannot change their own role\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
+                "body": {"mode": "raw", "raw": "{\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
               }
             }
           ]
@@ -800,16 +1083,24 @@
               "raw": "{\n  \"status\": \"INACTIVE\"\n}",
               "options": {"raw": {"language": "json"}}
             },
-            "description": "Ativa ou desativa a conta de um usuário.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento na desativação:**\n- Todos os refresh tokens são revogados (logout forçado imediato)\n- Tentativa de login retorna 403 com mensagem explicativa\n\n**Respostas:**\n- `200 OK` — status atualizado\n- `404 Not Found` — usuário inexistente\n- `422 Unprocessable Entity` — admin tentando desativar a própria conta"
+            "description": "Ativa ou desativa a conta de um usuário.\n\n**Requer:** `ROLE_ADMIN`\n\n**Campo `status`:** `ACTIVE` | `INACTIVE`\n\n**Comportamento na desativação:**\n- Todos os refresh tokens são revogados (logout forçado imediato em todos os dispositivos)\n- Tentativa de login retorna 403 com mensagem explicativa\n- Registro de auditoria registrado\n\n**Respostas:**\n- `200 OK` — status atualizado\n- `404 Not Found` — usuário inexistente\n- `422 Unprocessable Entity` — admin tentando desativar a própria conta"
           },
           "response": [
             {
-              "name": "200 - Status updated",
+              "name": "200 - Desativado",
               "status": "OK",
               "code": 200,
               "header": [{"key": "Content-Type", "value": "application/json"}],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"INACTIVE\"\n}",
               "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"INACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
+            },
+            {
+              "name": "200 - Ativado",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\"\n}",
+              "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"ACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
             },
             {
               "name": "422 - Cannot deactivate own account",

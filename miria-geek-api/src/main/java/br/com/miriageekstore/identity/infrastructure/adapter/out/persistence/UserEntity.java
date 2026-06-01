@@ -61,4 +61,7 @@ class UserEntity {
 
     @Column(name = "created_by_admin_id")
     private UUID createdByAdminId;
+
+    @Column(name = "last_login_at")
+    private Instant lastLoginAt;
 }

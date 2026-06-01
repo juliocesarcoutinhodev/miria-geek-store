@@ -86,6 +86,6 @@ class UpdateProfileUseCaseTest {
         return User.reconstitute(
                 userId, FullName.of(name), Email.of("user@email.com"),
                 Password.fromHash("$2a$12$hashed"), UserStatus.ACTIVE,
-                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null);
+                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null, null);
     }
 }

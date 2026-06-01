@@ -121,7 +121,7 @@ class VerifyEmailUseCaseTest {
                 UserStatus.PENDING_VERIFICATION,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 new VerificationToken(tokenValue, expiresAt),
-                Instant.now(), null
+                Instant.now(), null, null
         );
     }
 
@@ -134,7 +134,7 @@ class VerifyEmailUseCaseTest {
                 UserStatus.ACTIVE,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 new VerificationToken(tokenValue, Instant.now().plus(24, ChronoUnit.HOURS)),
-                Instant.now(), null
+                Instant.now(), null, null
         );
     }
 }

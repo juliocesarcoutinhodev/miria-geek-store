@@ -83,6 +83,6 @@ class ForgotPasswordUseCaseTest {
         return User.reconstitute(
                 UserId.generate(), FullName.of("User Test"), Email.of("user@email.com"),
                 Password.fromHash("$2a$12$hashed"), UserStatus.ACTIVE,
-                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null);
+                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null, null);
     }
 }

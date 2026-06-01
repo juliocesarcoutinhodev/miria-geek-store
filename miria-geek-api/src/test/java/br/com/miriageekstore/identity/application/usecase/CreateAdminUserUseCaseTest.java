@@ -8,6 +8,7 @@ import br.com.miriageekstore.identity.domain.model.UserId;
 import br.com.miriageekstore.identity.domain.model.UserRole;
 import br.com.miriageekstore.identity.domain.model.UserStatus;
 import br.com.miriageekstore.identity.domain.port.in.CreateAdminUserCommand;
+import br.com.miriageekstore.identity.domain.port.out.AuditLogRepository;
 import br.com.miriageekstore.identity.domain.port.out.DomainEventPublisher;
 import br.com.miriageekstore.identity.domain.port.out.EmailSender;
 import br.com.miriageekstore.identity.domain.port.out.PasswordHasher;
@@ -33,12 +34,13 @@ class CreateAdminUserUseCaseTest {
     @Mock PasswordHasher passwordHasher;
     @Mock DomainEventPublisher eventPublisher;
     @Mock EmailSender emailSender;
+    @Mock AuditLogRepository auditLogRepository;
 
     @InjectMocks CreateAdminUserUseCaseImpl useCase;
 
     private static final UserId CREATOR_ID = UserId.generate();
     private static final CreateAdminUserCommand CMD =
-            new CreateAdminUserCommand("Carlos Admin", "carlos@miriageek.com");
+            new CreateAdminUserCommand("Carlos Admin", "carlos@miriageek.com", "ROLE_ADMIN");
 
     @Test
     void shouldCreateAdminWithActiveStatusAndRoleAdmin() {

@@ -66,6 +66,9 @@ public class LoginUseCaseImpl implements LoginUseCase {
 
         attemptTracker.resetFailures(command.email());
 
+        user.recordLogin(Instant.now());
+        userRepository.save(user);
+
         var accessToken = jwtTokenService.generateAccessToken(user);
         var rawRefreshToken = jwtTokenService.generateRefreshToken();
         var tokenHash = TokenHasher.sha256(rawRefreshToken);

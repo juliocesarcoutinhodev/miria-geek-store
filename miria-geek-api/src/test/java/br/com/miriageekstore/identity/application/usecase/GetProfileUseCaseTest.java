@@ -74,6 +74,6 @@ class GetProfileUseCaseTest {
         return User.reconstitute(
                 userId, FullName.of("Maria Silva"), Email.of("maria@email.com"),
                 Password.fromHash("$2a$12$hashed"), UserStatus.ACTIVE,
-                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null);
+                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null, null);
     }
 }

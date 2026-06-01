@@ -152,7 +152,7 @@ class LoginUseCaseTest {
                 UserStatus.ACTIVE,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 null,
-                Instant.now(), null
+                Instant.now(), null, null
         );
     }
 
@@ -165,7 +165,7 @@ class LoginUseCaseTest {
                 UserStatus.PENDING_VERIFICATION,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 null,
-                Instant.now(), null
+                Instant.now(), null, null
         );
     }
 }

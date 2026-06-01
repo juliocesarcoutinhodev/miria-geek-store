@@ -26,6 +26,7 @@ class UserEntityMapper {
         }
         entity.setCreatedAt(user.getCreatedAt());
         entity.setCreatedByAdminId(user.getCreatedByAdminId());
+        entity.setLastLoginAt(user.getLastLoginAt());
         return entity;
     }
 
@@ -42,7 +43,8 @@ class UserEntityMapper {
                 entity.getRoles(),
                 token,
                 entity.getCreatedAt(),
-                entity.getCreatedByAdminId()
+                entity.getCreatedByAdminId(),
+                entity.getLastLoginAt()
         );
     }
 }

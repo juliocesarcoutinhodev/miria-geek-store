@@ -10,6 +10,7 @@ import br.com.miriageekstore.identity.domain.model.UserId;
 import br.com.miriageekstore.identity.domain.model.UserRole;
 import br.com.miriageekstore.identity.domain.model.UserStatus;
 import br.com.miriageekstore.identity.domain.port.in.UpdateUserStatusCommand;
+import br.com.miriageekstore.identity.domain.port.out.AuditLogRepository;
 import br.com.miriageekstore.identity.domain.port.out.RefreshTokenRepository;
 import br.com.miriageekstore.identity.domain.port.out.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ class UpdateUserStatusUseCaseTest {
 
     @Mock UserRepository userRepository;
     @Mock RefreshTokenRepository refreshTokenRepository;
+    @Mock AuditLogRepository auditLogRepository;
 
     @InjectMocks UpdateUserStatusUseCaseImpl useCase;
 
@@ -103,12 +105,12 @@ class UpdateUserStatusUseCaseTest {
     private User customerUser(UserId userId) {
         return User.reconstitute(userId, FullName.of("Maria Test"), Email.of("maria@email.com"),
                 Password.fromHash("$2a$12$hash"), UserStatus.ACTIVE,
-                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null);
+                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null, null);
     }
 
     private User inactiveUser(UserId userId) {
         return User.reconstitute(userId, FullName.of("Maria Test"), Email.of("maria@email.com"),
                 Password.fromHash("$2a$12$hash"), UserStatus.INACTIVE,
-                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null);
+                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null, null);
     }
 }
