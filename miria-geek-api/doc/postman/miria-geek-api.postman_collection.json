@@ -28,6 +28,12 @@
       "value": "",
       "type": "string",
       "description": "UUID do token de redefinição de senha. Copiar do e-mail recebido ou do Kafka UI (tópico identity.password-reset-requested)."
+    },
+    {
+      "key": "addressId",
+      "value": "",
+      "type": "string",
+      "description": "UUID de um endereço do usuário. Preencher após criar um endereço via POST /api/v1/users/me/addresses."
     }
   ],
   "item": [
@@ -598,6 +604,115 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Addresses",
+      "description": "Gestão de endereços de entrega. Todos os endpoints requerem cookie `access_token` válido.",
+      "item": [
+        {
+          "name": "List Addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]},
+            "description": "Lista os endereços do usuário ordenados: padrão primeiro, demais por data de criação."
+          },
+          "response": [
+            {
+              "name": "200 - Addresses listed",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "[\n  {\n    \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"alias\": \"Casa\",\n    \"zipCode\": \"01310-100\",\n    \"street\": \"Avenida Paulista\",\n    \"number\": \"1000\",\n    \"complement\": \"Apto 42\",\n    \"neighborhood\": \"Bela Vista\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"isDefault\": true,\n    \"createdAt\": \"2026-05-15T19:00:00Z\"\n  }\n]",
+              "originalRequest": {"method": "GET", "header": [], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]}}
+            }
+          ]
+        },
+        {
+          "name": "Create Address",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alias\": \"Casa\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"1000\",\n  \"complement\": \"Apto 42\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": true\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Cadastra novo endereço. Máximo 5 por usuário.\nSe `isDefault: true`, o endereço padrão anterior é automaticamente removido."
+          },
+          "response": [
+            {
+              "name": "201 - Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"alias\": \"Casa\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"1000\",\n  \"complement\": \"Apto 42\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": true,\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]}, "body": {"mode": "raw", "raw": "{\n  \"alias\": \"Casa\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"1000\",\n  \"complement\": \"Apto 42\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": true\n}", "options": {"raw": {"language": "json"}}}}
+            },
+            {
+              "name": "422 - Limit exceeded",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"ADDRESS_LIMIT_EXCEEDED\",\n  \"message\": \"Maximum of 5 addresses per user has been reached\"\n}",
+              "originalRequest": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]}, "body": {"mode": "raw", "raw": "{}", "options": {"raw": {"language": "json"}}}}
+            }
+          ]
+        },
+        {
+          "name": "Update Address",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}"]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alias\": \"Trabalho\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"2000\",\n  \"complement\": \"\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": false\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Atualiza todos os campos do endereço."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}"]},
+            "description": "Remove o endereço. Retorna 409 se vinculado a pedido ativo."
+          },
+          "response": [
+            {
+              "name": "204 - Deleted",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": "",
+              "originalRequest": {"method": "DELETE", "header": [], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}"]}}
+            },
+            {
+              "name": "409 - Linked to active order",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"ADDRESS_LINKED_TO_ACTIVE_ORDER\",\n  \"message\": \"Address cannot be removed because it is linked to an active order\"\n}",
+              "originalRequest": {"method": "DELETE", "header": [], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}"]}}
+            }
+          ]
+        },
+        {
+          "name": "Set Default Address",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}/default", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}", "default"]},
+            "description": "Define o endereço como padrão, removendo o padrão anterior automaticamente."
+          },
+          "response": []
         }
       ]
     },

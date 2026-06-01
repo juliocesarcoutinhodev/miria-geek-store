@@ -2,6 +2,9 @@ package br.com.miriageekstore.shared.infrastructure.config;
 
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
 import br.com.miriageekstore.identity.domain.exception.AccountNotActiveException;
+import br.com.miriageekstore.identity.domain.exception.AddressLinkedToActiveOrderException;
+import br.com.miriageekstore.identity.domain.exception.AddressLimitExceededException;
+import br.com.miriageekstore.identity.domain.exception.AddressNotFoundException;
 import br.com.miriageekstore.identity.domain.exception.CurrentPasswordMismatchException;
 import br.com.miriageekstore.identity.domain.exception.EmailAlreadyExistsException;
 import br.com.miriageekstore.identity.domain.exception.NewPasswordSameAsCurrentException;
@@ -74,6 +77,24 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(AccountLockedException ex) {
         return ResponseEntity.status(423)
                 .body(new ErrorResponse("ACCOUNT_LOCKED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(AddressLimitExceededException.class)
+    ResponseEntity<ErrorResponse> handle(AddressLimitExceededException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("ADDRESS_LIMIT_EXCEEDED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(AddressNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(AddressNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("ADDRESS_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(AddressLinkedToActiveOrderException.class)
+    ResponseEntity<ErrorResponse> handle(AddressLinkedToActiveOrderException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("ADDRESS_LINKED_TO_ACTIVE_ORDER", ex.getMessage()));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
