@@ -56,6 +56,10 @@ public class User {
         return new User(id, name, email, password, status, roles, verificationToken, createdAt, createdByAdminId);
     }
 
+    public void updateStatus(UserStatus newStatus) {
+        this.status = newStatus;
+    }
+
     public void changeName(FullName newName) {
         this.name = newName;
     }

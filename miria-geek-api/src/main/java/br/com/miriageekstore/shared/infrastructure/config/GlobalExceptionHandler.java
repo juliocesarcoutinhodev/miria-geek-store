@@ -3,6 +3,7 @@ package br.com.miriageekstore.shared.infrastructure.config;
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
 import br.com.miriageekstore.identity.domain.exception.AccountNotActiveException;
 import br.com.miriageekstore.identity.domain.exception.AddressLinkedToActiveOrderException;
+import br.com.miriageekstore.identity.domain.exception.CannotDeactivateOwnAccountException;
 import br.com.miriageekstore.identity.domain.exception.AddressLimitExceededException;
 import br.com.miriageekstore.identity.domain.exception.AddressNotFoundException;
 import br.com.miriageekstore.identity.domain.exception.CurrentPasswordMismatchException;
@@ -77,6 +78,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(AccountLockedException ex) {
         return ResponseEntity.status(423)
                 .body(new ErrorResponse("ACCOUNT_LOCKED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CannotDeactivateOwnAccountException.class)
+    ResponseEntity<ErrorResponse> handle(CannotDeactivateOwnAccountException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("CANNOT_DEACTIVATE_OWN_ACCOUNT", ex.getMessage()));
     }
 
     @ExceptionHandler(AddressLimitExceededException.class)

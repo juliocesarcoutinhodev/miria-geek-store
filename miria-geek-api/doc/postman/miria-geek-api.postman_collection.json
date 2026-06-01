@@ -34,6 +34,12 @@
       "value": "",
       "type": "string",
       "description": "UUID de um endereço do usuário. Preencher após criar um endereço via POST /api/v1/users/me/addresses."
+    },
+    {
+      "key": "targetUserId",
+      "value": "",
+      "type": "string",
+      "description": "UUID do usuário alvo para operações admin (ativar/desativar conta)."
     }
   ],
   "item": [
@@ -776,6 +782,50 @@
                 "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
                 "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}", "options": {"raw": {"language": "json"}}}
               }
+            }
+          ]
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"INACTIVE\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Ativa ou desativa a conta de um usuário.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento na desativação:**\n- Todos os refresh tokens são revogados (logout forçado imediato)\n- Tentativa de login retorna 403 com mensagem explicativa\n\n**Respostas:**\n- `200 OK` — status atualizado\n- `404 Not Found` — usuário inexistente\n- `422 Unprocessable Entity` — admin tentando desativar a própria conta"
+          },
+          "response": [
+            {
+              "name": "200 - Status updated",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"INACTIVE\"\n}",
+              "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"INACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
+            },
+            {
+              "name": "422 - Cannot deactivate own account",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"CANNOT_DEACTIVATE_OWN_ACCOUNT\",\n  \"message\": \"Admin cannot deactivate their own account\"\n}",
+              "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"INACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
+            },
+            {
+              "name": "404 - User not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
+              "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"INACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
             }
           ]
         }
