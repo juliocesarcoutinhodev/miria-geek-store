@@ -9,7 +9,7 @@ import java.util.Set;
 public class User {
 
     private final UserId id;
-    private final FullName name;
+    private FullName name;
     private final Email email;
     private Password password;
     private UserStatus status;
@@ -47,6 +47,10 @@ public class User {
                                     UserStatus status, Set<UserRole> roles,
                                     VerificationToken verificationToken, Instant createdAt) {
         return new User(id, name, email, password, status, roles, verificationToken, createdAt);
+    }
+
+    public void changeName(FullName newName) {
+        this.name = newName;
     }
 
     public void changePassword(Password newPassword) {

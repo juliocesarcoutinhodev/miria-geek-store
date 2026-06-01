@@ -490,6 +490,52 @@
               }
             }
           ]
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Maria Silva Santos\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Atualiza o nome completo do usuário autenticado.\n\n**Autenticação:** Lê o cookie `access_token` automaticamente.\n\n**Regras:**\n- Apenas `fullName` pode ser alterado\n- E-mail não pode ser alterado por este endpoint\n- Nome deve ter entre 3 e 255 caracteres\n\n**Resposta:** `200 OK` com dados atualizados."
+          },
+          "response": [
+            {
+              "name": "200 - Profile updated",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Maria Silva Santos\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"roles\": [\"ROLE_CUSTOMER\"],\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva Santos\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "400 - Validation error",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"VALIDATION_ERROR\",\n  \"message\": \"fullName: size must be between 3 and 255\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"AB\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
         }
       ]
     },
