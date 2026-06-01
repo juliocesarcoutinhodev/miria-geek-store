@@ -2,7 +2,9 @@ package br.com.miriageekstore.shared.infrastructure.config;
 
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
 import br.com.miriageekstore.identity.domain.exception.AccountNotActiveException;
+import br.com.miriageekstore.identity.domain.exception.CurrentPasswordMismatchException;
 import br.com.miriageekstore.identity.domain.exception.EmailAlreadyExistsException;
+import br.com.miriageekstore.identity.domain.exception.NewPasswordSameAsCurrentException;
 import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenAlreadyUsedException;
 import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenExpiredException;
 import br.com.miriageekstore.identity.domain.exception.PasswordResetTokenNotFoundException;
@@ -104,6 +106,18 @@ public class GlobalExceptionHandler {
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.clearAccessToken().toString())
                 .header(HttpHeaders.SET_COOKIE, cookieFactory.clearRefreshToken().toString())
                 .body(new ErrorResponse("INVALID_TOKEN", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CurrentPasswordMismatchException.class)
+    ResponseEntity<ErrorResponse> handle(CurrentPasswordMismatchException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("CURRENT_PASSWORD_MISMATCH", ex.getMessage()));
+    }
+
+    @ExceptionHandler(NewPasswordSameAsCurrentException.class)
+    ResponseEntity<ErrorResponse> handle(NewPasswordSameAsCurrentException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("NEW_PASSWORD_SAME_AS_CURRENT", ex.getMessage()));
     }
 
     @ExceptionHandler({PasswordConfirmationException.class, InvalidPasswordPolicyException.class,

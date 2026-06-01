@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Miria Geek API",
-    "description": "Collection da API REST da Miria Geek Store.\n\n**Variáveis da collection:**\n- `baseUrl` — URL base da API (padrão: `http://localhost:8080`)\n- `accessToken` — JWT Bearer token (preenchido após login)\n- `verificationToken` — UUID do token de verificação de e-mail\n\n**Como usar:**\n1. Configure `baseUrl` ou use o valor padrão.\n2. Execute `Register Customer` para criar um usuário.\n3. Copie o `verificationToken` do Kafka UI e execute `Verify Email`.",
+    "description": "Collection da API REST da Miria Geek Store.\n\n**Variáveis da collection:**\n- `baseUrl` — URL base da API (padrão: `http://localhost:8080`)\n- `accessToken` — JWT Bearer token (preenchido após login)\n- `verificationToken` — UUID do token de verificação de e-mail\n\n**Como usar:**\n1. Configure `baseUrl` ou use o valor padrão.\n2. Execute `Register Customer` para criar um usuário.\n3. Copie o `verificationToken` do e-mail ou do Kafka UI e execute `Verify Email`.\n4. Execute `Login` — os cookies `access_token` e `refresh_token` serão setados automaticamente.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -15,7 +15,7 @@
       "key": "accessToken",
       "value": "",
       "type": "string",
-      "description": "JWT Bearer token. Preenchido após autenticação via Keycloak."
+      "description": "JWT Bearer token (HS256, autossignado pela própria API). Setado automaticamente no cookie access_token após o login — não precisa preencher manualmente."
     },
     {
       "key": "verificationToken",
@@ -533,6 +533,68 @@
                 "header": [{"key": "Content-Type", "value": "application/json"}],
                 "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]},
                 "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"AB\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me", "password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"SenhaAtual@123\",\n  \"newPassword\": \"NovaSenha@456\",\n  \"passwordConfirmation\": \"NovaSenha@456\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Altera a senha do usuário autenticado.\n\n**Autenticação:** Lê o cookie `access_token` automaticamente.\n\n**Após alteração com sucesso:**\n- Todos os refresh tokens de outros dispositivos são revogados\n- Um novo par de tokens (access + refresh) é emitido para a sessão atual\n- Os cookies são atualizados automaticamente\n\n**Respostas:**\n- `204 No Content` — senha alterada, cookies renovados\n- `400 CURRENT_PASSWORD_MISMATCH` — senha atual incorreta\n- `400 NEW_PASSWORD_SAME_AS_CURRENT` — nova senha igual à atual\n- `400 BAD_REQUEST` — nova senha não segue política ou confirmação divergente"
+          },
+          "response": [
+            {
+              "name": "204 - Password changed",
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {"key": "Set-Cookie", "value": "access_token=<new_jwt>; Path=/; HttpOnly; SameSite=Strict; Max-Age=900"},
+                {"key": "Set-Cookie", "value": "refresh_token=<new_token>; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=604800"}
+              ],
+              "body": "",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/users/me/password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "password"]},
+                "body": {"mode": "raw", "raw": "{\n  \"currentPassword\": \"SenhaAtual@123\",\n  \"newPassword\": \"NovaSenha@456\",\n  \"passwordConfirmation\": \"NovaSenha@456\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "400 - Current password mismatch",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"CURRENT_PASSWORD_MISMATCH\",\n  \"message\": \"Current password is incorrect\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/users/me/password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "password"]},
+                "body": {"mode": "raw", "raw": "{\n  \"currentPassword\": \"SenhaErrada\",\n  \"newPassword\": \"NovaSenha@456\",\n  \"passwordConfirmation\": \"NovaSenha@456\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "400 - Same as current",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"NEW_PASSWORD_SAME_AS_CURRENT\",\n  \"message\": \"New password must be different from the current password\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/users/me/password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "password"]},
+                "body": {"mode": "raw", "raw": "{\n  \"currentPassword\": \"SenhaAtual@123\",\n  \"newPassword\": \"SenhaAtual@123\",\n  \"passwordConfirmation\": \"SenhaAtual@123\"\n}", "options": {"raw": {"language": "json"}}}
               }
             }
           ]
