@@ -16,10 +16,12 @@ public class User {
     private final Set<UserRole> roles;
     private VerificationToken verificationToken;
     private final Instant createdAt;
+    private final java.util.UUID createdByAdminId;
 
     private User(UserId id, FullName name, Email email, Password password,
                  UserStatus status, Set<UserRole> roles,
-                 VerificationToken verificationToken, Instant createdAt) {
+                 VerificationToken verificationToken, Instant createdAt,
+                 java.util.UUID createdByAdminId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -28,25 +30,30 @@ public class User {
         this.roles = Set.copyOf(roles);
         this.verificationToken = verificationToken;
         this.createdAt = createdAt;
+        this.createdByAdminId = createdByAdminId;
     }
 
     public static User register(FullName name, Email email, Password password, VerificationToken token) {
         return new User(
-                UserId.generate(),
-                name,
-                email,
-                password,
-                UserStatus.PENDING_VERIFICATION,
-                Set.of(UserRole.ROLE_CUSTOMER),
-                token,
-                Instant.now()
+                UserId.generate(), name, email, password,
+                UserStatus.PENDING_VERIFICATION, Set.of(UserRole.ROLE_CUSTOMER),
+                token, Instant.now(), null
+        );
+    }
+
+    public static User createAdmin(FullName name, Email email, Password password, UserId createdByAdminId) {
+        return new User(
+                UserId.generate(), name, email, password,
+                UserStatus.ACTIVE, Set.of(UserRole.ROLE_ADMIN),
+                null, Instant.now(), createdByAdminId.value()
         );
     }
 
     public static User reconstitute(UserId id, FullName name, Email email, Password password,
                                     UserStatus status, Set<UserRole> roles,
-                                    VerificationToken verificationToken, Instant createdAt) {
-        return new User(id, name, email, password, status, roles, verificationToken, createdAt);
+                                    VerificationToken verificationToken, Instant createdAt,
+                                    java.util.UUID createdByAdminId) {
+        return new User(id, name, email, password, status, roles, verificationToken, createdAt, createdByAdminId);
     }
 
     public void changeName(FullName newName) {
@@ -79,4 +86,5 @@ public class User {
     public Set<UserRole> getRoles() { return roles; }
     public VerificationToken getVerificationToken() { return verificationToken; }
     public Instant getCreatedAt() { return createdAt; }
+    public java.util.UUID getCreatedByAdminId() { return createdByAdminId; }
 }

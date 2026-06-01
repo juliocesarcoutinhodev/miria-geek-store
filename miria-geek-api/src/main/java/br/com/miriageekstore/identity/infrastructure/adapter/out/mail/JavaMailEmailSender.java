@@ -75,6 +75,18 @@ class JavaMailEmailSender implements EmailSender {
         send(to, "🔑 Redefinição de senha — Miria Geek Store", html);
     }
 
+    @Override
+    @Async
+    public void sendAdminWelcomeEmail(String to, String fullName, String tempPassword) {
+        var html = loadTemplate("admin-welcome.html")
+                .replace("{{FULL_NAME}}", fullName)
+                .replace("{{EMAIL}}", to)
+                .replace("{{TEMP_PASSWORD}}", tempPassword)
+                .replace("{{YEAR}}", String.valueOf(java.time.Year.now().getValue()));
+
+        send(to, "👑 Bem-vindo à equipe administrativa — Miria Geek Store", html);
+    }
+
     private void send(String to, String subject, String html) {
         try {
             MimeMessage message = mailSender.createMimeMessage();

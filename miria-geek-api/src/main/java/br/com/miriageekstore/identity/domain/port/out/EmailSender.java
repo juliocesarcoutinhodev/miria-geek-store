@@ -7,4 +7,5 @@ public interface EmailSender {
     void sendVerificationEmail(String to, String fullName, UUID verificationToken);
     void sendLoginNotificationEmail(String to, String fullName, String ipAddress, String userAgent, Instant loginTime);
     void sendPasswordResetEmail(String to, String fullName, UUID resetToken);
+    void sendAdminWelcomeEmail(String to, String fullName, String tempPassword);
 }

@@ -25,6 +25,7 @@ class UserEntityMapper {
             entity.setVerificationTokenExpiresAt(token.expiresAt());
         }
         entity.setCreatedAt(user.getCreatedAt());
+        entity.setCreatedByAdminId(user.getCreatedByAdminId());
         return entity;
     }
 
@@ -40,7 +41,8 @@ class UserEntityMapper {
                 entity.getStatus(),
                 entity.getRoles(),
                 token,
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                entity.getCreatedByAdminId()
         );
     }
 }

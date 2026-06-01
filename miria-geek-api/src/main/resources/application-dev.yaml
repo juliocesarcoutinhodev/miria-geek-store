@@ -82,3 +82,7 @@ app:
   base-url: ${BASE_URL:http://localhost:8080}
   password-reset:
     token-expiry-seconds: 3600
+  admin-seed:
+    email: ${ADMIN_SEED_EMAIL:admin@miriageek.com}
+    password: ${ADMIN_SEED_PASSWORD:Admin@123}
+    name: Super Admin

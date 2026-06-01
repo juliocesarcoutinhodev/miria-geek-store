@@ -1,5 +1,6 @@
 package br.com.miriageekstore.identity.infrastructure.adapter.out.messaging;
 
+import br.com.miriageekstore.identity.domain.event.AdminUserCreated;
 import br.com.miriageekstore.identity.domain.event.PasswordResetRequested;
 import br.com.miriageekstore.identity.domain.event.UserEmailVerified;
 import br.com.miriageekstore.identity.domain.event.UserLoggedIn;
@@ -21,6 +22,7 @@ class KafkaEventPublisher implements DomainEventPublisher {
     private static final String TOPIC_USER_LOGGED_IN        = "identity.user-logged-in";
     private static final String TOPIC_VERIFICATION_RESENT   = "identity.verification-resent";
     private static final String TOPIC_PASSWORD_RESET        = "identity.password-reset-requested";
+    private static final String TOPIC_ADMIN_USER_CREATED    = "identity.admin-user-created";
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -41,6 +43,9 @@ class KafkaEventPublisher implements DomainEventPublisher {
         } else if (event instanceof PasswordResetRequested e) {
             log.debug("Publishing PasswordResetRequested for userId={}", e.userId());
             kafkaTemplate.send(TOPIC_PASSWORD_RESET, e.userId().toString(), e);
+        } else if (event instanceof AdminUserCreated e) {
+            log.debug("Publishing AdminUserCreated for userId={}", e.userId());
+            kafkaTemplate.send(TOPIC_ADMIN_USER_CREATED, e.userId().toString(), e);
         } else {
             log.warn("Unknown event type: {}", event.getClass().getName());
         }

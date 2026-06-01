@@ -158,7 +158,7 @@ class RefreshTokenUseCaseTest {
                 UserStatus.ACTIVE,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 null,
-                Instant.now()
+                Instant.now(), null
         );
     }
 }

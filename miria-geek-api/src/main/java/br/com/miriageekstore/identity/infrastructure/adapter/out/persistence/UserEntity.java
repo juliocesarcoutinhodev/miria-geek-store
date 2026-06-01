@@ -58,4 +58,7 @@ class UserEntity {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @Column(name = "created_by_admin_id")
+    private UUID createdByAdminId;
 }

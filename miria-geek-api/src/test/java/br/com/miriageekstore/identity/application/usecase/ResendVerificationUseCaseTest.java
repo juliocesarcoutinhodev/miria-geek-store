@@ -141,7 +141,7 @@ class ResendVerificationUseCaseTest {
                 UserStatus.PENDING_VERIFICATION,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 new VerificationToken(UUID.randomUUID(), Instant.now().minus(1, ChronoUnit.HOURS)),
-                Instant.now()
+                Instant.now(), null
         );
     }
 
@@ -154,7 +154,7 @@ class ResendVerificationUseCaseTest {
                 UserStatus.ACTIVE,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 new VerificationToken(UUID.randomUUID(), Instant.now().plus(24, ChronoUnit.HOURS)),
-                Instant.now()
+                Instant.now(), null
         );
     }
 }

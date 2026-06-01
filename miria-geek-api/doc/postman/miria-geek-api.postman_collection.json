@@ -717,6 +717,71 @@
       ]
     },
     {
+      "name": "Admin",
+      "description": "Endpoints de administração. Requerem `ROLE_ADMIN` — cookie `access_token` de um usuário administrador.",
+      "item": [
+        {
+          "name": "Create Admin User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Cria um novo usuário administrador.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Conta criada com status `ACTIVE` e role `ROLE_ADMIN`\n- Senha temporária gerada automaticamente e enviada por e-mail\n- Registro de auditoria com ID do admin criador\n- Não exige verificação de e-mail\n\n**Respostas:**\n- `201 Created` — admin criado\n- `409 Conflict` — e-mail já cadastrado\n- `403 Forbidden` — usuário não tem ROLE_ADMIN"
+          },
+          "response": [
+            {
+              "name": "201 - Admin created",
+              "status": "Created",
+              "code": 201,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_ADMIN\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\",\n  \"createdByAdminId\": \"1fa85f64-5717-4562-b3fc-2c963f66afa6\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "409 - Email already exists",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"EMAIL_CONFLICT\",\n  \"message\": \"Email already registered\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "403 - Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"error\": \"Forbidden\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
+                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Health",
       "description": "Endpoints de monitoramento e observabilidade.",
       "item": [

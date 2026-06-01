@@ -12,8 +12,6 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 @Component
 class JjwtTokenService implements JwtTokenService {
 
@@ -35,7 +33,7 @@ class JjwtTokenService implements JwtTokenService {
         var now = Instant.now();
         var roles = user.getRoles().stream()
                 .map(Enum::name)
-                .collect(Collectors.joining(","));
+                .toList();
 
         return Jwts.builder()
                 .issuer(issuer)

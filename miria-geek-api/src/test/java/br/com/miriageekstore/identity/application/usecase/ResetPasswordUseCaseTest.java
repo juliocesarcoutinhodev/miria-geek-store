@@ -146,6 +146,6 @@ class ResetPasswordUseCaseTest {
     private User activeUser(UserId userId) {
         return User.reconstitute(userId, FullName.of("User Test"), Email.of("user@email.com"),
                 Password.fromHash("$2a$12$oldhash"), UserStatus.ACTIVE,
-                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now());
+                Set.of(UserRole.ROLE_CUSTOMER), null, Instant.now(), null);
     }
 }

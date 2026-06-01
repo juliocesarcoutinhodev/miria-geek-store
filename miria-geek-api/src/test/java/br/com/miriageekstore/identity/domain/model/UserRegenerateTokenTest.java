@@ -64,7 +64,7 @@ class UserRegenerateTokenTest {
                 UserStatus.PENDING_VERIFICATION,
                 Set.of(UserRole.ROLE_CUSTOMER),
                 token,
-                Instant.now()
+                Instant.now(), null
         );
     }
 }
