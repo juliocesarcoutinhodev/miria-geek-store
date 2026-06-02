@@ -62,7 +62,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     VerifyEmailResponse verifyEmail(@RequestParam UUID token) {
         verifyEmailUseCase.execute(token);
-        return new VerifyEmailResponse("Email verified successfully. Your account is now active.");
+        return new VerifyEmailResponse("E-mail verificado com sucesso. Sua conta está ativa.");
     }
 
     @Operation(summary = "Reenviar e-mail de verificação")

@@ -2,6 +2,6 @@ package br.com.miriageekstore.identity.domain.exception;
 
 public class NewPasswordSameAsCurrentException extends RuntimeException {
     public NewPasswordSameAsCurrentException() {
-        super("New password must be different from the current password");
+        super("A nova senha deve ser diferente da senha atual");
     }
 }

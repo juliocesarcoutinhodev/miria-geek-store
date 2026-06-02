@@ -6,17 +6,17 @@ import jakarta.validation.constraints.Size;
 
 record RegisterRequest(
 
-        @NotBlank(message = "Full name is required")
-        @Size(min = 3, max = 255, message = "Full name must be between 3 and 255 characters")
+        @NotBlank(message = "Nome completo é obrigatório")
+        @Size(min = 3, max = 255, message = "Nome completo deve ter entre 3 e 255 caracteres")
         String fullName,
 
-        @NotBlank(message = "Email is required")
-        @Email(message = "Invalid email format")
+        @NotBlank(message = "E-mail é obrigatório")
+        @Email(message = "Formato de e-mail inválido")
         String email,
 
-        @NotBlank(message = "Password is required")
+        @NotBlank(message = "Senha é obrigatória")
         String password,
 
-        @NotBlank(message = "Password confirmation is required")
+        @NotBlank(message = "Confirmação de senha é obrigatória")
         String passwordConfirmation
 ) {}

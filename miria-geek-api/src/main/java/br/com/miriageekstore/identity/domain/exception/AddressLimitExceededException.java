@@ -2,6 +2,6 @@ package br.com.miriageekstore.identity.domain.exception;
 
 public class AddressLimitExceededException extends RuntimeException {
     public AddressLimitExceededException() {
-        super("Maximum of 5 addresses per user has been reached");
+        super("Limite de 5 endereços por usuário atingido");
     }
 }

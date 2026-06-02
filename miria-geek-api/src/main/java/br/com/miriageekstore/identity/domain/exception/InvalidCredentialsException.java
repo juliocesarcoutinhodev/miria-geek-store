@@ -2,6 +2,6 @@ package br.com.miriageekstore.identity.domain.exception;
 
 public class InvalidCredentialsException extends RuntimeException {
     public InvalidCredentialsException() {
-        super("Invalid email or password");
+        super("E-mail ou senha inválidos");
     }
 }

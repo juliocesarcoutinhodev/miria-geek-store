@@ -27,7 +27,7 @@ public class UpdateUserStatusUseCaseImpl implements UpdateUserStatusUseCase {
     @Transactional
     public UpdateUserStatusResult execute(UpdateUserStatusCommand command) {
         if (command.newStatus() != UserStatus.ACTIVE && command.newStatus() != UserStatus.INACTIVE) {
-            throw new IllegalArgumentException("Status must be ACTIVE or INACTIVE");
+            throw new IllegalArgumentException("Status inválido: deve ser ACTIVE ou INACTIVE");
         }
 
         if (command.targetUserId().equals(command.requesterId())) {

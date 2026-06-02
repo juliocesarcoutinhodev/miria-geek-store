@@ -2,6 +2,6 @@ package br.com.miriageekstore.identity.domain.exception;
 
 public class CannotDeactivateOwnAccountException extends RuntimeException {
     public CannotDeactivateOwnAccountException() {
-        super("Admin cannot deactivate their own account");
+        super("Administrador não pode desativar a própria conta");
     }
 }
