@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8" />
+        <title>Miria Geek Store</title>
+        <base href="/" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="preconnect" href="https://primefaces.org" />
+        <link rel="icon" type="image/x-icon" href="https://primefaces.org/cdn/primeng/images/favicon.png" />
+        <link href="https://fonts.cdnfonts.com/css/lato" rel="stylesheet" />
+        <style>
+            #app-loading {
+                position: fixed;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f9fafb;
+                z-index: 9999;
+            }
+
+            @media (prefers-color-scheme: dark) {
+                #app-loading {
+                    background: #09090b;
+                }
+            }
+
+            .spinner {
+                width: 48px;
+                height: 48px;
+                border: 4px solid #e5e7eb;
+                border-top-color: #10b981;
+                border-radius: 50%;
+                animation: spin 0.75s linear infinite;
+            }
+
+            @media (prefers-color-scheme: dark) {
+                .spinner {
+                    border-color: #27272a;
+                    border-top-color: #10b981;
+                }
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <app-root>
+            <div id="app-loading">
+                <div class="spinner"></div>
+            </div>
+        </app-root>
+    </body>
+</html>
