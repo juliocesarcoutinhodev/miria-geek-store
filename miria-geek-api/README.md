@@ -82,8 +82,11 @@ MAIL_USERNAME=<seu-email@gmail.com>
 MAIL_PASSWORD=<app-password-16-digitos>
 MAIL_FROM=<seu-email@gmail.com>
 
-# URL base usada nos links dos e-mails
+# URL base da API (usada em links de verificação de e-mail)
 BASE_URL=http://localhost:8080
+
+# URL base do frontend (usada no link de redefinição de senha)
+FRONTEND_URL=http://localhost:4200
 
 # Primeiro admin criado automaticamente no perfil dev
 ADMIN_SEED_EMAIL=admin@miriageek.com
@@ -183,6 +186,8 @@ Migrations gerenciadas pelo **Flyway** (`src/main/resources/db/migration/`):
 | V6 | Tabela `addresses` |
 | V7 | Correção do tipo da coluna `state` (CHAR → VARCHAR) |
 | V8 | Coluna `created_by_admin_id` na tabela `users` |
+| V9 | Coluna `last_login_at` na tabela `users` |
+| V10 | Tabela `audit_log` (id, user_id, admin_id, action, created_at) |
 
 ---
 
@@ -233,8 +238,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-01.11 | Gestão de endereços | 3 | `GET POST /api/v1/users/me/addresses` · `PUT DELETE PATCH /{id}` |
 | US-01.12 | Criação de admin | 3 | `POST /api/v1/admin/users` |
 | US-01.13 | Ativar/desativar usuário | 2 | `PATCH /api/v1/admin/users/{id}/status` |
+| US-01.14 | CRUD completo de usuários (admin) | 5 | `GET POST PUT PATCH /api/v1/admin/users` |
 
-**13/13 stories · 45 pontos · 128 testes passando**
+**14/14 stories · 50 pontos · 128 testes passando**
 
 ---
 
@@ -269,9 +275,13 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 
 ### Admin — requer `ROLE_ADMIN`
 
-| Método | Path | Body | Resposta |
+| Método | Path | Body / Params | Resposta |
 |---|---|---|---|
-| POST | `/api/v1/admin/users` | `fullName, email` | 201 |
+| GET | `/api/v1/admin/users` | `?page, size, nome, email, status, role` | 200 paginado |
+| GET | `/api/v1/admin/users/{id}` | — | 200 |
+| POST | `/api/v1/admin/users` | `fullName, email, role` | 201 |
+| PUT | `/api/v1/admin/users/{id}` | `fullName, email, role` | 200 |
+| PATCH | `/api/v1/admin/users/{id}` | campos opcionais: `fullName, email, role` | 200 |
 | PATCH | `/api/v1/admin/users/{id}/status` | `status (ACTIVE\|INACTIVE)` | 200 |
 
 ---

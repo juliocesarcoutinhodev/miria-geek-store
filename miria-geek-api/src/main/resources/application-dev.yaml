@@ -80,6 +80,7 @@ app:
   mail:
     from: ${MAIL_FROM:juliocesar.coutinhodev@gmail.com}
   base-url: ${BASE_URL:http://localhost:8080}
+  frontend-url: ${FRONTEND_URL:http://localhost:4200}
   password-reset:
     token-expiry-seconds: 3600
   admin-seed:

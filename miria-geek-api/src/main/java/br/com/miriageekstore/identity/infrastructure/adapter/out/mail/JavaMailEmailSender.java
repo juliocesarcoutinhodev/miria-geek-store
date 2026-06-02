@@ -36,6 +36,9 @@ class JavaMailEmailSender implements EmailSender {
     @Value("${app.base-url}")
     private String baseUrl;
 
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
+
     @Override
     @Async
     public void sendVerificationEmail(String to, String fullName, UUID verificationToken) {
@@ -66,7 +69,7 @@ class JavaMailEmailSender implements EmailSender {
     @Override
     @Async
     public void sendPasswordResetEmail(String to, String fullName, UUID resetToken) {
-        var resetUrl = baseUrl + "/reset-password?token=" + resetToken;
+        var resetUrl = frontendUrl + "/auth/reset-password?token=" + resetToken;
         var html = loadTemplate("password-reset.html")
                 .replace("{{FULL_NAME}}", fullName)
                 .replace("{{RESET_URL}}", resetUrl)
