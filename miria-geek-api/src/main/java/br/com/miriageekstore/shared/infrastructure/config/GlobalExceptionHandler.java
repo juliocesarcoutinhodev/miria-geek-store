@@ -1,5 +1,8 @@
 package br.com.miriageekstore.shared.infrastructure.config;
 
+import br.com.miriageekstore.catalog.domain.exception.CategoryHasProductsException;
+import br.com.miriageekstore.catalog.domain.exception.CategoryNameAlreadyExistsException;
+import br.com.miriageekstore.catalog.domain.exception.CategoryNotFoundException;
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
 import br.com.miriageekstore.identity.domain.exception.CannotChangeOwnRoleException;
@@ -170,6 +173,24 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("; "));
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("VALIDATION_ERROR", message));
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(CategoryNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("CATEGORY_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CategoryNameAlreadyExistsException.class)
+    ResponseEntity<ErrorResponse> handle(CategoryNameAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("CATEGORY_NAME_CONFLICT", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CategoryHasProductsException.class)
+    ResponseEntity<ErrorResponse> handle(CategoryHasProductsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("CATEGORY_HAS_PRODUCTS", ex.getMessage()));
     }
 
     @ExceptionHandler(StorageException.class)
