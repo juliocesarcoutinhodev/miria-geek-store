@@ -89,7 +89,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}",
+              "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"password\": \"SenhaForte@123\",\n  \"passwordConfirmation\": \"SenhaForte@123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -132,7 +132,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}",
+                  "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"SenhaForte@123\",\n  \"passwordConfirmation\": \"SenhaForte@123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -216,7 +216,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}",
+                  "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"SenhaForte@123\",\n  \"passwordConfirmation\": \"SenhaForte@123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -416,7 +416,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
+              "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -454,7 +454,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
+                  "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -503,7 +503,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\"\n}",
+              "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"password\": \"SenhaForte@123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -531,7 +531,7 @@
                   "value": "refresh_token=<token>; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=2592000"
                 }
               ],
-              "body": "{\n  \"email\": \"maria.silva@email.com\",\n  \"roles\": [\"ROLE_CUSTOMER\"]\n}",
+              "body": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"roles\": [\"ROLE_CUSTOMER\"]\n}",
               "originalRequest": {
                 "method": "POST",
                 "header": [
@@ -554,7 +554,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\"\n}",
+                  "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"password\": \"SenhaForte@123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -596,7 +596,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"wrong\"\n}",
+                  "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"password\": \"wrong\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -638,7 +638,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"pending@email.com\",\n  \"password\": \"Senha@123\"\n}",
+                  "raw": "{\n  \"email\": \"pending@email.com\",\n  \"password\": \"SenhaForte@123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -680,7 +680,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"wrong\"\n}",
+                  "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"password\": \"wrong\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -715,7 +715,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
+              "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -753,7 +753,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
+                  "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -788,7 +788,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenhaForte@123\",\n  \"passwordConfirmation\": \"NovaSenhaForte@123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -826,7 +826,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenhaForte@123\",\n  \"passwordConfirmation\": \"NovaSenhaForte@123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -868,7 +868,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"token\": \"00000000-0000-0000-0000-000000000000\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+                  "raw": "{\n  \"token\": \"00000000-0000-0000-0000-000000000000\",\n  \"newPassword\": \"NovaSenhaForte@123\",\n  \"passwordConfirmation\": \"NovaSenhaForte@123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -910,7 +910,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenhaForte@123\",\n  \"passwordConfirmation\": \"NovaSenhaForte@123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -952,7 +952,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenhaForte@123\",\n  \"passwordConfirmation\": \"NovaSenhaForte@123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1107,7 +1107,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"roles\": [\"ROLE_CUSTOMER\"],\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Julio Cesar Coutinho\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"status\": \"ACTIVE\",\n  \"roles\": [\"ROLE_CUSTOMER\"],\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
@@ -1179,7 +1179,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Maria Silva Santos\"\n}",
+              "raw": "{\n  \"fullName\": \"Julio Cesar Coutinho Santos\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1199,7 +1199,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Maria Silva Santos\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"roles\": [\"ROLE_CUSTOMER\"],\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Julio Cesar Coutinho Santos\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"status\": \"ACTIVE\",\n  \"roles\": [\"ROLE_CUSTOMER\"],\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PATCH",
                 "header": [
@@ -1222,7 +1222,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"fullName\": \"Maria Silva Santos\"\n}",
+                  "raw": "{\n  \"fullName\": \"Julio Cesar Coutinho Santos\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1848,7 +1848,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"fullName\": \"Maria Silva\",\n      \"email\": \"maria.silva@email.com\",\n      \"role\": \"ROLE_CUSTOMER\",\n      \"status\": \"ACTIVE\",\n      \"createdAt\": \"2026-05-15T19:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"fullName\": \"Julio Cesar Coutinho\",\n      \"email\": \"juliocesar.coutinho@outlook.com\",\n      \"role\": \"ROLE_CUSTOMER\",\n      \"status\": \"ACTIVE\",\n      \"createdAt\": \"2026-05-15T19:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
@@ -1991,7 +1991,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"status\": \"ACTIVE\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\",\n  \"totalPedidos\": 3,\n  \"ultimoLogin\": \"2026-05-31T22:00:00Z\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Julio Cesar Coutinho\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"status\": \"ACTIVE\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\",\n  \"totalPedidos\": 3,\n  \"ultimoLogin\": \"2026-05-31T22:00:00Z\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
@@ -2312,7 +2312,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+              "raw": "{\n  \"fullName\": \"Julio Cesar Coutinho Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2332,7 +2332,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Julio Cesar Coutinho Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PUT",
                 "header": [
@@ -2356,7 +2356,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+                  "raw": "{\n  \"fullName\": \"Julio Cesar Coutinho Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2521,7 +2521,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Maria Silva Parcial\"\n}",
+              "raw": "{\n  \"fullName\": \"Julio Cesar Coutinho Parcial\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2541,7 +2541,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva Parcial\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Julio Cesar Coutinho Parcial\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PATCH",
                 "header": [
@@ -2565,7 +2565,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"fullName\": \"Maria Silva Parcial\"\n}",
+                  "raw": "{\n  \"fullName\": \"Julio Cesar Coutinho Parcial\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2584,7 +2584,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_ADMIN\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Julio Cesar Coutinho\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_ADMIN\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PATCH",
                 "header": [
@@ -2794,7 +2794,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"INACTIVE\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Julio Cesar Coutinho\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"status\": \"INACTIVE\"\n}",
               "originalRequest": {
                 "method": "PATCH",
                 "header": [
@@ -2838,7 +2838,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Julio Cesar Coutinho\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"status\": \"ACTIVE\"\n}",
               "originalRequest": {
                 "method": "PATCH",
                 "header": [
