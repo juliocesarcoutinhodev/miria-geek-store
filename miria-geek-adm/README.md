@@ -208,6 +208,56 @@ product-form:    carrega ao acessar /catalog/products/new e /catalog/products/:i
 
 ---
 
+## Rotas disponíveis
+
+| Rota | Componente | Descrição |
+|---|---|---|
+| `/dashboard` | `Dashboard` | Dashboard inicial |
+| `/profile` | `Profile` | Perfil do usuário logado |
+| `/registrations/users` | `Usuarios` | CRUD de usuários admin |
+| `/catalog/categories` | `Categories` | CRUD de categorias do catálogo |
+| `/catalog/products` | `Products` | Listagem de produtos com drawer de detalhes |
+| `/catalog/products/new` | `ProductForm` | Formulário de criação de produto |
+| `/catalog/products/:id/edit` | `ProductForm` | Formulário de edição de produto |
+| `/auth/login` | `Login` | Tela de login |
+| `/auth/reset-password` | `ResetPassword` | Redefinição de senha |
+
+---
+
+## Padrões de componente
+
+Todos os componentes standalone seguem o mesmo padrão:
+
+```typescript
+@Component({ selector: 'app-nome', standalone: true, imports: [...], template: `...` })
+export class NomeComponent implements OnInit {
+    // signals para estado reativo
+    readonly items = signal<Item[]>([]);
+    readonly loading = signal(false);
+
+    // async/await + firstValueFrom — nunca .subscribe() em operações de formulário
+    async loadItems(): Promise<void> {
+        this.loading.set(true);
+        try {
+            const result = await firstValueFrom(this.service.list(...));
+            this.items.set(result.content);
+        } finally {
+            this.loading.set(false);
+        }
+    }
+
+    // Toast sempre com appRef.tick() — obrigatório em Zoneless
+    private toast(severity: string, summary: string, detail: string): void {
+        this.messageService.add({ severity, summary, detail, life: 6000 });
+        this.appRef.tick();
+    }
+}
+```
+
+**Formulários de edição complexos** usam **seções independentes** (`border rounded-xl p-5`) em vez de `p-tabs` — cada seção tem seu próprio botão de salvar e não interfere nas outras. Ver `product-form.ts` como referência.
+
+---
+
 ## Proxy de desenvolvimento
 
 O arquivo `proxy.conf.json` encaminha todas as chamadas `/api/*` para o backend:
