@@ -41,6 +41,11 @@ export class AppMenu {
                 label: 'Catálogo',
                 items: [
                     {
+                        label: 'Produtos',
+                        icon: 'pi pi-fw pi-box',
+                        routerLink: ['/catalog/products']
+                    },
+                    {
                         label: 'Categorias',
                         icon: 'pi pi-fw pi-tags',
                         routerLink: ['/catalog/categories']
