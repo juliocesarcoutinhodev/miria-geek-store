@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Tag(name = "Admin Categories", description = "Gestão de categorias — requer ROLE_ADMIN")
 @RestController
@@ -40,6 +39,7 @@ public class AdminCategoryController {
     private final CreateCategoryUseCase createCategoryUseCase;
     private final UpdateCategoryUseCase updateCategoryUseCase;
     private final DeleteCategoryUseCase deleteCategoryUseCase;
+    private final CategoryWebMapper mapper;
 
     @Operation(summary = "Listar categorias paginado com filtros",
                security = @SecurityRequirement(name = "cookieAuth"))
@@ -52,27 +52,15 @@ public class AdminCategoryController {
             @RequestParam(defaultValue = "name") String sort,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        var result = listCategoriesUseCase.execute(
-                new ListCategoriesQuery(name, active, page, size, sort, direction));
-
-        var content = result.content().stream()
-                .map(c -> new CategoryResponse(
-                        c.id(), c.name(), c.slug(), c.description(),
-                        c.totalProducts(), c.active(), c.createdAt()))
-                .collect(Collectors.toList());
-
-        return new PagedCategoryResponse(
-                content, result.page(), result.size(), result.totalElements(), result.totalPages());
+        return mapper.toPagedResponse(
+                listCategoriesUseCase.execute(new ListCategoriesQuery(name, active, page, size, sort, direction)));
     }
 
     @Operation(summary = "Buscar categoria por ID",
                security = @SecurityRequirement(name = "cookieAuth"))
     @GetMapping("/{id}")
     CategoryResponse getCategoryById(@PathVariable UUID id) {
-        var result = getCategoryByIdUseCase.execute(CategoryId.of(id));
-        return new CategoryResponse(
-                result.id(), result.name(), result.slug(), result.description(),
-                result.totalProducts(), result.active(), result.createdAt());
+        return mapper.toResponse(getCategoryByIdUseCase.execute(CategoryId.of(id)));
     }
 
     @Operation(summary = "Criar nova categoria",
@@ -80,11 +68,8 @@ public class AdminCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CategoryResponse createCategory(@Valid @RequestBody CreateCategoryRequest request) {
-        var result = createCategoryUseCase.execute(
-                new CreateCategoryCommand(request.name(), request.description()));
-        return new CategoryResponse(
-                result.id(), result.name(), result.slug(), result.description(),
-                0L, result.active(), result.createdAt());
+        return mapper.toResponse(
+                createCategoryUseCase.execute(new CreateCategoryCommand(request.name(), request.description())));
     }
 
     @Operation(summary = "Atualizar categoria",
@@ -92,12 +77,10 @@ public class AdminCategoryController {
     @PutMapping("/{id}")
     CategoryResponse updateCategory(@PathVariable UUID id,
                                     @Valid @RequestBody UpdateCategoryRequest request) {
-        var result = updateCategoryUseCase.execute(
-                new UpdateCategoryCommand(CategoryId.of(id), request.name(),
-                        request.description(), request.active()));
-        return new CategoryResponse(
-                result.id(), result.name(), result.slug(), result.description(),
-                result.totalProducts(), result.active(), result.createdAt());
+        return mapper.toResponse(
+                updateCategoryUseCase.execute(
+                        new UpdateCategoryCommand(CategoryId.of(id), request.name(),
+                                request.description(), request.active())));
     }
 
     @Operation(summary = "Excluir categoria",

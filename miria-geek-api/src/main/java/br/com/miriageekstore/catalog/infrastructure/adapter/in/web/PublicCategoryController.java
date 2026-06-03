@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Tag(name = "Categories", description = "Categorias públicas para a loja")
 @RestController
@@ -18,12 +17,11 @@ import java.util.stream.Collectors;
 public class PublicCategoryController {
 
     private final ListPublicCategoriesUseCase listPublicCategoriesUseCase;
+    private final CategoryWebMapper mapper;
 
     @Operation(summary = "Listar categorias ativas (público)")
     @GetMapping
     List<CategoryPublicResponse> listCategories() {
-        return listPublicCategoriesUseCase.execute().categories().stream()
-                .map(c -> new CategoryPublicResponse(c.id(), c.name(), c.slug(), c.totalProducts()))
-                .collect(Collectors.toList());
+        return mapper.toPublicResponseList(listPublicCategoriesUseCase.execute());
     }
 }
