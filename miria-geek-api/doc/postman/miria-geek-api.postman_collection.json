@@ -54,6 +54,11 @@
       "description": "UUID de um produto. Setado automaticamente após POST /api/v1/admin/products."
     },
     {
+      "key": "productSlug",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "imageId",
       "value": "",
       "type": "string",
@@ -3146,6 +3151,98 @@
                 }
               }
             }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 && pm.response.json().content.length > 0) {",
+                  "    var first = pm.response.json().content[0];",
+                  "    pm.collectionVariables.set('productSlug', first.slug);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Product Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/{{productSlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "{{productSlug}}"
+              ]
+            },
+            "description": "Retorna o produto completo com imagens e variantes ativas. **Público — não requer autenticação.**\n\n**Regras:**\n- Produto `INACTIVE` → 404 Not Found\n- Retorna apenas variantes `ativo = true`\n- Variante com `estoque = 0` → `disponivel: false` (exibir como Esgotado)\n- Imagens ordenadas pelo campo `ordem`\n\n**Respostas:**\n- `200 OK` — detalhe completo do produto\n- `404 Not Found` — produto inexistente ou inativo"
+          },
+          "response": [
+            {
+              "name": "200 - Produto encontrado",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"nome\": \"Funko Pop Batman\",\n  \"slug\": \"funko-pop-batman\",\n  \"descricao\": \"Boneco colecionável do Batman da DC Comics, 10cm\",\n  \"categoria\": {\n    \"id\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n    \"nome\": \"Action Figures\"\n  },\n  \"status\": \"ACTIVE\",\n  \"destaque\": true,\n  \"dataCriacao\": \"2026-06-01T10:00:00Z\",\n  \"imagens\": [\n    {\n      \"id\": \"a1b2c3d4-0000-0000-0000-000000000001\",\n      \"url\": \"http://localhost:9000/miria-products/3fa85f64/batman-front.jpg\",\n      \"principal\": true,\n      \"ordem\": 1\n    },\n    {\n      \"id\": \"a1b2c3d4-0000-0000-0000-000000000002\",\n      \"url\": \"http://localhost:9000/miria-products/3fa85f64/batman-side.jpg\",\n      \"principal\": false,\n      \"ordem\": 2\n    }\n  ],\n  \"variantes\": [\n    {\n      \"id\": \"1aa85f64-0000-0000-0000-000000000001\",\n      \"nomeAtributo\": \"Modelo\",\n      \"valorAtributo\": \"Clássico\",\n      \"preco\": 89.9,\n      \"estoque\": 50,\n      \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n      \"ativo\": true,\n      \"disponivel\": true\n    },\n    {\n      \"id\": \"1aa85f64-0000-0000-0000-000000000002\",\n      \"nomeAtributo\": \"Modelo\",\n      \"valorAtributo\": \"Edição Especial\",\n      \"preco\": 149.9,\n      \"estoque\": 0,\n      \"sku\": \"FUNKO-BATMAN-ESPECIAL\",\n      \"ativo\": true,\n      \"disponivel\": false\n    }\n  ]\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/products/{{productSlug}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "{{productSlug}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "404 - Produto não encontrado ou inativo",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"PRODUCT_NOT_FOUND\",\n  \"message\": \"Produto n\\u00e3o encontrado\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/products/produto-inexistente",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "produto-inexistente"
+                  ]
+                }
+              }
+            }
           ]
         }
       ]
@@ -3688,6 +3785,7 @@
                 "exec": [
                   "if (pm.response.code === 201) {",
                   "    pm.collectionVariables.set('productId', pm.response.json().id);",
+                  "    pm.collectionVariables.set('productSlug', pm.response.json().slug);",
                   "}"
                 ]
               }

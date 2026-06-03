@@ -293,8 +293,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-02.05 | Atualização de produto (admin) | 3 | `PUT /api/v1/admin/products/{id}` · `PATCH /{id}` · `PATCH /{id}/status` |
 | US-02.06 | Gestão de variantes (admin) | 5 | `GET POST /api/v1/admin/products/{id}/variants` · `PUT /{variantId}` · `PATCH /{variantId}/status` · `PATCH /{variantId}/stock` |
 | US-02.07 | Listagem de produtos (loja) | 3 | `GET /api/v1/products` |
+| US-02.08 | Detalhe do produto (loja) | 2 | `GET /api/v1/products/{slug}` |
 
-**7/? stories · 27 pontos · 217 testes passando**
+**8/? stories · 29 pontos · 222 testes passando**
 
 ---
 
@@ -343,9 +344,11 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | Método | Path | Params | Resposta |
 |---|---|---|---|
 | GET | `/api/v1/products` | `nome?, categoriaId?, precoMin?, precoMax?, destaque?, page, size, sort` | 200 paginado |
+| GET | `/api/v1/products/{slug}` | — | 200 detalhe / 404 |
 
 > Retorna apenas produtos `ACTIVE` com ao menos 1 variante ativa com estoque > 0.
 > Ordenações: `mais_recente` (padrão), `nome_asc`, `nome_desc`, `preco_asc`, `preco_desc`, `destaque`.
+> Detalhe: produto `INACTIVE` retorna 404. Variantes com `estoque = 0` retornadas com `disponivel: false`.
 
 ### Categories — público
 

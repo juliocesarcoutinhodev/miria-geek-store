@@ -1,5 +1,7 @@
 package br.com.miriageekstore.catalog.infrastructure.adapter.out.persistence;
 
+import br.com.miriageekstore.catalog.domain.model.ProductStatus;
+import br.com.miriageekstore.catalog.domain.port.in.GetProductDetailResult;
 import br.com.miriageekstore.catalog.domain.port.in.ListProductsResult;
 import br.com.miriageekstore.catalog.domain.port.in.ProductSearchQuery;
 import br.com.miriageekstore.catalog.domain.port.out.ProductCatalogRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -18,11 +21,16 @@ import java.util.UUID;
 class ProductCatalogPersistenceAdapter implements ProductCatalogRepository {
 
     private final EntityManager em;
+    private final ProductJpaRepository productJpaRepository;
+    private final CategoryJpaRepository categoryJpaRepository;
+    private final ProductImageJpaRepository productImageJpaRepository;
+
+    // ── Catalog listing ───────────────────────────────────────────────────────
 
     @Override
     public ListProductsResult search(ProductSearchQuery query) {
         String conditions = buildConditions(query);
-        String having    = buildHaving(query);
+        String having     = buildHaving(query);
 
         String baseFrom =
                 " FROM products p" +
@@ -120,16 +128,52 @@ class ProductCatalogPersistenceAdapter implements ProductCatalogRepository {
 
     private ListProductsResult.ProductItem toItem(Object[] row) {
         return new ListProductsResult.ProductItem(
-                (UUID)          row[0],
-                (String)        row[1],
-                (String)        row[2],
-                (UUID)          row[3],
-                (String)        row[4],
-                (String)        row[5],
-                (BigDecimal)    row[6],
-                (BigDecimal)    row[7],
-                ((Number)       row[8]).intValue(),
-                (Boolean)       row[9]
+                (UUID)       row[0],
+                (String)     row[1],
+                (String)     row[2],
+                (UUID)       row[3],
+                (String)     row[4],
+                (String)     row[5],
+                (BigDecimal) row[6],
+                (BigDecimal) row[7],
+                ((Number)    row[8]).intValue(),
+                (Boolean)    row[9]
         );
+    }
+
+    // ── Product detail ────────────────────────────────────────────────────────
+
+    @Override
+    public Optional<GetProductDetailResult> findBySlug(String slug) {
+        var productOpt = productJpaRepository.findBySlug(slug);
+        if (productOpt.isEmpty() || productOpt.get().getStatus() != ProductStatus.ACTIVE) {
+            return Optional.empty();
+        }
+
+        var product = productOpt.get();
+
+        String categoryName = categoryJpaRepository.findById(product.getCategoryId())
+                .map(CategoryEntity::getName)
+                .orElse("");
+
+        var images = productImageJpaRepository
+                .findAllByProductIdOrderByImageOrderAsc(product.getId())
+                .stream()
+                .map(img -> new GetProductDetailResult.ImageItem(
+                        img.getId(), img.getUrl(), img.isPrincipal(), img.getImageOrder()))
+                .toList();
+
+        var variants = product.getVariants().stream()
+                .filter(ProductVariantEntity::isActive)
+                .map(v -> new GetProductDetailResult.VariantItem(
+                        v.getId(), v.getAttributeName(), v.getAttributeValue(),
+                        v.getPrice(), v.getStock(), v.getSku(), v.isActive(), v.getStock() > 0))
+                .toList();
+
+        return Optional.of(new GetProductDetailResult(
+                product.getId(), product.getName(), product.getSlug(),
+                product.getDescription(), product.getCategoryId(), categoryName,
+                product.getStatus().name(), product.isFeatured(), product.getCreatedAt(),
+                images, variants));
     }
 }

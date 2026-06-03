@@ -1,11 +1,13 @@
 package br.com.miriageekstore.catalog.infrastructure.adapter.in.web;
 
+import br.com.miriageekstore.catalog.domain.port.in.GetProductDetailUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.ListProductsUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.ProductSearchQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class PublicProductController {
 
     private final ListProductsUseCase listProductsUseCase;
+    private final GetProductDetailUseCase getProductDetailUseCase;
     private final ProductCatalogWebMapper mapper;
 
     @Operation(
@@ -51,5 +54,14 @@ public class PublicProductController {
                 sort
         );
         return mapper.toPageResponse(listProductsUseCase.execute(query));
+    }
+
+    @Operation(
+            summary = "Detalhe do produto por slug (público)",
+            description = "Retorna o produto completo com imagens e variantes ativas. Produto INACTIVE retorna 404."
+    )
+    @GetMapping("/{slug}")
+    ProductDetailResponse getProductDetail(@PathVariable String slug) {
+        return mapper.toDetailResponse(getProductDetailUseCase.execute(slug));
     }
 }

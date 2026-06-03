@@ -1,5 +1,6 @@
 package br.com.miriageekstore.catalog.infrastructure.adapter.in.web;
 
+import br.com.miriageekstore.catalog.domain.port.in.GetProductDetailResult;
 import br.com.miriageekstore.catalog.domain.port.in.ListProductsResult;
 import org.springframework.stereotype.Component;
 
@@ -29,5 +30,24 @@ class ProductCatalogWebMapper {
                 result.totalElements(),
                 result.totalPages()
         );
+    }
+
+    ProductDetailResponse toDetailResponse(GetProductDetailResult result) {
+        var imagens = result.images().stream()
+                .map(img -> new ProductDetailResponse.ImagemInfo(
+                        img.id(), img.url(), img.principal(), img.imageOrder()))
+                .toList();
+
+        var variantes = result.variants().stream()
+                .map(v -> new ProductDetailResponse.VarianteInfo(
+                        v.id(), v.attributeName(), v.attributeValue(),
+                        v.price(), v.stock(), v.sku(), v.active(), v.available()))
+                .toList();
+
+        return new ProductDetailResponse(
+                result.id(), result.name(), result.slug(), result.description(),
+                new ProductDetailResponse.CategoriaInfo(result.categoryId(), result.categoryName()),
+                result.status(), result.featured(), result.createdAt(),
+                imagens, variantes);
     }
 }
