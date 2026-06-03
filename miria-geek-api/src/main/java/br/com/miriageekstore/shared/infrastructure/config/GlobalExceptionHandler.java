@@ -3,6 +3,7 @@ package br.com.miriageekstore.shared.infrastructure.config;
 import br.com.miriageekstore.catalog.domain.exception.CategoryHasProductsException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryNameAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryNotFoundException;
+import br.com.miriageekstore.catalog.domain.exception.ProductSkuAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
 import br.com.miriageekstore.identity.domain.exception.CannotChangeOwnRoleException;
@@ -191,6 +192,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(CategoryHasProductsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse("CATEGORY_HAS_PRODUCTS", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ProductSkuAlreadyExistsException.class)
+    ResponseEntity<ErrorResponse> handle(ProductSkuAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("SKU_CONFLICT", ex.getMessage()));
     }
 
     @ExceptionHandler(StorageException.class)

@@ -215,6 +215,7 @@ Migrations gerenciadas pelo **Flyway** (`src/main/resources/db/migration/`):
 | V9 | Coluna `last_login_at` na tabela `users` |
 | V10 | Tabela `audit_log` (id, user_id, admin_id, action, created_at) |
 | V11 | Tabela `categories` (id, name, slug, description, active, created_at) |
+| V12 | Tabelas `products` e `product_variants` (id, name, slug, category_id, status, featured, variants com SKU único) |
 
 ---
 
@@ -277,8 +278,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 |---|---|---|---|
 | US-02.01 | Configuração do MinIO | 3 | — (infra) |
 | US-02.02 | Gestão de categorias (admin) | 3 | `GET POST /api/v1/admin/categories` · `GET PUT DELETE /{id}` · `GET /api/v1/categories` |
+| US-02.03 | Cadastro de produto (admin) | 5 | `POST /api/v1/admin/products` |
 
-**2/? stories · 6 pontos · 151 testes passando**
+**3/? stories · 11 pontos · 167 testes passando**
 
 ---
 
@@ -337,6 +339,12 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | POST | `/api/v1/admin/categories` | `name, description` | 201 |
 | PUT | `/api/v1/admin/categories/{id}` | `name, description, active` | 200 |
 | DELETE | `/api/v1/admin/categories/{id}` | — | 204 |
+
+### Admin Products — requer `ROLE_ADMIN`
+
+| Método | Path | Body | Resposta |
+|---|---|---|---|
+| POST | `/api/v1/admin/products` | `name, description, categoryId, featured?, variants[{attributeName, attributeValue, price, stock, sku?}]` | 201 |
 
 ---
 

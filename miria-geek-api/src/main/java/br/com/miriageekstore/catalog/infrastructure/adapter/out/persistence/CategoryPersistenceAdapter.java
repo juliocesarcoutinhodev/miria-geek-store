@@ -21,6 +21,7 @@ class CategoryPersistenceAdapter implements CategoryRepository {
 
     private final CategoryJpaRepository jpaRepository;
     private final CategoryEntityMapper mapper;
+    private final ProductJpaRepository productJpaRepository;
 
     @Override
     public boolean existsByName(String name) {
@@ -82,7 +83,7 @@ class CategoryPersistenceAdapter implements CategoryRepository {
 
     @Override
     public boolean hasProducts(CategoryId id) {
-        return false;
+        return productJpaRepository.countByCategoryId(id.value()) > 0;
     }
 
     private String resolveSortField(String sort) {

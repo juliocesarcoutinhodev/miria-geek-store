@@ -46,6 +46,12 @@
       "value": "",
       "type": "string",
       "description": "UUID de uma categoria. Preencher após criar uma categoria via POST /api/v1/admin/categories."
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string",
+      "description": "UUID de um produto. Setado automaticamente após POST /api/v1/admin/products."
     }
   ],
   "item": [
@@ -1366,6 +1372,84 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin Products",
+      "description": "Gestão de produtos do catálogo. Requerem `ROLE_ADMIN` — cookie `access_token` de um administrador.",
+      "item": [
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('productId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "products"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Funko Pop Batman\",\n  \"description\": \"Boneco colecionável do Batman da DC Comics, 10cm\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"featured\": false,\n  \"variants\": [\n    {\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Clássico\",\n      \"price\": 89.90,\n      \"stock\": 50\n    },\n    {\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Edição Especial\",\n      \"price\": 149.90,\n      \"stock\": 10,\n      \"sku\": \"FUNKO-BATMAN-ESPECIAL\"\n    }\n  ]\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Cadastra um novo produto com variantes.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Produto criado com status `INACTIVE` por padrão\n- Slug gerado automaticamente a partir do nome\n- SKU gerado automaticamente se não informado: `SLUG-ATRIBUTO-VALOR` (ex: `FUNKO-POP-BATMAN-MODELO-CLASSICO`)\n- SKU customizado aceito se informado\n\n**Respostas:**\n- `201 Created` — produto criado com todas as variantes\n- `404 Not Found` — categoria inexistente\n- `409 Conflict` — SKU duplicado"
+          },
+          "response": [
+            {
+              "name": "201 - Product created",
+              "status": "Created",
+              "code": 201,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Funko Pop Batman\",\n  \"slug\": \"funko-pop-batman\",\n  \"description\": \"Boneco colecionável do Batman da DC Comics, 10cm\",\n  \"categoryId\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n  \"status\": \"INACTIVE\",\n  \"featured\": false,\n  \"variants\": [\n    {\n      \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Clássico\",\n      \"price\": 89.90,\n      \"stock\": 50,\n      \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    },\n    {\n      \"id\": \"2bb85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Edição Especial\",\n      \"price\": 149.90,\n      \"stock\": 10,\n      \"sku\": \"FUNKO-BATMAN-ESPECIAL\",\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    }\n  ],\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "products"]},
+                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Funko Pop Batman\",\n  \"description\": \"Boneco colecionável\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"featured\": false,\n  \"variants\": [{\"attributeName\": \"Modelo\",\"attributeValue\": \"Clássico\",\"price\": 89.90,\"stock\": 50}]\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "404 - Category not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"CATEGORY_NOT_FOUND\",\n  \"message\": \"Categoria não encontrada\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "products"]},
+                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Produto Teste\",\n  \"description\": \"Desc\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000000\",\n  \"variants\": [{\"attributeName\": \"Cor\",\"attributeValue\": \"Azul\",\"price\": 50.00,\"stock\": 5}]\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "409 - SKU conflict",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"SKU_CONFLICT\",\n  \"message\": \"Já existe um produto com o SKU: FUNKO-BATMAN-ESPECIAL\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "products"]},
+                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Produto Repetido\",\n  \"description\": \"Desc\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"variants\": [{\"attributeName\": \"Modelo\",\"attributeValue\": \"Clássico\",\"price\": 89.90,\"stock\": 5,\"sku\": \"FUNKO-BATMAN-ESPECIAL\"}]\n}", "options": {"raw": {"language": "json"}}}
               }
             }
           ]
