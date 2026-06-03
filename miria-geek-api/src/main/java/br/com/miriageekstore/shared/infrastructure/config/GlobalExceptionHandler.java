@@ -1,10 +1,16 @@
 package br.com.miriageekstore.shared.infrastructure.config;
 
+import br.com.miriageekstore.catalog.domain.exception.CannotRemovePrincipalImageException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryHasProductsException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryNameAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryNotFoundException;
+import br.com.miriageekstore.catalog.domain.exception.ImageLimitExceededException;
+import br.com.miriageekstore.catalog.domain.exception.InvalidImageTypeException;
+import br.com.miriageekstore.catalog.domain.exception.ProductImageNotFoundException;
+import br.com.miriageekstore.catalog.domain.exception.ProductNotFoundException;
 import br.com.miriageekstore.catalog.domain.exception.ProductSkuAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
 import br.com.miriageekstore.identity.domain.exception.CannotChangeOwnRoleException;
 import br.com.miriageekstore.identity.domain.exception.AccountNotActiveException;
@@ -198,6 +204,42 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(ProductSkuAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse("SKU_CONFLICT", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(ProductNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("PRODUCT_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ProductImageNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(ProductImageNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("IMAGE_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidImageTypeException.class)
+    ResponseEntity<ErrorResponse> handle(InvalidImageTypeException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("INVALID_IMAGE_TYPE", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ImageLimitExceededException.class)
+    ResponseEntity<ErrorResponse> handle(ImageLimitExceededException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("IMAGE_LIMIT_EXCEEDED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CannotRemovePrincipalImageException.class)
+    ResponseEntity<ErrorResponse> handle(CannotRemovePrincipalImageException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("CANNOT_REMOVE_PRINCIPAL_IMAGE", ex.getMessage()));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    ResponseEntity<ErrorResponse> handle(MaxUploadSizeExceededException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("FILE_TOO_LARGE", "O arquivo excede o tamanho máximo permitido de 5MB"));
     }
 
     @ExceptionHandler(StorageException.class)

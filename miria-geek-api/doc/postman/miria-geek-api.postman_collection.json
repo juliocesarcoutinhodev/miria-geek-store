@@ -52,6 +52,12 @@
       "value": "",
       "type": "string",
       "description": "UUID de um produto. Setado automaticamente após POST /api/v1/admin/products."
+    },
+    {
+      "key": "imageId",
+      "value": "",
+      "type": "string",
+      "description": "UUID de uma imagem do produto. Setado automaticamente após POST /{id}/images."
     }
   ],
   "item": [
@@ -63,16 +69,32 @@
           "name": "Register Customer",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Cadastra um novo cliente na plataforma.\n\n**Regras de negócio:**\n- `fullName` deve ter entre 3 e 255 caracteres\n- `email` deve ser único\n- `password` deve ter no mínimo 8 caracteres com letras e números\n- `password` e `passwordConfirmation` devem ser iguais\n\n**Resposta de sucesso:** `201 Created`"
           },
@@ -81,39 +103,126 @@
               "name": "201 - Customer registered",
               "status": "Created",
               "code": 201,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"PENDING_VERIFICATION\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "register"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "400 - Validation error",
               "status": "Bad Request",
               "code": 400,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"VALIDATION_ERROR\",\n  \"message\": \"email: Invalid email format\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"\",\n  \"email\": \"email-invalido\",\n  \"password\": \"123\",\n  \"passwordConfirmation\": \"456\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "register"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"\",\n  \"email\": \"email-invalido\",\n  \"password\": \"123\",\n  \"passwordConfirmation\": \"456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "409 - Email already exists",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"EMAIL_CONFLICT\",\n  \"message\": \"Email already registered\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "register"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\",\n  \"passwordConfirmation\": \"Senha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -125,9 +234,22 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "verify-email"],
-              "query": [{"key": "token", "value": "{{verificationToken}}", "description": "UUID do token de verificação recebido por e-mail"}]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-email"
+              ],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{verificationToken}}",
+                  "description": "UUID do token de verificação recebido por e-mail"
+                }
+              ]
             },
             "description": "Verifica o e-mail do cliente e ativa a conta.\n\nCopie o `verificationToken` do Kafka UI (tópico `identity.user-registered`) e cole na variável da collection.\n\n**Respostas:**\n- `200 OK` — conta ativada\n- `404 Not Found` — token inexistente\n- `409 Conflict` — e-mail já verificado\n- `410 Gone` — token expirado (válido por 24h)"
           },
@@ -136,48 +258,136 @@
               "name": "200 - Email verified",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"message\": \"Email verified successfully. Your account is now active.\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "verify-email"], "query": [{"key": "token", "value": "{{verificationToken}}"}]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "verify-email"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "{{verificationToken}}"
+                    }
+                  ]
+                }
               }
             },
             {
               "name": "404 - Token not found",
               "status": "Not Found",
               "code": 404,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"TOKEN_NOT_FOUND\",\n  \"message\": \"Verification token not found\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/verify-email?token=00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "verify-email"], "query": [{"key": "token", "value": "00000000-0000-0000-0000-000000000000"}]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/verify-email?token=00000000-0000-0000-0000-000000000000",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "verify-email"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "00000000-0000-0000-0000-000000000000"
+                    }
+                  ]
+                }
               }
             },
             {
               "name": "409 - Already verified",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"ALREADY_VERIFIED\",\n  \"message\": \"Email has already been verified\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "verify-email"], "query": [{"key": "token", "value": "{{verificationToken}}"}]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "verify-email"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "{{verificationToken}}"
+                    }
+                  ]
+                }
               }
             },
             {
               "name": "410 - Token expired",
               "status": "Gone",
               "code": 410,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"TOKEN_EXPIRED\",\n  \"message\": \"Verification token has expired. Please request a new verification email.\",\n  \"timestamp\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "verify-email"], "query": [{"key": "token", "value": "{{verificationToken}}"}]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/verify-email?token={{verificationToken}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "verify-email"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "{{verificationToken}}"
+                    }
+                  ]
+                }
               }
             }
           ]
@@ -186,16 +396,32 @@
           "name": "Resend Verification Email",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/resend-verification",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "resend-verification"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "resend-verification"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Reenvia o e-mail de verificação para contas com status `PENDING_VERIFICATION`.\n\n**Segurança:** Sempre retorna `204 No Content`, independentemente de o e-mail existir ou não na base.\n\n**Rate limit:** máximo 3 reenvios por hora por e-mail."
           },
@@ -208,9 +434,33 @@
               "body": "",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/resend-verification", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "resend-verification"]},
-                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/resend-verification",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "resend-verification"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -233,16 +483,32 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Autentica o cliente e retorna os tokens JWT via cookies HttpOnly.\n\n**Cookies retornados:**\n- `access_token` (HttpOnly, SameSite=Strict, 15 min)\n- `refresh_token` (HttpOnly, SameSite=Strict, path `/api/v1/auth/refresh`, 30 dias)\n\n**Regras de bloqueio:** 5 tentativas incorretas → conta bloqueada por 15 minutos.\n\n**Respostas:**\n- `200 OK` — login efetuado\n- `401 Unauthorized` — credenciais inválidas\n- `403 Forbidden` — conta não ativa (e-mail não verificado ou desativada)\n- `423 Locked` — conta bloqueada por excesso de tentativas"
           },
@@ -252,55 +518,175 @@
               "status": "OK",
               "code": 200,
               "header": [
-                {"key": "Content-Type", "value": "application/json"},
-                {"key": "Set-Cookie", "value": "access_token=<jwt>; Path=/; HttpOnly; SameSite=Strict; Max-Age=900"},
-                {"key": "Set-Cookie", "value": "refresh_token=<token>; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=2592000"}
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "access_token=<jwt>; Path=/; HttpOnly; SameSite=Strict; Max-Age=900"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "refresh_token=<token>; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=2592000"
+                }
               ],
               "body": "{\n  \"email\": \"maria.silva@email.com\",\n  \"roles\": [\"ROLE_CUSTOMER\"]\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"]},
-                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"Senha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "401 - Invalid credentials",
               "status": "Unauthorized",
               "code": 401,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"INVALID_CREDENTIALS\",\n  \"message\": \"Invalid email or password\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"]},
-                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"wrong\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"wrong\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "403 - Account not active",
               "status": "Forbidden",
               "code": 403,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"ACCOUNT_NOT_ACTIVE\",\n  \"message\": \"Confirme seu e-mail para continuar\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"]},
-                "body": {"mode": "raw", "raw": "{\n  \"email\": \"pending@email.com\",\n  \"password\": \"Senha@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"pending@email.com\",\n  \"password\": \"Senha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "423 - Account locked",
               "status": "Locked",
               "code": 423,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"ACCOUNT_LOCKED\",\n  \"message\": \"Account temporarily locked due to too many failed attempts. Try again in 15 minutes.\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"]},
-                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"wrong\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"wrong\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -309,16 +695,32 @@
           "name": "Forgot Password",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "forgot-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forgot-password"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Solicita redefinição de senha.\n\n**Segurança:** Sempre retorna `204 No Content`, independentemente de o e-mail existir ou não.\nUm link de redefinição com token UUID é enviado por e-mail.\n\n**Token:** válido por 1 hora, uso único."
           },
@@ -331,9 +733,33 @@
               "body": "",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "forgot-password"]},
-                "body": {"mode": "raw", "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "forgot-password"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"maria.silva@email.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -342,16 +768,32 @@
           "name": "Reset Password",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/reset-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "reset-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Redefine a senha usando o token recebido por e-mail.\n\n**Respostas:**\n- `204 No Content` — senha redefinida, todos os dispositivos deslogados\n- `400 Bad Request` — senhas não coincidem ou violam política\n- `404 Not Found` — token não encontrado\n- `409 Conflict` — token já utilizado\n- `410 Gone` — token expirado"
           },
@@ -364,48 +806,159 @@
               "body": "",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "reset-password"]},
-                "body": {"mode": "raw", "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "reset-password"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "404 - Token not found",
               "status": "Not Found",
               "code": 404,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"RESET_TOKEN_NOT_FOUND\",\n  \"message\": \"Password reset token not found\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "reset-password"]},
-                "body": {"mode": "raw", "raw": "{\n  \"token\": \"00000000-0000-0000-0000-000000000000\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "reset-password"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"00000000-0000-0000-0000-000000000000\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "409 - Token already used",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"RESET_TOKEN_ALREADY_USED\",\n  \"message\": \"Password reset token has already been used\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "reset-password"]},
-                "body": {"mode": "raw", "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "reset-password"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "410 - Token expired",
               "status": "Gone",
               "code": 410,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"RESET_TOKEN_EXPIRED\",\n  \"message\": \"Password reset token has expired. Please request a new one.\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "reset-password"]},
-                "body": {"mode": "raw", "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "reset-password"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenha@123\",\n  \"passwordConfirmation\": \"NovaSenha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -417,8 +970,15 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "logout"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
             },
             "description": "Encerra a sessão atual revogando o refresh token do cookie.\n\n- Lê o cookie `refresh_token` automaticamente\n- Revoga o token no banco de dados\n- Limpa os cookies `access_token` e `refresh_token` (Max-Age=0)\n- Funciona mesmo se o access token já estiver expirado\n\n**Resposta:** `204 No Content`"
           },
@@ -428,14 +988,31 @@
               "status": "No Content",
               "code": 204,
               "header": [
-                {"key": "Set-Cookie", "value": "access_token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0"},
-                {"key": "Set-Cookie", "value": "refresh_token=; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=0"}
+                {
+                  "key": "Set-Cookie",
+                  "value": "access_token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "refresh_token=; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=0"
+                }
               ],
               "body": "",
               "originalRequest": {
                 "method": "POST",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/logout", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "logout"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/logout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "logout"
+                  ]
+                }
               }
             }
           ]
@@ -447,8 +1024,15 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/logout-all",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "logout-all"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout-all"
+              ]
             },
             "description": "Encerra a sessão em **todos os dispositivos** do usuário.\n\n- Identifica o usuário pelo cookie `refresh_token`\n- Revoga todos os refresh tokens ativos desse usuário no banco\n- Limpa os cookies `access_token` e `refresh_token` do dispositivo atual\n\n**Resposta:** `204 No Content`"
           },
@@ -458,14 +1042,31 @@
               "status": "No Content",
               "code": 204,
               "header": [
-                {"key": "Set-Cookie", "value": "access_token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0"},
-                {"key": "Set-Cookie", "value": "refresh_token=; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=0"}
+                {
+                  "key": "Set-Cookie",
+                  "value": "access_token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "refresh_token=; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=0"
+                }
               ],
               "body": "",
               "originalRequest": {
                 "method": "POST",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/auth/logout-all", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "logout-all"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/logout-all",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "logout-all"
+                  ]
+                }
               }
             }
           ]
@@ -483,8 +1084,15 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "users", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
             },
             "description": "Retorna os dados do usuário autenticado.\n\n**Autenticação:** Lê o cookie `access_token` automaticamente.\n\n**Resposta:** `200 OK` com id, nome, e-mail, status, roles e dataCadastro.\n\nNão retorna senha nem tokens."
           },
@@ -493,24 +1101,56 @@
               "name": "200 - Profile returned",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"roles\": [\"ROLE_CUSTOMER\"],\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me"
+                  ]
+                }
               }
             },
             {
               "name": "401 - Unauthorized",
               "status": "Unauthorized",
               "code": 401,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"INVALID_CREDENTIALS\",\n  \"message\": \"Invalid email or password\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me"
+                  ]
+                }
               }
             }
           ]
@@ -519,16 +1159,32 @@
           "name": "Update My Profile",
           "request": {
             "method": "PATCH",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "users", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Maria Silva Santos\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Atualiza o nome completo do usuário autenticado.\n\n**Autenticação:** Lê o cookie `access_token` automaticamente.\n\n**Regras:**\n- Apenas `fullName` pode ser alterado\n- E-mail não pode ser alterado por este endpoint\n- Nome deve ter entre 3 e 255 caracteres\n\n**Resposta:** `200 OK` com dados atualizados."
           },
@@ -537,26 +1193,84 @@
               "name": "200 - Profile updated",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Maria Silva Santos\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"roles\": [\"ROLE_CUSTOMER\"],\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva Santos\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Maria Silva Santos\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "400 - Validation error",
               "status": "Bad Request",
               "code": 400,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"VALIDATION_ERROR\",\n  \"message\": \"fullName: size must be between 3 and 255\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"AB\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"AB\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -565,16 +1279,33 @@
           "name": "Change Password",
           "request": {
             "method": "PATCH",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/me/password",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "users", "me", "password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "password"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"currentPassword\": \"SenhaAtual@123\",\n  \"newPassword\": \"NovaSenha@456\",\n  \"passwordConfirmation\": \"NovaSenha@456\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Altera a senha do usuário autenticado.\n\n**Autenticação:** Lê o cookie `access_token` automaticamente.\n\n**Após alteração com sucesso:**\n- Todos os refresh tokens de outros dispositivos são revogados\n- Um novo par de tokens (access + refresh) é emitido para a sessão atual\n- Os cookies são atualizados automaticamente\n\n**Respostas:**\n- `204 No Content` — senha alterada, cookies renovados\n- `400 CURRENT_PASSWORD_MISMATCH` — senha atual incorreta\n- `400 NEW_PASSWORD_SAME_AS_CURRENT` — nova senha igual à atual\n- `400 BAD_REQUEST` — nova senha não segue política ou confirmação divergente"
           },
@@ -584,41 +1315,132 @@
               "status": "No Content",
               "code": 204,
               "header": [
-                {"key": "Set-Cookie", "value": "access_token=<new_jwt>; Path=/; HttpOnly; SameSite=Strict; Max-Age=900"},
-                {"key": "Set-Cookie", "value": "refresh_token=<new_token>; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=604800"}
+                {
+                  "key": "Set-Cookie",
+                  "value": "access_token=<new_jwt>; Path=/; HttpOnly; SameSite=Strict; Max-Age=900"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "refresh_token=<new_token>; Path=/api/v1/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=604800"
+                }
               ],
               "body": "",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/users/me/password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "password"]},
-                "body": {"mode": "raw", "raw": "{\n  \"currentPassword\": \"SenhaAtual@123\",\n  \"newPassword\": \"NovaSenha@456\",\n  \"passwordConfirmation\": \"NovaSenha@456\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me/password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me",
+                    "password"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"SenhaAtual@123\",\n  \"newPassword\": \"NovaSenha@456\",\n  \"passwordConfirmation\": \"NovaSenha@456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "400 - Current password mismatch",
               "status": "Bad Request",
               "code": 400,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"CURRENT_PASSWORD_MISMATCH\",\n  \"message\": \"Current password is incorrect\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/users/me/password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "password"]},
-                "body": {"mode": "raw", "raw": "{\n  \"currentPassword\": \"SenhaErrada\",\n  \"newPassword\": \"NovaSenha@456\",\n  \"passwordConfirmation\": \"NovaSenha@456\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me/password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me",
+                    "password"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"SenhaErrada\",\n  \"newPassword\": \"NovaSenha@456\",\n  \"passwordConfirmation\": \"NovaSenha@456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "400 - Same as current",
               "status": "Bad Request",
               "code": 400,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"NEW_PASSWORD_SAME_AS_CURRENT\",\n  \"message\": \"New password must be different from the current password\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/users/me/password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "password"]},
-                "body": {"mode": "raw", "raw": "{\n  \"currentPassword\": \"SenhaAtual@123\",\n  \"newPassword\": \"SenhaAtual@123\",\n  \"passwordConfirmation\": \"SenhaAtual@123\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me/password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me",
+                    "password"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"SenhaAtual@123\",\n  \"newPassword\": \"SenhaAtual@123\",\n  \"passwordConfirmation\": \"SenhaAtual@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -634,7 +1456,19 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]},
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "addresses"
+              ]
+            },
             "description": "Lista os endereços do usuário ordenados: padrão primeiro, demais por data de criação."
           },
           "response": [
@@ -642,9 +1476,30 @@
               "name": "200 - Addresses listed",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "[\n  {\n    \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"alias\": \"Casa\",\n    \"zipCode\": \"01310-100\",\n    \"street\": \"Avenida Paulista\",\n    \"number\": \"1000\",\n    \"complement\": \"Apto 42\",\n    \"neighborhood\": \"Bela Vista\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"isDefault\": true,\n    \"createdAt\": \"2026-05-15T19:00:00Z\"\n  }\n]",
-              "originalRequest": {"method": "GET", "header": [], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]}}
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me/addresses",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me",
+                    "addresses"
+                  ]
+                }
+              }
             }
           ]
         },
@@ -652,12 +1507,33 @@
           "name": "Create Address",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]},
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "addresses"
+              ]
+            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"alias\": \"Casa\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"1000\",\n  \"complement\": \"Apto 42\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": true\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Cadastra novo endereço. Máximo 5 por usuário.\nSe `isDefault: true`, o endereço padrão anterior é automaticamente removido."
           },
@@ -666,17 +1542,87 @@
               "name": "201 - Created",
               "status": "Created",
               "code": 201,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"alias\": \"Casa\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"1000\",\n  \"complement\": \"Apto 42\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": true,\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
-              "originalRequest": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]}, "body": {"mode": "raw", "raw": "{\n  \"alias\": \"Casa\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"1000\",\n  \"complement\": \"Apto 42\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": true\n}", "options": {"raw": {"language": "json"}}}}
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me/addresses",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me",
+                    "addresses"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"alias\": \"Casa\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"1000\",\n  \"complement\": \"Apto 42\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
             },
             {
               "name": "422 - Limit exceeded",
               "status": "Unprocessable Entity",
               "code": 422,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"ADDRESS_LIMIT_EXCEEDED\",\n  \"message\": \"Maximum of 5 addresses per user has been reached\"\n}",
-              "originalRequest": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses"]}, "body": {"mode": "raw", "raw": "{}", "options": {"raw": {"language": "json"}}}}
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me/addresses",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me",
+                    "addresses"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
             }
           ]
         },
@@ -684,12 +1630,34 @@
           "name": "Update Address",
           "request": {
             "method": "PUT",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}"]},
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "addresses",
+                "{{addressId}}"
+              ]
+            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"alias\": \"Trabalho\",\n  \"zipCode\": \"01310-100\",\n  \"street\": \"Avenida Paulista\",\n  \"number\": \"2000\",\n  \"complement\": \"\",\n  \"neighborhood\": \"Bela Vista\",\n  \"city\": \"São Paulo\",\n  \"state\": \"SP\",\n  \"isDefault\": false\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Atualiza todos os campos do endereço."
           },
@@ -700,7 +1668,20 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}"]},
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "addresses",
+                "{{addressId}}"
+              ]
+            },
             "description": "Remove o endereço. Retorna 409 se vinculado a pedido ativo."
           },
           "response": [
@@ -710,15 +1691,54 @@
               "code": 204,
               "header": [],
               "body": "",
-              "originalRequest": {"method": "DELETE", "header": [], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}"]}}
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me",
+                    "addresses",
+                    "{{addressId}}"
+                  ]
+                }
+              }
             },
             {
               "name": "409 - Linked to active order",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"ADDRESS_LINKED_TO_ACTIVE_ORDER\",\n  \"message\": \"Address cannot be removed because it is linked to an active order\"\n}",
-              "originalRequest": {"method": "DELETE", "header": [], "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}"]}}
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "me",
+                    "addresses",
+                    "{{addressId}}"
+                  ]
+                }
+              }
             }
           ]
         },
@@ -727,7 +1747,21 @@
           "request": {
             "method": "PATCH",
             "header": [],
-            "url": {"raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}/default", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me", "addresses", "{{addressId}}", "default"]},
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/addresses/{{addressId}}/default",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "addresses",
+                "{{addressId}}",
+                "default"
+              ]
+            },
             "description": "Define o endereço como padrão, removendo o padrão anterior automaticamente."
           },
           "response": []
@@ -745,17 +1779,60 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/users?page=0&size=20&sort=createdAt&direction=desc",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "users"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users"
+              ],
               "query": [
-                {"key": "page", "value": "0", "description": "Número da página (base 0)"},
-                {"key": "size", "value": "20", "description": "Itens por página"},
-                {"key": "sort", "value": "createdAt", "description": "Campo de ordenação: createdAt, fullName, email, status"},
-                {"key": "direction", "value": "desc", "description": "Direção: asc | desc"},
-                {"key": "nome", "value": "", "description": "Busca parcial case-insensitive no nome", "disabled": true},
-                {"key": "email", "value": "", "description": "Busca parcial case-insensitive no e-mail", "disabled": true},
-                {"key": "status", "value": "", "description": "Filtro de status: ACTIVE | INACTIVE | PENDING_VERIFICATION", "disabled": true},
-                {"key": "role", "value": "", "description": "Filtro de role: ROLE_CUSTOMER | ROLE_ADMIN", "disabled": true}
+                {
+                  "key": "page",
+                  "value": "0",
+                  "description": "Número da página (base 0)"
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "description": "Itens por página"
+                },
+                {
+                  "key": "sort",
+                  "value": "createdAt",
+                  "description": "Campo de ordenação: createdAt, fullName, email, status"
+                },
+                {
+                  "key": "direction",
+                  "value": "desc",
+                  "description": "Direção: asc | desc"
+                },
+                {
+                  "key": "nome",
+                  "value": "",
+                  "description": "Busca parcial case-insensitive no nome",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "description": "Busca parcial case-insensitive no e-mail",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filtro de status: ACTIVE | INACTIVE | PENDING_VERIFICATION",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "description": "Filtro de role: ROLE_CUSTOMER | ROLE_ADMIN",
+                  "disabled": true
+                }
               ]
             },
             "description": "Lista usuários com paginação e filtros opcionais.\n\n**Requer:** `ROLE_ADMIN`\n\n**Parâmetros de filtro (todos opcionais):**\n- `nome` — busca parcial case-insensitive no nome\n- `email` — busca parcial case-insensitive no e-mail\n- `status` — `ACTIVE` | `INACTIVE` | `PENDING_VERIFICATION`\n- `role` — `ROLE_CUSTOMER` | `ROLE_ADMIN`\n\n**Resposta:** `200 OK` com lista paginada."
@@ -765,36 +1842,120 @@
               "name": "200 - Users listed",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"fullName\": \"Maria Silva\",\n      \"email\": \"maria.silva@email.com\",\n      \"role\": \"ROLE_CUSTOMER\",\n      \"status\": \"ACTIVE\",\n      \"createdAt\": \"2026-05-15T19:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users?page=0&size=20&sort=createdAt&direction=desc", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}, {"key": "sort", "value": "createdAt"}, {"key": "direction", "value": "desc"}]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users?page=0&size=20&sort=createdAt&direction=desc",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "createdAt"
+                    },
+                    {
+                      "key": "direction",
+                      "value": "desc"
+                    }
+                  ]
+                }
               }
             },
             {
               "name": "200 - Filtered by status and role",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"fullName\": \"Carlos Administrador\",\n      \"email\": \"carlos.admin@miriageek.com.br\",\n      \"role\": \"ROLE_ADMIN\",\n      \"status\": \"ACTIVE\",\n      \"createdAt\": \"2026-05-15T18:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users?status=ACTIVE&role=ROLE_ADMIN&page=0&size=20", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"], "query": [{"key": "status", "value": "ACTIVE"}, {"key": "role", "value": "ROLE_ADMIN"}, {"key": "page", "value": "0"}, {"key": "size", "value": "20"}]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users?status=ACTIVE&role=ROLE_ADMIN&page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "ACTIVE"
+                    },
+                    {
+                      "key": "role",
+                      "value": "ROLE_ADMIN"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                }
               }
             },
             {
               "name": "403 - Forbidden",
               "status": "Forbidden",
               "code": 403,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"error\": \"Forbidden\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ]
+                }
               }
             }
           ]
@@ -806,8 +1967,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users",
+                "{{targetUserId}}"
+              ]
             },
             "description": "Busca um usuário pelo ID com dados estendidos.\n\n**Requer:** `ROLE_ADMIN`\n\n**Campos retornados além do sumário:**\n- `totalPedidos` — total de pedidos do usuário\n- `ultimoLogin` — data/hora do último login\n\n**Respostas:**\n- `200 OK` — usuário encontrado\n- `404 Not Found` — usuário inexistente"
           },
@@ -816,24 +1985,58 @@
               "name": "200 - User found",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"status\": \"ACTIVE\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\",\n  \"totalPedidos\": 3,\n  \"ultimoLogin\": \"2026-05-31T22:00:00Z\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}"
+                  ]
+                }
               }
             },
             {
               "name": "404 - User not found",
               "status": "Not Found",
               "code": 404,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "00000000-0000-0000-0000-000000000000"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "00000000-0000-0000-0000-000000000000"
+                  ]
+                }
               }
             }
           ]
@@ -842,16 +2045,32 @@
           "name": "Create User",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Cria um novo usuário (admin ou customer) pela interface administrativa.\n\n**Requer:** `ROLE_ADMIN`\n\n**Campo `role`:** `ROLE_ADMIN` | `ROLE_CUSTOMER`\n\n**Comportamento:**\n- Conta criada com status `ACTIVE` (sem verificação de e-mail)\n- Senha temporária gerada automaticamente e enviada por e-mail\n- Registro de auditoria: id do admin criador + timestamp\n\n**Respostas:**\n- `201 Created` — usuário criado\n- `400 Bad Request` — role inválida ou campos em branco\n- `409 Conflict` — e-mail já cadastrado\n- `403 Forbidden` — usuário não tem ROLE_ADMIN"
           },
@@ -860,65 +2079,210 @@
               "name": "201 - Admin criado",
               "status": "Created",
               "code": 201,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_ADMIN\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\",\n  \"createdByAdminId\": \"1fa85f64-5717-4562-b3fc-2c963f66afa6\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "201 - Customer criado",
               "status": "Created",
               "code": 201,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"João Customer\",\n  \"email\": \"joao.customer@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\",\n  \"createdByAdminId\": \"1fa85f64-5717-4562-b3fc-2c963f66afa6\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"João Customer\",\n  \"email\": \"joao.customer@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"João Customer\",\n  \"email\": \"joao.customer@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "409 - Email already exists",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"EMAIL_CONFLICT\",\n  \"message\": \"Email already registered\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "400 - Role inválida",
               "status": "Bad Request",
               "code": 400,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"VALIDATION_ERROR\",\n  \"message\": \"role: must match \\\"ROLE_CUSTOMER|ROLE_ADMIN\\\"\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Test\",\n  \"email\": \"test@email.com\",\n  \"role\": \"ROLE_INVALID\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Test\",\n  \"email\": \"test@email.com\",\n  \"role\": \"ROLE_INVALID\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "403 - Forbidden",
               "status": "Forbidden",
               "code": 403,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"error\": \"Forbidden\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Carlos Administrador\",\n  \"email\": \"carlos.admin@miriageek.com.br\",\n  \"role\": \"ROLE_ADMIN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -927,16 +2291,33 @@
           "name": "Update User (PUT)",
           "request": {
             "method": "PUT",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users",
+                "{{targetUserId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Substitui todos os campos editáveis do usuário (atualização completa).\n\n**Requer:** `ROLE_ADMIN`\n\nTodos os campos são obrigatórios. Registro de auditoria registrado.\n\n**Regras:**\n- Admin não pode alterar a própria role\n- E-mail alterado para um já existente retorna 409\n\n**Respostas:**\n- `200 OK` — usuário atualizado\n- `404 Not Found` — usuário inexistente\n- `409 Conflict` — e-mail já em uso\n- `422 Unprocessable Entity` — admin tentando alterar a própria role"
           },
@@ -945,52 +2326,172 @@
               "name": "200 - User updated",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PUT",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Maria Silva Atualizada\",\n  \"email\": \"maria.atualizada@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "404 - User not found",
               "status": "Not Found",
               "code": 404,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
               "originalRequest": {
                 "method": "PUT",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "00000000-0000-0000-0000-000000000000"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Test\",\n  \"email\": \"test@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "00000000-0000-0000-0000-000000000000"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Test\",\n  \"email\": \"test@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "409 - Email conflict",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"EMAIL_CONFLICT\",\n  \"message\": \"Email already registered\"\n}",
               "originalRequest": {
                 "method": "PUT",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria\",\n  \"email\": \"outro.usuario@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Maria\",\n  \"email\": \"outro.usuario@email.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "422 - Cannot change own role",
               "status": "Unprocessable Entity",
               "code": 422,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"CANNOT_CHANGE_OWN_ROLE\",\n  \"message\": \"Admin cannot change their own role\"\n}",
               "originalRequest": {
                 "method": "PUT",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Admin Self\",\n  \"email\": \"admin@miriageek.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Admin Self\",\n  \"email\": \"admin@miriageek.com\",\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -999,16 +2500,33 @@
           "name": "Patch User (PATCH)",
           "request": {
             "method": "PATCH",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users",
+                "{{targetUserId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Maria Silva Parcial\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Atualiza apenas os campos enviados no body (atualização parcial).\n\n**Requer:** `ROLE_ADMIN`\n\nTodos os campos são opcionais. Apenas os campos presentes são alterados. Registro de auditoria registrado.\n\n**Campos opcionais:** `fullName`, `email`, `role`\n\n**Regras:**\n- Admin não pode alterar a própria role\n- E-mail alterado para um já existente retorna 409\n\n**Respostas:**\n- `200 OK` — usuário atualizado\n- `404 Not Found` — usuário inexistente\n- `409 Conflict` — e-mail já em uso\n- `422 Unprocessable Entity` — admin tentando alterar a própria role"
           },
@@ -1017,65 +2535,215 @@
               "name": "200 - Nome atualizado",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva Parcial\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Maria Silva Parcial\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Maria Silva Parcial\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "200 - Role atualizada",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ROLE_ADMIN\",\n  \"createdAt\": \"2026-05-15T19:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
-                "body": {"mode": "raw", "raw": "{\n  \"role\": \"ROLE_ADMIN\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"role\": \"ROLE_ADMIN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "404 - User not found",
               "status": "Not Found",
               "code": 404,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "00000000-0000-0000-0000-000000000000"]},
-                "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Test\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/00000000-0000-0000-0000-000000000000",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "00000000-0000-0000-0000-000000000000"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "409 - Email conflict",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"EMAIL_CONFLICT\",\n  \"message\": \"Email already registered\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
-                "body": {"mode": "raw", "raw": "{\n  \"email\": \"outro.usuario@email.com\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"outro.usuario@email.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "422 - Cannot change own role",
               "status": "Unprocessable Entity",
               "code": 422,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"CANNOT_CHANGE_OWN_ROLE\",\n  \"message\": \"Admin cannot change their own role\"\n}",
               "originalRequest": {
                 "method": "PATCH",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}"]},
-                "body": {"mode": "raw", "raw": "{\n  \"role\": \"ROLE_CUSTOMER\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"role\": \"ROLE_CUSTOMER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -1084,16 +2752,34 @@
           "name": "Update User Status",
           "request": {
             "method": "PATCH",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users",
+                "{{targetUserId}}",
+                "status"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"INACTIVE\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Ativa ou desativa a conta de um usuário.\n\n**Requer:** `ROLE_ADMIN`\n\n**Campo `status`:** `ACTIVE` | `INACTIVE`\n\n**Comportamento na desativação:**\n- Todos os refresh tokens são revogados (logout forçado imediato em todos os dispositivos)\n- Tentativa de login retorna 403 com mensagem explicativa\n- Registro de auditoria registrado\n\n**Respostas:**\n- `200 OK` — status atualizado\n- `404 Not Found` — usuário inexistente\n- `422 Unprocessable Entity` — admin tentando desativar a própria conta"
           },
@@ -1102,33 +2788,177 @@
               "name": "200 - Desativado",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"INACTIVE\"\n}",
-              "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"INACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"INACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
             },
             {
               "name": "200 - Ativado",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"status\": \"ACTIVE\"\n}",
-              "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"ACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
             },
             {
               "name": "422 - Cannot deactivate own account",
               "status": "Unprocessable Entity",
               "code": 422,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"CANNOT_DEACTIVATE_OWN_ACCOUNT\",\n  \"message\": \"Admin cannot deactivate their own account\"\n}",
-              "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"INACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"INACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
             },
             {
               "name": "404 - User not found",
               "status": "Not Found",
               "code": 404,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
-              "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"INACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{targetUserId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"INACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
             }
           ]
         }
@@ -1145,8 +2975,14 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/categories",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "categories"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
             },
             "description": "Retorna todas as categorias ativas ordenadas por nome.\n\n**Acesso:** público, sem autenticação.\n\n**Resposta:** `200 OK` — lista de categorias com id, name, slug e totalProducts."
           },
@@ -1155,12 +2991,27 @@
               "name": "200 - Categories listed",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "[\n  {\n    \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"name\": \"Action Figures\",\n    \"slug\": \"action-figures\",\n    \"totalProducts\": 12\n  },\n  {\n    \"id\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n    \"name\": \"Anime\",\n    \"slug\": \"anime\",\n    \"totalProducts\": 8\n  }\n]",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/categories", "host": ["{{baseUrl}}"], "path": ["api", "v1", "categories"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories"
+                  ]
+                }
               }
             }
           ]
@@ -1178,15 +3029,48 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/categories?page=0&size=20&sort=name&direction=asc",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "categories"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "categories"
+              ],
               "query": [
-                {"key": "page", "value": "0", "description": "Número da página (base 0)"},
-                {"key": "size", "value": "20", "description": "Itens por página"},
-                {"key": "sort", "value": "name", "description": "Campo: name | active | createdAt"},
-                {"key": "direction", "value": "asc", "description": "Direção: asc | desc"},
-                {"key": "name", "value": "", "description": "Busca parcial case-insensitive no nome", "disabled": true},
-                {"key": "active", "value": "", "description": "Filtro: true | false", "disabled": true}
+                {
+                  "key": "page",
+                  "value": "0",
+                  "description": "Número da página (base 0)"
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "description": "Itens por página"
+                },
+                {
+                  "key": "sort",
+                  "value": "name",
+                  "description": "Campo: name | active | createdAt"
+                },
+                {
+                  "key": "direction",
+                  "value": "asc",
+                  "description": "Direção: asc | desc"
+                },
+                {
+                  "key": "name",
+                  "value": "",
+                  "description": "Busca parcial case-insensitive no nome",
+                  "disabled": true
+                },
+                {
+                  "key": "active",
+                  "value": "",
+                  "description": "Filtro: true | false",
+                  "disabled": true
+                }
               ]
             },
             "description": "Lista categorias com paginação e filtros opcionais.\n\n**Requer:** `ROLE_ADMIN`\n\n**Resposta:** `200 OK` — lista paginada com id, name, slug, description, totalProducts, active, createdAt."
@@ -1196,12 +3080,38 @@
               "name": "200 - Categories listed",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"name\": \"Action Figures\",\n      \"slug\": \"action-figures\",\n      \"description\": \"Bonecos e miniaturas colecionáveis\",\n      \"totalProducts\": 0,\n      \"active\": true,\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories?page=0&size=20", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/categories?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "categories"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                }
               }
             }
           ]
@@ -1213,8 +3123,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "categories",
+                "{{categoryId}}"
+              ]
             },
             "description": "Busca categoria pelo ID.\n\n**Requer:** `ROLE_ADMIN`\n\n**Respostas:**\n- `200 OK` — categoria encontrada\n- `404 Not Found` — categoria inexistente"
           },
@@ -1223,24 +3141,58 @@
               "name": "200 - Category found",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Action Figures\",\n  \"slug\": \"action-figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\",\n  \"totalProducts\": 0,\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "categories",
+                    "{{categoryId}}"
+                  ]
+                }
               }
             },
             {
               "name": "404 - Not found",
               "status": "Not Found",
               "code": 404,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"CATEGORY_NOT_FOUND\",\n  \"message\": \"Categoria não encontrada\"\n}",
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "00000000-0000-0000-0000-000000000000"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/categories/00000000-0000-0000-0000-000000000000",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "categories",
+                    "00000000-0000-0000-0000-000000000000"
+                  ]
+                }
               }
             }
           ]
@@ -1262,16 +3214,32 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/categories",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "categories"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "categories"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Action Figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Cria uma nova categoria.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Slug gerado automaticamente a partir do nome (ex: \"Action Figures\" → \"action-figures\")\n- Criada com `active: true` por padrão\n\n**Respostas:**\n- `201 Created` — categoria criada\n- `409 Conflict` — nome já existe"
           },
@@ -1280,26 +3248,84 @@
               "name": "201 - Created",
               "status": "Created",
               "code": 201,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Action Figures\",\n  \"slug\": \"action-figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\",\n  \"totalProducts\": 0,\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories"]},
-                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Action Figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "categories"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Action Figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "409 - Name conflict",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"CATEGORY_NAME_CONFLICT\",\n  \"message\": \"Já existe uma categoria com o nome: Action Figures\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories"]},
-                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Action Figures\",\n  \"description\": \"Duplicada\"\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "categories"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Action Figures\",\n  \"description\": \"Duplicada\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -1308,16 +3334,33 @@
           "name": "Update Category",
           "request": {
             "method": "PUT",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "categories",
+                "{{categoryId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Action Figures Colecionáveis\",\n  \"description\": \"Bonecos, miniaturas e estatuetas colecionáveis\",\n  \"active\": true\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Atualiza todos os campos de uma categoria.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Slug regerado automaticamente se o nome for alterado\n\n**Respostas:**\n- `200 OK` — categoria atualizada\n- `404 Not Found` — categoria inexistente\n- `409 Conflict` — nome já usado por outra categoria"
           },
@@ -1326,13 +3369,43 @@
               "name": "200 - Updated",
               "status": "OK",
               "code": 200,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Action Figures Colecionáveis\",\n  \"slug\": \"action-figures-coleciona-veis\",\n  \"description\": \"Bonecos, miniaturas e estatuetas colecionáveis\",\n  \"totalProducts\": 0,\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
               "originalRequest": {
                 "method": "PUT",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]},
-                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Action Figures Colecionáveis\",\n  \"description\": \"Bonecos, miniaturas e estatuetas colecionáveis\",\n  \"active\": true\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "categories",
+                    "{{categoryId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Action Figures Colecionáveis\",\n  \"description\": \"Bonecos, miniaturas e estatuetas colecionáveis\",\n  \"active\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             }
           ]
@@ -1344,8 +3417,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "categories",
+                "{{categoryId}}"
+              ]
             },
             "description": "Exclui uma categoria.\n\n**Requer:** `ROLE_ADMIN`\n\n**Respostas:**\n- `204 No Content` — excluída com sucesso\n- `404 Not Found` — categoria inexistente\n- `409 Conflict` — categoria possui produtos vinculados"
           },
@@ -1359,19 +3440,48 @@
               "originalRequest": {
                 "method": "DELETE",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "categories",
+                    "{{categoryId}}"
+                  ]
+                }
               }
             },
             {
               "name": "409 - Has products",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"CATEGORY_HAS_PRODUCTS\",\n  \"message\": \"Não é possível excluir uma categoria que possui produtos vinculados\"\n}",
               "originalRequest": {
                 "method": "DELETE",
                 "header": [],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]}
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "categories",
+                    "{{categoryId}}"
+                  ]
+                }
               }
             }
           ]
@@ -1399,16 +3509,32 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/products",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "products"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Funko Pop Batman\",\n  \"description\": \"Boneco colecionável do Batman da DC Comics, 10cm\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"featured\": false,\n  \"variants\": [\n    {\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Clássico\",\n      \"price\": 89.90,\n      \"stock\": 50\n    },\n    {\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Edição Especial\",\n      \"price\": 149.90,\n      \"stock\": 10,\n      \"sku\": \"FUNKO-BATMAN-ESPECIAL\"\n    }\n  ]\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Cadastra um novo produto com variantes.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Produto criado com status `INACTIVE` por padrão\n- Slug gerado automaticamente a partir do nome\n- SKU gerado automaticamente se não informado: `SLUG-ATRIBUTO-VALOR` (ex: `FUNKO-POP-BATMAN-MODELO-CLASSICO`)\n- SKU customizado aceito se informado\n\n**Respostas:**\n- `201 Created` — produto criado com todas as variantes\n- `404 Not Found` — categoria inexistente\n- `409 Conflict` — SKU duplicado"
           },
@@ -1417,39 +3543,553 @@
               "name": "201 - Product created",
               "status": "Created",
               "code": 201,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Funko Pop Batman\",\n  \"slug\": \"funko-pop-batman\",\n  \"description\": \"Boneco colecionável do Batman da DC Comics, 10cm\",\n  \"categoryId\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n  \"status\": \"INACTIVE\",\n  \"featured\": false,\n  \"variants\": [\n    {\n      \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Clássico\",\n      \"price\": 89.90,\n      \"stock\": 50,\n      \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    },\n    {\n      \"id\": \"2bb85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Edição Especial\",\n      \"price\": 149.90,\n      \"stock\": 10,\n      \"sku\": \"FUNKO-BATMAN-ESPECIAL\",\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    }\n  ],\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "products"]},
-                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Funko Pop Batman\",\n  \"description\": \"Boneco colecionável\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"featured\": false,\n  \"variants\": [{\"attributeName\": \"Modelo\",\"attributeValue\": \"Clássico\",\"price\": 89.90,\"stock\": 50}]\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Funko Pop Batman\",\n  \"description\": \"Boneco colecionável\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"featured\": false,\n  \"variants\": [{\"attributeName\": \"Modelo\",\"attributeValue\": \"Clássico\",\"price\": 89.90,\"stock\": 50}]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "404 - Category not found",
               "status": "Not Found",
               "code": 404,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"CATEGORY_NOT_FOUND\",\n  \"message\": \"Categoria não encontrada\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "products"]},
-                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Produto Teste\",\n  \"description\": \"Desc\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000000\",\n  \"variants\": [{\"attributeName\": \"Cor\",\"attributeValue\": \"Azul\",\"price\": 50.00,\"stock\": 5}]\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Produto Teste\",\n  \"description\": \"Desc\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000000\",\n  \"variants\": [{\"attributeName\": \"Cor\",\"attributeValue\": \"Azul\",\"price\": 50.00,\"stock\": 5}]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               }
             },
             {
               "name": "409 - SKU conflict",
               "status": "Conflict",
               "code": 409,
-              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
               "body": "{\n  \"code\": \"SKU_CONFLICT\",\n  \"message\": \"Já existe um produto com o SKU: FUNKO-BATMAN-ESPECIAL\"\n}",
               "originalRequest": {
                 "method": "POST",
-                "header": [{"key": "Content-Type", "value": "application/json"}],
-                "url": {"raw": "{{baseUrl}}/api/v1/admin/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "products"]},
-                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Produto Repetido\",\n  \"description\": \"Desc\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"variants\": [{\"attributeName\": \"Modelo\",\"attributeValue\": \"Clássico\",\"price\": 89.90,\"stock\": 5,\"sku\": \"FUNKO-BATMAN-ESPECIAL\"}]\n}", "options": {"raw": {"language": "json"}}}
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Produto Repetido\",\n  \"description\": \"Desc\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"variants\": [{\"attributeName\": \"Modelo\",\"attributeValue\": \"Clássico\",\"price\": 89.90,\"stock\": 5,\"sku\": \"FUNKO-BATMAN-ESPECIAL\"}]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Upload Product Image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('imageId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "images"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "arquivo",
+                  "type": "file",
+                  "description": "Imagem do produto (JPEG, PNG ou WebP, máx. 5MB)"
+                }
+              ]
+            },
+            "description": "Faz upload de uma imagem para o produto.\n\n**Requer:** `ROLE_ADMIN`\n\n**Tipos aceitos:** `image/jpeg`, `image/png`, `image/webp`\n\n**Tamanho máximo:** 5MB\n\n**Comportamento:**\n- Nome gerado automaticamente: `{productId}-{uuid}.{extensão}`\n- Primeira imagem definida como `principal: true`\n- Máximo de 10 imagens por produto\n\n**Respostas:**\n- `201 Created` — imagem enviada\n- `400 Bad Request` — tipo inválido ou arquivo maior que 5MB\n- `404 Not Found` — produto inexistente\n- `422 Unprocessable Entity` — limite de 10 imagens atingido"
+          },
+          "response": [
+            {
+              "name": "201 - Image uploaded (primeira = principal)",
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"url\": \"http://localhost:9000/miria-products/3fa85f64-uuid.jpg\",\n  \"principal\": true,\n  \"imageOrder\": 0,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "images"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "arquivo",
+                      "type": "file"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "400 - Tipo inválido",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INVALID_IMAGE_TYPE\",\n  \"message\": \"Tipo de arquivo não suportado: image/gif. Formatos aceitos: JPEG, PNG, WebP\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "images"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "arquivo",
+                      "type": "file"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "400 - Arquivo muito grande",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"FILE_TOO_LARGE\",\n  \"message\": \"O arquivo excede o tamanho máximo permitido de 5MB\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "images"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "arquivo",
+                      "type": "file"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "422 - Limite de imagens atingido",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"IMAGE_LIMIT_EXCEEDED\",\n  \"message\": \"O produto já atingiu o limite máximo de 10 imagens\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "images"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "arquivo",
+                      "type": "file"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Set Principal Image",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images/{{imageId}}/principal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "images",
+                "{{imageId}}",
+                "principal"
+              ]
+            },
+            "description": "Define uma imagem como principal do produto.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Remove o flag `principal` da imagem anterior automaticamente\n\n**Respostas:**\n- `200 OK` — imagem definida como principal\n- `404 Not Found` — produto ou imagem inexistente"
+          },
+          "response": [
+            {
+              "name": "200 - Principal definida",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"url\": \"http://localhost:9000/miria-products/3fa85f64-uuid.jpg\",\n  \"principal\": true,\n  \"imageOrder\": 1,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images/{{imageId}}/principal",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "images",
+                    "{{imageId}}",
+                    "principal"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reorder Product Images",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images/order",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "images",
+                "order"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"imageId\": \"{{imageId}}\", \"order\": 0 },\n    { \"imageId\": \"<outro-uuid>\", \"order\": 1 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Reordena as imagens do produto.\n\n**Requer:** `ROLE_ADMIN`\n\n**Respostas:**\n- `200 OK` — lista completa de imagens na nova ordem\n- `404 Not Found` — produto ou algum imageId inexistente"
+          },
+          "response": [
+            {
+              "name": "200 - Imagens reordenadas",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"url\": \"http://localhost:9000/miria-products/img1.jpg\",\n    \"principal\": true,\n    \"imageOrder\": 0,\n    \"createdAt\": \"2026-06-03T10:00:00Z\"\n  },\n  {\n    \"id\": \"2bb85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"url\": \"http://localhost:9000/miria-products/img2.jpg\",\n    \"principal\": false,\n    \"imageOrder\": 1,\n    \"createdAt\": \"2026-06-03T10:00:00Z\"\n  }\n]",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images/order",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "images",
+                    "order"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"items\": [\n    { \"imageId\": \"{{imageId}}\", \"order\": 0 }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Product Image",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images/{{imageId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "images",
+                "{{imageId}}"
+              ]
+            },
+            "description": "Remove uma imagem do produto e exclui o arquivo do MinIO.\n\n**Requer:** `ROLE_ADMIN`\n\n**Respostas:**\n- `204 No Content` — imagem removida\n- `404 Not Found` — produto ou imagem inexistente\n- `422 Unprocessable Entity` — tentativa de remover a imagem principal com outras existentes"
+          },
+          "response": [
+            {
+              "name": "204 - Deleted",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": "",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images/{{imageId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "images",
+                    "{{imageId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "422 - Cannot remove principal",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"CANNOT_REMOVE_PRINCIPAL_IMAGE\",\n  \"message\": \"Não é possível remover a imagem principal enquanto houver outras imagens. Defina outra imagem como principal antes de remover esta.\"\n}",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/images/{{imageId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "images",
+                    "{{imageId}}"
+                  ]
+                }
               }
             }
           ]
@@ -1467,8 +4107,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/actuator/health",
-              "host": ["{{baseUrl}}"],
-              "path": ["actuator", "health"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
             },
             "description": "Verifica o status da aplicação e de todas as suas dependências (DB, Kafka, Mail)."
           },
@@ -1481,8 +4126,12 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/swagger-ui",
-              "host": ["{{baseUrl}}"],
-              "path": ["swagger-ui"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "swagger-ui"
+              ]
             },
             "description": "Interface gráfica da documentação OpenAPI."
           },

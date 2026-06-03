@@ -161,12 +161,12 @@ src/main/java/br/com/miriageekstore/
 │   │   │   └── out/                   ← CategoryRepository, StoragePort
 │   │   └── exception/                 ← CategoryNotFoundException, StorageException, ...
 │   ├── application/
-│   │   └── usecase/                   ← 6 use cases de categorias
+│   │   └── usecase/                   ← use cases de categorias e imagens de produto
 │   └── infrastructure/
 │       ├── adapter/
-│       │   ├── in/web/                ← AdminCategoryController, PublicCategoryController
+│       │   ├── in/web/                ← AdminCategoryController, PublicCategoryController, AdminProductController
 │       │   └── out/
-│       │       ├── persistence/       ← CategoryEntity + JPA + adapter
+│       │       ├── persistence/       ← CategoryEntity, ProductEntity, ProductImageEntity + JPA + adapters
 │       │       └── storage/           ← MinioStorageAdapter
 │       └── config/                    ← MinioConfig (bucket init on startup)
 └── shared/
@@ -216,6 +216,7 @@ Migrations gerenciadas pelo **Flyway** (`src/main/resources/db/migration/`):
 | V10 | Tabela `audit_log` (id, user_id, admin_id, action, created_at) |
 | V11 | Tabela `categories` (id, name, slug, description, active, created_at) |
 | V12 | Tabelas `products` e `product_variants` (id, name, slug, category_id, status, featured, variants com SKU único) |
+| V13 | Tabela `product_images` (id, product_id, url, filename, principal, image_order, created_at) |
 
 ---
 
@@ -279,8 +280,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-02.01 | Configuração do MinIO | 3 | — (infra) |
 | US-02.02 | Gestão de categorias (admin) | 3 | `GET POST /api/v1/admin/categories` · `GET PUT DELETE /{id}` · `GET /api/v1/categories` |
 | US-02.03 | Cadastro de produto (admin) | 5 | `POST /api/v1/admin/products` |
+| US-02.04 | Upload de imagens do produto (admin) | 5 | `POST /{id}/images` · `PATCH /{id}/images/{imageId}/principal` · `PATCH /{id}/images/order` · `DELETE /{id}/images/{imageId}` |
 
-**3/? stories · 11 pontos · 167 testes passando**
+**4/? stories · 16 pontos · 185 testes passando**
 
 ---
 
@@ -342,9 +344,13 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 
 ### Admin Products — requer `ROLE_ADMIN`
 
-| Método | Path | Body | Resposta |
+| Método | Path | Body / Params | Resposta |
 |---|---|---|---|
 | POST | `/api/v1/admin/products` | `name, description, categoryId, featured?, variants[{attributeName, attributeValue, price, stock, sku?}]` | 201 |
+| POST | `/api/v1/admin/products/{id}/images` | `multipart/form-data campo: arquivo` (JPEG/PNG/WebP, máx 5MB) | 201 |
+| PATCH | `/api/v1/admin/products/{id}/images/{imageId}/principal` | — | 200 |
+| PATCH | `/api/v1/admin/products/{id}/images/order` | `items[{imageId, order}]` | 200 lista |
+| DELETE | `/api/v1/admin/products/{id}/images/{imageId}` | — | 204 |
 
 ---
 
