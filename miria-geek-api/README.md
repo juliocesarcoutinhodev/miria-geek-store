@@ -155,20 +155,34 @@ src/main/java/br/com/miriageekstore/
 │       └── config/                    ← SecurityConfig, CookieFactory, AdminSeeder
 ├── catalog/                           ← módulo Catalog (EP-02)
 │   ├── domain/
-│   │   ├── model/                     ← Category, CategoryId, Slug
+│   │   ├── model/                     ← Category, Product, ProductVariant, ProductImage
+│   │   │                                 ProductId, CategoryId, Slug, Sku
+│   │   │                                 StockMovement, StockMovementType (ENTRADA|SAIDA)
 │   │   ├── port/
-│   │   │   ├── in/                    ← use cases + commands + results (categories)
-│   │   │   └── out/                   ← CategoryRepository, StoragePort
-│   │   └── exception/                 ← CategoryNotFoundException, StorageException, ...
+│   │   │   ├── in/                    ← use cases + commands + results
+│   │   │   │                             (categories, products, images, variants, stock)
+│   │   │   └── out/                   ← CategoryRepository, ProductRepository,
+│   │   │                                 ProductCatalogRepository, StockMovementRepository,
+│   │   │                                 StoragePort, CatalogEventPublisher
+│   │   ├── event/                     ← ProductUpdated, ProductStatusChanged, StockUpdated
+│   │   └── exception/                 ← CategoryNotFoundException, CategoryHasProductsException,
+│   │                                     ProductNotFoundException, VariantNotFoundException,
+│   │                                     LastActiveVariantException, InsufficientStockException,
+│   │                                     ProductCannotBeActivatedException, StorageException
 │   ├── application/
-│   │   └── usecase/                   ← use cases de categorias e imagens de produto
+│   │   └── usecase/                   ← use cases de categorias, produtos, imagens,
+│   │                                     variantes e ajuste de estoque
 │   └── infrastructure/
 │       ├── adapter/
-│       │   ├── in/web/                ← AdminCategoryController, PublicCategoryController, AdminProductController
+│       │   ├── in/web/                ← AdminCategoryController, PublicCategoryController
+│       │   │                             AdminProductController, PublicProductController
+│       │   │                             (DTOs, WebMappers — pacote package-private)
 │       │   └── out/
-│       │       ├── persistence/       ← CategoryEntity, ProductEntity, ProductImageEntity + JPA + adapters
-│       │       └── storage/           ← MinioStorageAdapter
-│       └── config/                    ← MinioConfig (bucket init on startup)
+│       │       ├── persistence/       ← CategoryEntity, ProductEntity, ProductVariantEntity,
+│       │       │                         ProductImageEntity, StockMovementEntity + JPA + adapters
+│       │       │                         ProductCatalogPersistenceAdapter (native SQL com aggregates)
+│       │       └── storage/           ← MinioStorageAdapter (upload, delete, URL pública)
+│       └── config/                    ← MinioConfig (criação do bucket no startup)
 └── shared/
     └── infrastructure/config/         ← GlobalExceptionHandler
 ```
@@ -296,7 +310,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-02.08 | Detalhe do produto (loja) | 2 | `GET /api/v1/products/{slug}` |
 | US-02.09 | Listagem de produtos (admin) | 2 | `GET /api/v1/admin/products` · `GET /api/v1/admin/products/{id}` |
 
-**9/? stories · 31 pontos · 230 testes passando**
+**9/9 stories · 31 pontos · 230 testes passando**
+
+> **Nota:** a query de listagem admin (`GET /api/v1/admin/products`) retorna `principalImageUrl` (nullable) com a URL pública da imagem principal de cada produto, obtida via subquery no PostgreSQL.
 
 ---
 
