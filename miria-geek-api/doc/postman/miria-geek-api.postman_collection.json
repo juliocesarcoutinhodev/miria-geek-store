@@ -40,6 +40,12 @@
       "value": "",
       "type": "string",
       "description": "UUID do usuário alvo para operações admin (ativar/desativar conta)."
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string",
+      "description": "UUID de uma categoria. Preencher após criar uma categoria via POST /api/v1/admin/categories."
     }
   ],
   "item": [
@@ -1117,6 +1123,250 @@
               "header": [{"key": "Content-Type", "value": "application/json"}],
               "body": "{\n  \"code\": \"USER_NOT_FOUND\",\n  \"message\": \"User not found\"\n}",
               "originalRequest": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "{{baseUrl}}/api/v1/admin/users/{{targetUserId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "users", "{{targetUserId}}", "status"]}, "body": {"mode": "raw", "raw": "{\n  \"status\": \"INACTIVE\"\n}", "options": {"raw": {"language": "json"}}}}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "description": "Endpoint público de categorias para a loja. Não requer autenticação.",
+      "item": [
+        {
+          "name": "List Active Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories"]
+            },
+            "description": "Retorna todas as categorias ativas ordenadas por nome.\n\n**Acesso:** público, sem autenticação.\n\n**Resposta:** `200 OK` — lista de categorias com id, name, slug e totalProducts."
+          },
+          "response": [
+            {
+              "name": "200 - Categories listed",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "[\n  {\n    \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"name\": \"Action Figures\",\n    \"slug\": \"action-figures\",\n    \"totalProducts\": 12\n  },\n  {\n    \"id\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n    \"name\": \"Anime\",\n    \"slug\": \"anime\",\n    \"totalProducts\": 8\n  }\n]",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/categories", "host": ["{{baseUrl}}"], "path": ["api", "v1", "categories"]}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin Categories",
+      "description": "Gestão de categorias do catálogo. Requerem `ROLE_ADMIN` — cookie `access_token` de um administrador.",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/categories?page=0&size=20&sort=name&direction=asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "categories"],
+              "query": [
+                {"key": "page", "value": "0", "description": "Número da página (base 0)"},
+                {"key": "size", "value": "20", "description": "Itens por página"},
+                {"key": "sort", "value": "name", "description": "Campo: name | active | createdAt"},
+                {"key": "direction", "value": "asc", "description": "Direção: asc | desc"},
+                {"key": "name", "value": "", "description": "Busca parcial case-insensitive no nome", "disabled": true},
+                {"key": "active", "value": "", "description": "Filtro: true | false", "disabled": true}
+              ]
+            },
+            "description": "Lista categorias com paginação e filtros opcionais.\n\n**Requer:** `ROLE_ADMIN`\n\n**Resposta:** `200 OK` — lista paginada com id, name, slug, description, totalProducts, active, createdAt."
+          },
+          "response": [
+            {
+              "name": "200 - Categories listed",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"name\": \"Action Figures\",\n      \"slug\": \"action-figures\",\n      \"description\": \"Bonecos e miniaturas colecionáveis\",\n      \"totalProducts\": 0,\n      \"active\": true,\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories?page=0&size=20", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}]}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Category By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]
+            },
+            "description": "Busca categoria pelo ID.\n\n**Requer:** `ROLE_ADMIN`\n\n**Respostas:**\n- `200 OK` — categoria encontrada\n- `404 Not Found` — categoria inexistente"
+          },
+          "response": [
+            {
+              "name": "200 - Category found",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Action Figures\",\n  \"slug\": \"action-figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\",\n  \"totalProducts\": 0,\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]}
+              }
+            },
+            {
+              "name": "404 - Not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"CATEGORY_NOT_FOUND\",\n  \"message\": \"Categoria não encontrada\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/00000000-0000-0000-0000-000000000000", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "00000000-0000-0000-0000-000000000000"]}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('categoryId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "categories"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Action Figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Cria uma nova categoria.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Slug gerado automaticamente a partir do nome (ex: \"Action Figures\" → \"action-figures\")\n- Criada com `active: true` por padrão\n\n**Respostas:**\n- `201 Created` — categoria criada\n- `409 Conflict` — nome já existe"
+          },
+          "response": [
+            {
+              "name": "201 - Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Action Figures\",\n  \"slug\": \"action-figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\",\n  \"totalProducts\": 0,\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories"]},
+                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Action Figures\",\n  \"description\": \"Bonecos e miniaturas colecionáveis\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            },
+            {
+              "name": "409 - Name conflict",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"CATEGORY_NAME_CONFLICT\",\n  \"message\": \"Já existe uma categoria com o nome: Action Figures\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories"]},
+                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Action Figures\",\n  \"description\": \"Duplicada\"\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Action Figures Colecionáveis\",\n  \"description\": \"Bonecos, miniaturas e estatuetas colecionáveis\",\n  \"active\": true\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "description": "Atualiza todos os campos de uma categoria.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Slug regerado automaticamente se o nome for alterado\n\n**Respostas:**\n- `200 OK` — categoria atualizada\n- `404 Not Found` — categoria inexistente\n- `409 Conflict` — nome já usado por outra categoria"
+          },
+          "response": [
+            {
+              "name": "200 - Updated",
+              "status": "OK",
+              "code": 200,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Action Figures Colecionáveis\",\n  \"slug\": \"action-figures-coleciona-veis\",\n  \"description\": \"Bonecos, miniaturas e estatuetas colecionáveis\",\n  \"totalProducts\": 0,\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]},
+                "body": {"mode": "raw", "raw": "{\n  \"name\": \"Action Figures Colecionáveis\",\n  \"description\": \"Bonecos, miniaturas e estatuetas colecionáveis\",\n  \"active\": true\n}", "options": {"raw": {"language": "json"}}}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]
+            },
+            "description": "Exclui uma categoria.\n\n**Requer:** `ROLE_ADMIN`\n\n**Respostas:**\n- `204 No Content` — excluída com sucesso\n- `404 Not Found` — categoria inexistente\n- `409 Conflict` — categoria possui produtos vinculados"
+          },
+          "response": [
+            {
+              "name": "204 - Deleted",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": "",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]}
+              }
+            },
+            {
+              "name": "409 - Has products",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": "{\n  \"code\": \"CATEGORY_HAS_PRODUCTS\",\n  \"message\": \"Não é possível excluir uma categoria que possui produtos vinculados\"\n}",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {"raw": "{{baseUrl}}/api/v1/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "categories", "{{categoryId}}"]}
+              }
             }
           ]
         }

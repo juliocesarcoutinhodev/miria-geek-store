@@ -10,9 +10,9 @@ public record Slug(String value) {
                 .replaceAll("\\p{InCombiningDiacriticalMarks}", "");
         String slug = normalized.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9\\s-]", "")
+                .strip()
                 .replaceAll("\\s+", "-")
-                .replaceAll("-+", "-")
-                .strip();
+                .replaceAll("-+", "-");
         return new Slug(slug);
     }
 }

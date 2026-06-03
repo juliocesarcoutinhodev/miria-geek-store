@@ -16,6 +16,7 @@ Construído com **Spring Boot 4.0**, arquitetura **Hexagonal (Ports & Adapters)*
 | Mensageria | Apache Kafka 3.9 |
 | Segurança | Spring Security + OAuth2 Resource Server + JJWT 0.12.6 (HS256) |
 | E-mail | Spring Mail (Gmail SMTP / STARTTLS) |
+| Armazenamento | MinIO (S3-compatible, SDK 8.5) |
 | Documentação | SpringDoc OpenAPI 2.8 (Swagger UI) |
 | Observabilidade | Spring Actuator + Micrometer + Prometheus |
 | Módulos | Spring Modulith |
@@ -47,6 +48,7 @@ Serviços iniciados:
 | PostgreSQL 17 | `5432` | Banco de dados principal |
 | Apache Kafka 3.9 | `9092` | Mensageria |
 | Kafka UI | `8090` | Painel web do Kafka |
+| MinIO | `9000` / `9001` | Armazenamento de imagens (API / Console) |
 
 ---
 
@@ -82,6 +84,13 @@ MAIL_USERNAME=<seu-email@gmail.com>
 MAIL_PASSWORD=<app-password-16-digitos>
 MAIL_FROM=<seu-email@gmail.com>
 
+# MinIO (armazenamento de imagens)
+MINIO_ENDPOINT=http://localhost:9000
+MINIO_ROOT_USER=minioadmin
+MINIO_ROOT_PASSWORD=minioadmin
+MINIO_BUCKET_PRODUCTS=miria-products
+MINIO_PUBLIC_URL=http://localhost:9000
+
 # URL base da API (usada em links de verificação de e-mail)
 BASE_URL=http://localhost:8080
 
@@ -112,6 +121,7 @@ No primeiro startup com perfil `dev`, o **AdminSeeder** cria automaticamente um 
 | `http://localhost:8080/swagger-ui` | Swagger UI |
 | `http://localhost:8080/api-docs` | OpenAPI JSON |
 | `http://localhost:8090` | Kafka UI |
+| `http://localhost:9001` | MinIO Console |
 | `http://localhost:8080/actuator/health` | Health check |
 
 A collection Postman está em `doc/postman/miria-geek-api.postman_collection.json`.
@@ -134,7 +144,7 @@ src/main/java/br/com/miriageekstore/
 │   │   └── usecase/                   ← implementações dos use cases (@Service)
 │   └── infrastructure/
 │       ├── adapter/
-│       │   ├── in/web/                ← controllers REST + DTOs
+│       │   ├── in/web/                ← controllers REST + DTOs + CategoryWebMapper
 │       │   └── out/
 │       │       ├── persistence/       ← JPA entities + Spring Data + adapters
 │       │       ├── messaging/         ← KafkaEventPublisher
@@ -143,6 +153,22 @@ src/main/java/br/com/miriageekstore/
 │       │       ├── ratelimit/         ← rate limiters in-memory
 │       │       └── order/             ← NoOpActiveOrderChecker (placeholder)
 │       └── config/                    ← SecurityConfig, CookieFactory, AdminSeeder
+├── catalog/                           ← módulo Catalog (EP-02)
+│   ├── domain/
+│   │   ├── model/                     ← Category, CategoryId, Slug
+│   │   ├── port/
+│   │   │   ├── in/                    ← use cases + commands + results (categories)
+│   │   │   └── out/                   ← CategoryRepository, StoragePort
+│   │   └── exception/                 ← CategoryNotFoundException, StorageException, ...
+│   ├── application/
+│   │   └── usecase/                   ← 6 use cases de categorias
+│   └── infrastructure/
+│       ├── adapter/
+│       │   ├── in/web/                ← AdminCategoryController, PublicCategoryController
+│       │   └── out/
+│       │       ├── persistence/       ← CategoryEntity + JPA + adapter
+│       │       └── storage/           ← MinioStorageAdapter
+│       └── config/                    ← MinioConfig (bucket init on startup)
 └── shared/
     └── infrastructure/config/         ← GlobalExceptionHandler
 ```
@@ -188,6 +214,7 @@ Migrations gerenciadas pelo **Flyway** (`src/main/resources/db/migration/`):
 | V8 | Coluna `created_by_admin_id` na tabela `users` |
 | V9 | Coluna `last_login_at` na tabela `users` |
 | V10 | Tabela `audit_log` (id, user_id, admin_id, action, created_at) |
+| V11 | Tabela `categories` (id, name, slug, description, active, created_at) |
 
 ---
 
@@ -244,6 +271,17 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 
 ---
 
+## EP-02 · Catalog — Status das stories
+
+| Story | Descrição | Pontos | Endpoint(s) |
+|---|---|---|---|
+| US-02.01 | Configuração do MinIO | 3 | — (infra) |
+| US-02.02 | Gestão de categorias (admin) | 3 | `GET POST /api/v1/admin/categories` · `GET PUT DELETE /{id}` · `GET /api/v1/categories` |
+
+**2/? stories · 6 pontos · 151 testes passando**
+
+---
+
 ## Referência completa de endpoints
 
 ### Auth — público
@@ -283,6 +321,22 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | PUT | `/api/v1/admin/users/{id}` | `fullName, email, role` | 200 |
 | PATCH | `/api/v1/admin/users/{id}` | campos opcionais: `fullName, email, role` | 200 |
 | PATCH | `/api/v1/admin/users/{id}/status` | `status (ACTIVE\|INACTIVE)` | 200 |
+
+### Categories — público
+
+| Método | Path | Params | Resposta |
+|---|---|---|---|
+| GET | `/api/v1/categories` | — | 200 lista |
+
+### Admin Categories — requer `ROLE_ADMIN`
+
+| Método | Path | Body / Params | Resposta |
+|---|---|---|---|
+| GET | `/api/v1/admin/categories` | `?page, size, name, active, sort, direction` | 200 paginado |
+| GET | `/api/v1/admin/categories/{id}` | — | 200 |
+| POST | `/api/v1/admin/categories` | `name, description` | 201 |
+| PUT | `/api/v1/admin/categories/{id}` | `name, description, active` | 200 |
+| DELETE | `/api/v1/admin/categories/{id}` | — | 204 |
 
 ---
 
