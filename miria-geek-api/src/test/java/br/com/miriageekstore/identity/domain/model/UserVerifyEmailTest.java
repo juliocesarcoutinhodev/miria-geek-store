@@ -29,7 +29,7 @@ class UserVerifyEmailTest {
 
         assertThatThrownBy(user::verifyEmail)
                 .isInstanceOf(UserAlreadyVerifiedException.class)
-                .hasMessage("Email has already been verified");
+                .hasMessage("E-mail já verificado");
     }
 
     @Test
@@ -38,7 +38,7 @@ class UserVerifyEmailTest {
 
         assertThatThrownBy(user::verifyEmail)
                 .isInstanceOf(VerificationTokenExpiredException.class)
-                .hasMessage("Verification token has expired. Please request a new verification email.");
+                .hasMessage("Token de verificação expirado. Solicite um novo e-mail de verificação.");
     }
 
     @Test
