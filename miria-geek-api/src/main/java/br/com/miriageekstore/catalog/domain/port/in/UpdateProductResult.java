@@ -23,6 +23,7 @@ public record UpdateProductResult(
             BigDecimal price,
             int stock,
             String sku,
+            boolean active,
             Instant createdAt
     ) {}
 }

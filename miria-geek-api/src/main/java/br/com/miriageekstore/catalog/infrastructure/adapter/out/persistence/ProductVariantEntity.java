@@ -44,6 +44,9 @@ class ProductVariantEntity {
     @Column(nullable = false, unique = true, length = 200)
     private String sku;
 
+    @Column(nullable = false)
+    private boolean active;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 }

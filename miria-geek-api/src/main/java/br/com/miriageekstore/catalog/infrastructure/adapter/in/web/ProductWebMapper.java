@@ -37,7 +37,7 @@ class ProductWebMapper {
         var variants = result.variants().stream()
                 .map(v -> new ProductResponse.VariantResponse(
                         v.id(), v.attributeName(), v.attributeValue(),
-                        v.price(), v.stock(), v.sku(), v.createdAt()))
+                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt()))
                 .toList();
 
         return new ProductResponse(
@@ -89,7 +89,7 @@ class ProductWebMapper {
         var variants = result.variants().stream()
                 .map(v -> new ProductResponse.VariantResponse(
                         v.id(), v.attributeName(), v.attributeValue(),
-                        v.price(), v.stock(), v.sku(), v.createdAt()))
+                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt()))
                 .toList();
 
         return new ProductResponse(

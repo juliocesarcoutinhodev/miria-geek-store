@@ -58,6 +58,11 @@
       "value": "",
       "type": "string",
       "description": "UUID de uma imagem do produto. Setado automaticamente após POST /{id}/images."
+    },
+    {
+      "key": "variantId",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -2965,6 +2970,187 @@
       ]
     },
     {
+      "name": "Products",
+      "description": "Catálogo de produtos da loja. Endpoints públicos — não requerem autenticação.",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "nome",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "categoriaId",
+                  "value": "{{categoryId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "precoMin",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "precoMax",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "destaque",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "mais_recente"
+                }
+              ]
+            },
+            "description": "Lista produtos do catálogo disponíveis para a loja. **Público — não requer autenticação.**\n\n**Filtros (todos opcionais):**\n- `nome` — busca parcial case-insensitive\n- `categoriaId` — filtro por categoria\n- `precoMin` / `precoMax` — intervalo de preço (baseado no min/max das variantes ativas)\n- `destaque` — boolean, filtra produtos em destaque\n\n**Ordenações aceitas (`sort`):** `mais_recente` (padrão), `nome_asc`, `nome_desc`, `preco_asc`, `preco_desc`, `destaque`\n\n**Regras:** retorna apenas produtos `ACTIVE` com ao menos 1 variante ativa com estoque > 0.\n\n**Respostas:**\n- `200 OK` — lista paginada (pode retornar página vazia)"
+          },
+          "response": [
+            {
+              "name": "200 - Lista paginada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"nome\": \"Funko Pop Batman\",\n      \"slug\": \"funko-pop-batman\",\n      \"categoria\": {\n        \"id\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n        \"nome\": \"Action Figures\"\n      },\n      \"imagemPrincipal\": \"http://localhost:9000/miria-products/3fa85f64/batman.jpg\",\n      \"precoMinimo\": 89.9,\n      \"precoMaximo\": 149.9,\n      \"totalVariantesAtivas\": 2,\n      \"destaque\": true\n    },\n    {\n      \"id\": \"5cd95f64-5717-4562-b3fc-2c963f66afa6\",\n      \"nome\": \"Camiseta Naruto Shippuden\",\n      \"slug\": \"camiseta-naruto-shippuden\",\n      \"categoria\": {\n        \"id\": \"7ef95f64-5717-4562-b3fc-2c963f66afa6\",\n        \"nome\": \"Roupas\"\n      },\n      \"imagemPrincipal\": \"http://localhost:9000/miria-products/5cd95f64/naruto.jpg\",\n      \"precoMinimo\": 59.9,\n      \"precoMaximo\": 79.9,\n      \"totalVariantesAtivas\": 3,\n      \"destaque\": false\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 2,\n  \"totalPages\": 1\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/products?page=0&size=20&sort=mais_recente",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "mais_recente"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "200 - Filtrado por nome e destaque",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"nome\": \"Funko Pop Batman\",\n      \"slug\": \"funko-pop-batman\",\n      \"categoria\": {\n        \"id\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n        \"nome\": \"Action Figures\"\n      },\n      \"imagemPrincipal\": \"http://localhost:9000/miria-products/3fa85f64/batman.jpg\",\n      \"precoMinimo\": 89.9,\n      \"precoMaximo\": 149.9,\n      \"totalVariantesAtivas\": 2,\n      \"destaque\": true\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/products?nome=batman&destaque=true&sort=preco_asc",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "nome",
+                      "value": "batman"
+                    },
+                    {
+                      "key": "destaque",
+                      "value": "true"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "preco_asc"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "200 - Página vazia",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 0,\n  \"totalPages\": 0\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/products?nome=produto-que-nao-existe",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "nome",
+                      "value": "produto-que-nao-existe"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Categories",
       "description": "Endpoint público de categorias para a loja. Não requer autenticação.",
       "item": [
@@ -3549,7 +3735,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Funko Pop Batman\",\n  \"slug\": \"funko-pop-batman\",\n  \"description\": \"Boneco colecionável do Batman da DC Comics, 10cm\",\n  \"categoryId\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n  \"status\": \"INACTIVE\",\n  \"featured\": false,\n  \"variants\": [\n    {\n      \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Clássico\",\n      \"price\": 89.90,\n      \"stock\": 50,\n      \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    },\n    {\n      \"id\": \"2bb85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Edição Especial\",\n      \"price\": 149.90,\n      \"stock\": 10,\n      \"sku\": \"FUNKO-BATMAN-ESPECIAL\",\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    }\n  ],\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Funko Pop Batman\",\n  \"slug\": \"funko-pop-batman\",\n  \"description\": \"Boneco colecionável do Batman da DC Comics, 10cm\",\n  \"categoryId\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n  \"status\": \"INACTIVE\",\n  \"featured\": false,\n  \"variants\": [\n    {\n      \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Clássico\",\n      \"price\": 89.9,\n      \"stock\": 50,\n      \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n      \"createdAt\": \"2026-06-03T10:00:00Z\",\n      \"active\": true\n    },\n    {\n      \"id\": \"2bb85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Edição Especial\",\n      \"price\": 149.9,\n      \"stock\": 10,\n      \"sku\": \"FUNKO-BATMAN-ESPECIAL\",\n      \"createdAt\": \"2026-06-03T10:00:00Z\",\n      \"active\": true\n    }\n  ],\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
               "originalRequest": {
                 "method": "POST",
                 "header": [
@@ -4419,6 +4605,707 @@
                     "images",
                     "{{imageId}}"
                   ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Variants",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 && pm.response.json().length > 0) {",
+                  "    pm.collectionVariables.set('variantId', pm.response.json()[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "variants"
+              ]
+            },
+            "description": "Lista todas as variantes de um produto.\n\n**Requer:** `ROLE_ADMIN`\n\n**Respostas:**\n- `200 OK` — lista de variantes (pode ser vazia)\n- `404 Not Found` — produto inexistente"
+          },
+          "response": [
+            {
+              "name": "200 - Lista de variantes",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"attributeName\": \"Modelo\",\n    \"attributeValue\": \"Clássico\",\n    \"price\": 89.9,\n    \"stock\": 50,\n    \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n    \"active\": true,\n    \"createdAt\": \"2026-06-03T10:00:00Z\"\n  },\n  {\n    \"id\": \"2bb85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"attributeName\": \"Modelo\",\n    \"attributeValue\": \"Edição Especial\",\n    \"price\": 149.9,\n    \"stock\": 10,\n    \"sku\": \"FUNKO-BATMAN-ESPECIAL\",\n    \"active\": true,\n    \"createdAt\": \"2026-06-03T10:00:00Z\"\n  }\n]",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add Variant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('variantId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "variants"
+              ]
+            },
+            "description": "Adiciona uma nova variante a um produto existente.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- SKU gerado automaticamente se não informado: `SLUG-ATRIBUTO-VALOR`\n- SKU customizado aceito se informado\n- Variante criada com `active: true` por padrão\n\n**Respostas:**\n- `201 Created` — variante adicionada\n- `404 Not Found` — produto inexistente\n- `409 Conflict` — SKU duplicado",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attributeName\": \"Tamanho\",\n  \"attributeValue\": \"G\",\n  \"price\": 99.9,\n  \"stock\": 20\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "201 - Variante criada",
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3cc85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"attributeName\": \"Tamanho\",\n  \"attributeValue\": \"G\",\n  \"price\": 99.9,\n  \"stock\": 20,\n  \"sku\": \"FUNKO-POP-BATMAN-TAMANHO-G\",\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T12:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributeName\": \"Tamanho\",\n  \"attributeValue\": \"G\",\n  \"price\": 99.9,\n  \"stock\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "409 - SKU duplicado",
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"SKU_CONFLICT\",\n  \"message\": \"J\\u00e1 existe uma variante com o SKU: FUNKO-POP-BATMAN-TAMANHO-G\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributeName\": \"Tamanho\",\n  \"attributeValue\": \"G\",\n  \"price\": 99.9,\n  \"stock\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Variant (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "variants",
+                "{{variantId}}"
+              ]
+            },
+            "description": "Atualiza completamente uma variante.\n\n**Requer:** `ROLE_ADMIN`\n\n**Respostas:**\n- `200 OK` — variante atualizada\n- `404 Not Found` — produto ou variante inexistente\n- `409 Conflict` — novo SKU já pertence a outra variante",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attributeName\": \"Tamanho\",\n  \"attributeValue\": \"GG\",\n  \"price\": 109.9,\n  \"stock\": 15,\n  \"sku\": \"FUNKO-POP-BATMAN-TAMANHO-GG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "200 - Variante atualizada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3cc85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"attributeName\": \"Tamanho\",\n  \"attributeValue\": \"GG\",\n  \"price\": 109.9,\n  \"stock\": 15,\n  \"sku\": \"FUNKO-POP-BATMAN-TAMANHO-GG\",\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T12:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants",
+                    "{{variantId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributeName\": \"Tamanho\",\n  \"attributeValue\": \"GG\",\n  \"price\": 109.9,\n  \"stock\": 15,\n  \"sku\": \"FUNKO-POP-BATMAN-TAMANHO-GG\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "404 - Variante não encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"VARIANT_NOT_FOUND\",\n  \"message\": \"Variante n\\u00e3o encontrada\"\n}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants",
+                    "{{variantId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributeName\": \"Tamanho\",\n  \"attributeValue\": \"GG\",\n  \"price\": 109.9,\n  \"stock\": 15,\n  \"sku\": \"FUNKO-POP-BATMAN-TAMANHO-GG\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Variant Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "variants",
+                "{{variantId}}",
+                "status"
+              ]
+            },
+            "description": "Ativa ou inativa uma variante.\n\n**Requer:** `ROLE_ADMIN`\n\n**Campo `ativo`:** `true` | `false`\n\n**Regra de negócio:**\n- Um produto precisa ter ao menos 1 variante ativa. Tentar inativar a última variante ativa retorna 422.\n\n**Respostas:**\n- `200 OK` — status da variante atualizado\n- `404 Not Found` — produto ou variante inexistente\n- `422 Unprocessable Entity` — última variante ativa",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ativo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "200 - Inativada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"attributeName\": \"Modelo\",\n  \"attributeValue\": \"Clássico\",\n  \"price\": 89.9,\n  \"stock\": 50,\n  \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n  \"active\": false,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants",
+                    "{{variantId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ativo\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "200 - Ativada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"attributeName\": \"Modelo\",\n  \"attributeValue\": \"Clássico\",\n  \"price\": 89.9,\n  \"stock\": 50,\n  \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n  \"active\": true,\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants",
+                    "{{variantId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ativo\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "422 - Última variante ativa",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"LAST_ACTIVE_VARIANT\",\n  \"message\": \"N\\u00e3o \\u00e9 poss\\u00edvel inativar a \\u00faltima variante ativa do produto\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants",
+                    "{{variantId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ativo\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Adjust Stock",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}/stock",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "variants",
+                "{{variantId}}",
+                "stock"
+              ]
+            },
+            "description": "Ajusta o estoque de uma variante (entrada ou saída).\n\n**Requer:** `ROLE_ADMIN`\n\n**Campo `tipo`:** `ENTRADA` | `SAIDA`\n\n**Comportamento:**\n- Registra movimento na tabela `stock_movements` com o ID do admin autenticado\n- Publica evento `StockUpdated` no Kafka (`catalog.stock-updated`)\n- `SAIDA` não pode resultar em estoque negativo\n\n**Respostas:**\n- `200 OK` — estoque atualizado (retorna variantId, sku, novoEstoque)\n- `404 Not Found` — produto ou variante inexistente\n- `422 Unprocessable Entity` — estoque insuficiente para saída",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"ENTRADA\",\n  \"quantidade\": 30,\n  \"motivo\": \"Reposi\\u00e7\\u00e3o de estoque\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "200 - Entrada registrada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"variantId\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n  \"stock\": 80\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}/stock",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants",
+                    "{{variantId}}",
+                    "stock"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipo\": \"ENTRADA\",\n  \"quantidade\": 30,\n  \"motivo\": \"Reposi\\u00e7\\u00e3o de estoque\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "200 - Saída registrada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"variantId\": \"1aa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n  \"stock\": 45\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}/stock",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants",
+                    "{{variantId}}",
+                    "stock"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipo\": \"SAIDA\",\n  \"quantidade\": 5,\n  \"motivo\": \"Venda manual\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "422 - Estoque insuficiente",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INSUFFICIENT_STOCK\",\n  \"message\": \"Estoque insuficiente para realizar a sa\\u00edda solicitada\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/variants/{{variantId}}/stock",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "variants",
+                    "{{variantId}}",
+                    "stock"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipo\": \"SAIDA\",\n  \"quantidade\": 5,\n  \"motivo\": \"Venda manual\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
                 }
               }
             }

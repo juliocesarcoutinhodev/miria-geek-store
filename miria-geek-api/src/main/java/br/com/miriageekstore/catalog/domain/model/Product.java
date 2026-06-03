@@ -1,5 +1,9 @@
 package br.com.miriageekstore.catalog.domain.model;
 
+import br.com.miriageekstore.catalog.domain.exception.InsufficientStockException;
+import br.com.miriageekstore.catalog.domain.exception.LastActiveVariantException;
+import br.com.miriageekstore.catalog.domain.exception.VariantNotFoundException;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,6 +79,42 @@ public class Product {
 
     public void changeStatus(ProductStatus status) {
         this.status = status;
+    }
+
+    public void addVariant(ProductVariant variant) {
+        variants.add(variant);
+    }
+
+    public void updateVariant(VariantId id, String attributeName, String attributeValue,
+                               java.math.BigDecimal price, int stock, Sku sku) {
+        findVariantOrThrow(id).update(attributeName, attributeValue, price, stock, sku);
+    }
+
+    public void changeVariantStatus(VariantId id, boolean active) {
+        var variant = findVariantOrThrow(id);
+        if (!active) {
+            long activeCount = variants.stream().filter(ProductVariant::isActive).count();
+            if (activeCount <= 1) {
+                throw new LastActiveVariantException();
+            }
+        }
+        variant.changeStatus(active);
+    }
+
+    public void adjustVariantStock(VariantId id, StockMovementType type, int quantity) {
+        var variant = findVariantOrThrow(id);
+        int delta = type == StockMovementType.ENTRADA ? quantity : -quantity;
+        if (variant.getStock() + delta < 0) {
+            throw new InsufficientStockException();
+        }
+        variant.adjustStock(delta);
+    }
+
+    public ProductVariant findVariantOrThrow(VariantId id) {
+        return variants.stream()
+                .filter(v -> v.getId().equals(id))
+                .findFirst()
+                .orElseThrow(VariantNotFoundException::new);
     }
 
     public ProductId getId() { return id; }

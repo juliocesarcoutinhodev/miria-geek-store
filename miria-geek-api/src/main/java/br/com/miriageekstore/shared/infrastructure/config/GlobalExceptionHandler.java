@@ -1,7 +1,10 @@
 package br.com.miriageekstore.shared.infrastructure.config;
 
 import br.com.miriageekstore.catalog.domain.exception.CannotRemovePrincipalImageException;
+import br.com.miriageekstore.catalog.domain.exception.InsufficientStockException;
+import br.com.miriageekstore.catalog.domain.exception.LastActiveVariantException;
 import br.com.miriageekstore.catalog.domain.exception.ProductCannotBeActivatedException;
+import br.com.miriageekstore.catalog.domain.exception.VariantNotFoundException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryHasProductsException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryNameAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryNotFoundException;
@@ -241,6 +244,24 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(ProductCannotBeActivatedException ex) {
         return ResponseEntity.status(422)
                 .body(new ErrorResponse("PRODUCT_CANNOT_BE_ACTIVATED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(VariantNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(VariantNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("VARIANT_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(LastActiveVariantException.class)
+    ResponseEntity<ErrorResponse> handle(LastActiveVariantException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("LAST_ACTIVE_VARIANT", ex.getMessage()));
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    ResponseEntity<ErrorResponse> handle(InsufficientStockException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("INSUFFICIENT_STOCK", ex.getMessage()));
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)

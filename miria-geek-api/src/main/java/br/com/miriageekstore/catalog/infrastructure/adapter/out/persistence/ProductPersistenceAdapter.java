@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +20,11 @@ class ProductPersistenceAdapter implements ProductRepository {
     @Override
     public boolean existsBySku(String sku) {
         return variantJpaRepository.existsBySku(sku);
+    }
+
+    @Override
+    public boolean existsBySkuExcluding(String sku, UUID variantId) {
+        return variantJpaRepository.existsBySkuAndIdNot(sku, variantId);
     }
 
     @Override

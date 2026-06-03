@@ -2,6 +2,7 @@ package br.com.miriageekstore.catalog.infrastructure.adapter.out.messaging;
 
 import br.com.miriageekstore.catalog.domain.event.ProductStatusChanged;
 import br.com.miriageekstore.catalog.domain.event.ProductUpdated;
+import br.com.miriageekstore.catalog.domain.event.StockUpdated;
 import br.com.miriageekstore.catalog.domain.port.out.CatalogEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ class CatalogKafkaEventPublisher implements CatalogEventPublisher {
 
     private static final String TOPIC_PRODUCT_UPDATED        = "catalog.product-updated";
     private static final String TOPIC_PRODUCT_STATUS_CHANGED = "catalog.product-status-changed";
+    private static final String TOPIC_STOCK_UPDATED           = "catalog.stock-updated";
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -26,6 +28,9 @@ class CatalogKafkaEventPublisher implements CatalogEventPublisher {
         } else if (event instanceof ProductStatusChanged e) {
             log.debug("Publishing ProductStatusChanged for productId={}", e.productId());
             kafkaTemplate.send(TOPIC_PRODUCT_STATUS_CHANGED, e.productId().toString(), e);
+        } else if (event instanceof StockUpdated e) {
+            log.debug("Publishing StockUpdated for variantId={}", e.variantId());
+            kafkaTemplate.send(TOPIC_STOCK_UPDATED, e.variantId().toString(), e);
         } else {
             log.warn("Unknown catalog event type: {}", event.getClass().getName());
         }

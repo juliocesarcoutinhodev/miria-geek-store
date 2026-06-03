@@ -7,4 +7,6 @@ import java.util.UUID;
 interface ProductVariantJpaRepository extends JpaRepository<ProductVariantEntity, UUID> {
 
     boolean existsBySku(String sku);
+
+    boolean existsBySkuAndIdNot(String sku, UUID id);
 }

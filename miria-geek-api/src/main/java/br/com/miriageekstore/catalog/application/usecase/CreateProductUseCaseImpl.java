@@ -61,7 +61,7 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
         var variantSummaries = product.getVariants().stream()
                 .map(v -> new CreateProductResult.VariantSummary(
                         v.getId().value(), v.getAttributeName(), v.getAttributeValue(),
-                        v.getPrice(), v.getStock(), v.getSku().value(), v.getCreatedAt()))
+                        v.getPrice(), v.getStock(), v.getSku().value(), v.isActive(), v.getCreatedAt()))
                 .toList();
 
         return new CreateProductResult(

@@ -23,6 +23,7 @@ record ProductResponse(
             BigDecimal price,
             int stock,
             String sku,
+            boolean active,
             Instant createdAt
     ) {}
 }

@@ -43,6 +43,7 @@ class ProductEntityMapper {
                         v.getPrice(),
                         v.getStock(),
                         new Sku(v.getSku()),
+                        v.isActive(),
                         v.getCreatedAt()
                 ))
                 .toList();
@@ -56,8 +57,7 @@ class ProductEntityMapper {
                 entity.getStatus(),
                 entity.isFeatured(),
                 variants,
-                entity.getCreatedAt()
-        );
+                entity.getCreatedAt());
     }
 
     private ProductVariantEntity toVariantEntity(ProductVariant variant, ProductEntity productEntity) {
@@ -69,6 +69,7 @@ class ProductEntityMapper {
         entity.setPrice(variant.getPrice());
         entity.setStock(variant.getStock());
         entity.setSku(variant.getSku().value());
+        entity.setActive(variant.isActive());
         entity.setCreatedAt(variant.getCreatedAt());
         return entity;
     }

@@ -2,9 +2,12 @@ package br.com.miriageekstore.catalog.infrastructure.adapter.in.web;
 
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
 import br.com.miriageekstore.catalog.domain.model.ProductId;
+import br.com.miriageekstore.catalog.domain.port.in.AddVariantUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.AdjustStockUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.CreateProductUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.DeleteProductImageCommand;
 import br.com.miriageekstore.catalog.domain.port.in.DeleteProductImageUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.ListVariantsUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.PatchProductUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.ReorderProductImagesUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.SetPrincipalImageCommand;
@@ -12,6 +15,8 @@ import br.com.miriageekstore.catalog.domain.port.in.SetPrincipalImageUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.UpdateProductStatusCommand;
 import br.com.miriageekstore.catalog.domain.port.in.UpdateProductStatusUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.UpdateProductUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.UpdateVariantStatusUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.UpdateVariantUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.UploadProductImageCommand;
 import br.com.miriageekstore.catalog.domain.port.in.UploadProductImageUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +26,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +59,13 @@ public class AdminProductController {
     private final SetPrincipalImageUseCase setPrincipalImageUseCase;
     private final ReorderProductImagesUseCase reorderProductImagesUseCase;
     private final DeleteProductImageUseCase deleteProductImageUseCase;
+    private final ListVariantsUseCase listVariantsUseCase;
+    private final AddVariantUseCase addVariantUseCase;
+    private final UpdateVariantUseCase updateVariantUseCase;
+    private final UpdateVariantStatusUseCase updateVariantStatusUseCase;
+    private final AdjustStockUseCase adjustStockUseCase;
     private final ProductWebMapper mapper;
+    private final VariantWebMapper variantMapper;
 
     @Operation(summary = "Cadastrar novo produto com variantes",
                security = @SecurityRequirement(name = "cookieAuth"))
@@ -126,5 +140,51 @@ public class AdminProductController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteImage(@PathVariable UUID id, @PathVariable UUID imageId) {
         deleteProductImageUseCase.execute(new DeleteProductImageCommand(id, imageId));
+    }
+
+    @Operation(summary = "Listar variantes do produto",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @GetMapping("/{id}/variants")
+    List<VariantResponse> listVariants(@PathVariable UUID id) {
+        return variantMapper.toResponseList(listVariantsUseCase.execute(id));
+    }
+
+    @Operation(summary = "Adicionar variante ao produto",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PostMapping("/{id}/variants")
+    @ResponseStatus(HttpStatus.CREATED)
+    VariantResponse addVariant(@PathVariable UUID id,
+                                @Valid @RequestBody AddVariantRequest request) {
+        return variantMapper.toResponse(
+                addVariantUseCase.execute(variantMapper.toAddCommand(id, request)));
+    }
+
+    @Operation(summary = "Atualizar variante do produto",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PutMapping("/{id}/variants/{variantId}")
+    VariantResponse updateVariant(@PathVariable UUID id, @PathVariable UUID variantId,
+                                   @Valid @RequestBody UpdateVariantRequest request) {
+        return variantMapper.toResponse(
+                updateVariantUseCase.execute(variantMapper.toUpdateCommand(id, variantId, request)));
+    }
+
+    @Operation(summary = "Ativar ou inativar variante",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PatchMapping("/{id}/variants/{variantId}/status")
+    VariantResponse updateVariantStatus(@PathVariable UUID id, @PathVariable UUID variantId,
+                                         @Valid @RequestBody UpdateVariantStatusRequest request) {
+        return variantMapper.toResponse(
+                updateVariantStatusUseCase.execute(variantMapper.toStatusCommand(id, variantId, request)));
+    }
+
+    @Operation(summary = "Ajustar estoque da variante",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PatchMapping("/{id}/variants/{variantId}/stock")
+    AdjustStockResponse adjustStock(@PathVariable UUID id, @PathVariable UUID variantId,
+                                     @Valid @RequestBody AdjustStockRequest request,
+                                     @AuthenticationPrincipal Jwt jwt) {
+        var adminId = UUID.fromString(jwt.getSubject());
+        return variantMapper.toResponse(
+                adjustStockUseCase.execute(variantMapper.toAdjustCommand(id, variantId, request, adminId)));
     }
 }

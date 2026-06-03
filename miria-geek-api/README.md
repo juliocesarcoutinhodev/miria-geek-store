@@ -217,6 +217,7 @@ Migrations gerenciadas pelo **Flyway** (`src/main/resources/db/migration/`):
 | V11 | Tabela `categories` (id, name, slug, description, active, created_at) |
 | V12 | Tabelas `products` e `product_variants` (id, name, slug, category_id, status, featured, variants com SKU único) |
 | V13 | Tabela `product_images` (id, product_id, url, filename, principal, image_order, created_at) |
+| V14 | Coluna `active boolean` em `product_variants` + Tabela `stock_movements` (id, variant_id, product_id, type, quantity, motivo, admin_id, created_at) |
 
 ---
 
@@ -239,6 +240,7 @@ Tópicos publicados pelo módulo Catalog:
 |---|---|---|
 | `catalog.product-updated` | `ProductUpdated` | Atualização de produto (PUT/PATCH) |
 | `catalog.product-status-changed` | `ProductStatusChanged` | Ativação ou inativação de produto |
+| `catalog.stock-updated` | `StockUpdated` | Ajuste de estoque de variante (ENTRADA ou SAÍDA) |
 
 ---
 
@@ -289,8 +291,10 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-02.03 | Cadastro de produto (admin) | 5 | `POST /api/v1/admin/products` |
 | US-02.04 | Upload de imagens do produto (admin) | 5 | `POST /{id}/images` · `PATCH /{id}/images/{imageId}/principal` · `PATCH /{id}/images/order` · `DELETE /{id}/images/{imageId}` |
 | US-02.05 | Atualização de produto (admin) | 3 | `PUT /api/v1/admin/products/{id}` · `PATCH /{id}` · `PATCH /{id}/status` |
+| US-02.06 | Gestão de variantes (admin) | 5 | `GET POST /api/v1/admin/products/{id}/variants` · `PUT /{variantId}` · `PATCH /{variantId}/status` · `PATCH /{variantId}/stock` |
+| US-02.07 | Listagem de produtos (loja) | 3 | `GET /api/v1/products` |
 
-**5/? stories · 19 pontos · 195 testes passando**
+**7/? stories · 27 pontos · 217 testes passando**
 
 ---
 
@@ -334,6 +338,15 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | PATCH | `/api/v1/admin/users/{id}` | campos opcionais: `fullName, email, role` | 200 |
 | PATCH | `/api/v1/admin/users/{id}/status` | `status (ACTIVE\|INACTIVE)` | 200 |
 
+### Products — público
+
+| Método | Path | Params | Resposta |
+|---|---|---|---|
+| GET | `/api/v1/products` | `nome?, categoriaId?, precoMin?, precoMax?, destaque?, page, size, sort` | 200 paginado |
+
+> Retorna apenas produtos `ACTIVE` com ao menos 1 variante ativa com estoque > 0.
+> Ordenações: `mais_recente` (padrão), `nome_asc`, `nome_desc`, `preco_asc`, `preco_desc`, `destaque`.
+
 ### Categories — público
 
 | Método | Path | Params | Resposta |
@@ -362,6 +375,11 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | PATCH | `/api/v1/admin/products/{id}/images/{imageId}/principal` | — | 200 |
 | PATCH | `/api/v1/admin/products/{id}/images/order` | `items[{imageId, order}]` | 200 lista |
 | DELETE | `/api/v1/admin/products/{id}/images/{imageId}` | — | 204 |
+| GET | `/api/v1/admin/products/{id}/variants` | — | 200 lista |
+| POST | `/api/v1/admin/products/{id}/variants` | `attributeName, attributeValue, price, stock, sku?` | 201 |
+| PUT | `/api/v1/admin/products/{id}/variants/{variantId}` | `attributeName, attributeValue, price, stock, sku` | 200 |
+| PATCH | `/api/v1/admin/products/{id}/variants/{variantId}/status` | `ativo (true\|false)` | 200 |
+| PATCH | `/api/v1/admin/products/{id}/variants/{variantId}/stock` | `tipo (ENTRADA\|SAIDA), quantidade, motivo` | 200 |
 
 ---
 
