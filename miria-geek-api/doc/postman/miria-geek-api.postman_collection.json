@@ -3776,6 +3776,181 @@
       "description": "Gestão de produtos do catálogo. Requerem `ROLE_ADMIN` — cookie `access_token` de um administrador.",
       "item": [
         {
+          "name": "List Products (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "nome",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "categoriaId",
+                  "value": "{{categoryId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE",
+                  "disabled": true
+                },
+                {
+                  "key": "destaque",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "mais_recente"
+                }
+              ]
+            },
+            "description": "Lista todos os produtos (ACTIVE e INACTIVE) com agregados.\n\n**Requer:** `ROLE_ADMIN`\n\n**Filtros opcionais:** `nome` (parcial), `categoriaId`, `status` (ACTIVE|INACTIVE), `destaque`\n\n**Ordenações (`sort`):** `mais_recente` (padrão), `nome_asc`, `nome_desc`, `status`, `destaque`\n\n**Respostas:**\n- `200 OK` — lista paginada com `totalVariants`, `totalImages`, `totalStock`"
+          },
+          "response": [
+            {
+              "name": "200 - Lista paginada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"{{productId}}\",\n      \"name\": \"Funko Pop Batman\",\n      \"slug\": \"funko-pop-batman\",\n      \"category\": {\n        \"id\": \"{{categoryId}}\",\n        \"name\": \"Action Figures\"\n      },\n      \"status\": \"ACTIVE\",\n      \"featured\": true,\n      \"totalVariants\": 2,\n      \"totalImages\": 1,\n      \"totalStock\": 60,\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    },\n    {\n      \"id\": \"5cd95f64-5717-4562-b3fc-2c963f66afa6\",\n      \"name\": \"Camiseta Naruto\",\n      \"slug\": \"camiseta-naruto\",\n      \"category\": {\n        \"id\": \"{{categoryId}}\",\n        \"name\": \"Action Figures\"\n      },\n      \"status\": \"INACTIVE\",\n      \"featured\": false,\n      \"totalVariants\": 3,\n      \"totalImages\": 0,\n      \"totalStock\": 0,\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 2,\n  \"totalPages\": 1\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Product Detail (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "Retorna produto completo com **todas as variantes** (ativas e inativas) e imagens.\n\n**Requer:** `ROLE_ADMIN`\n\n**Diferenças da versão pública:** retorna produto independente de status, inclui variantes inativas com flag `active: false`, inclui `createdAt` por variante.\n\n**Respostas:**\n- `200 OK` — detalhe completo\n- `404 Not Found` — produto inexistente"
+          },
+          "response": [
+            {
+              "name": "200 - Produto encontrado",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"{{productId}}\",\n  \"name\": \"Funko Pop Batman\",\n  \"slug\": \"funko-pop-batman\",\n  \"description\": \"Boneco colecionável do Batman da DC Comics, 10cm\",\n  \"category\": {\n    \"id\": \"{{categoryId}}\",\n    \"name\": \"Action Figures\"\n  },\n  \"status\": \"ACTIVE\",\n  \"featured\": true,\n  \"createdAt\": \"2026-06-03T10:00:00Z\",\n  \"images\": [\n    {\n      \"id\": \"img-uuid-1\",\n      \"url\": \"http://localhost:9000/miria-products/batman.jpg\",\n      \"principal\": true,\n      \"imageOrder\": 1\n    }\n  ],\n  \"variants\": [\n    {\n      \"id\": \"var-uuid-1\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Clássico\",\n      \"price\": 89.9,\n      \"stock\": 50,\n      \"sku\": \"FUNKO-POP-BATMAN-MODELO-CLASSICO\",\n      \"active\": true,\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    },\n    {\n      \"id\": \"var-uuid-2\",\n      \"attributeName\": \"Modelo\",\n      \"attributeValue\": \"Edição Especial\",\n      \"price\": 149.9,\n      \"stock\": 10,\n      \"sku\": \"FUNKO-BATMAN-ESPECIAL\",\n      \"active\": false,\n      \"createdAt\": \"2026-06-03T10:00:00Z\"\n    }\n  ]\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "404 - Produto não encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"PRODUCT_NOT_FOUND\",\n  \"message\": \"Produto n\\u00e3o encontrado\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/00000000-0000-0000-0000-000000000000",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "00000000-0000-0000-0000-000000000000"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
           "name": "Create Product",
           "event": [
             {

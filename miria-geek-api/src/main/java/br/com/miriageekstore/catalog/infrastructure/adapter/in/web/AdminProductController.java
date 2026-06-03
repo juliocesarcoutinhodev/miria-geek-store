@@ -3,6 +3,9 @@ package br.com.miriageekstore.catalog.infrastructure.adapter.in.web;
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
 import br.com.miriageekstore.catalog.domain.model.ProductId;
 import br.com.miriageekstore.catalog.domain.port.in.AddVariantUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.AdminProductQuery;
+import br.com.miriageekstore.catalog.domain.port.in.GetAdminProductDetailUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.ListAdminProductsUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.AdjustStockUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.CreateProductUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.DeleteProductImageCommand;
@@ -64,8 +67,39 @@ public class AdminProductController {
     private final UpdateVariantUseCase updateVariantUseCase;
     private final UpdateVariantStatusUseCase updateVariantStatusUseCase;
     private final AdjustStockUseCase adjustStockUseCase;
+    private final ListAdminProductsUseCase listAdminProductsUseCase;
+    private final GetAdminProductDetailUseCase getAdminProductDetailUseCase;
     private final ProductWebMapper mapper;
     private final VariantWebMapper variantMapper;
+    private final AdminProductCatalogWebMapper adminCatalogMapper;
+
+    @Operation(summary = "Listar produtos (admin — todos os status)",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @GetMapping
+    AdminProductPageResponse listProducts(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) UUID categoriaId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Boolean destaque,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "mais_recente") String sort) {
+
+        var query = new AdminProductQuery(
+                nome, categoriaId, status, destaque,
+                Math.max(page, 0),
+                Math.min(Math.max(size, 1), 100),
+                sort
+        );
+        return adminCatalogMapper.toPageResponse(listAdminProductsUseCase.execute(query));
+    }
+
+    @Operation(summary = "Buscar produto por ID (admin)",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @GetMapping("/{id}")
+    AdminProductDetailResponse getProductDetail(@PathVariable UUID id) {
+        return adminCatalogMapper.toDetailResponse(getAdminProductDetailUseCase.execute(id));
+    }
 
     @Operation(summary = "Cadastrar novo produto com variantes",
                security = @SecurityRequirement(name = "cookieAuth"))

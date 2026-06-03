@@ -294,8 +294,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-02.06 | Gestão de variantes (admin) | 5 | `GET POST /api/v1/admin/products/{id}/variants` · `PUT /{variantId}` · `PATCH /{variantId}/status` · `PATCH /{variantId}/stock` |
 | US-02.07 | Listagem de produtos (loja) | 3 | `GET /api/v1/products` |
 | US-02.08 | Detalhe do produto (loja) | 2 | `GET /api/v1/products/{slug}` |
+| US-02.09 | Listagem de produtos (admin) | 2 | `GET /api/v1/admin/products` · `GET /api/v1/admin/products/{id}` |
 
-**8/? stories · 29 pontos · 222 testes passando**
+**9/? stories · 31 pontos · 230 testes passando**
 
 ---
 
@@ -383,6 +384,8 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | PUT | `/api/v1/admin/products/{id}/variants/{variantId}` | `attributeName, attributeValue, price, stock, sku` | 200 |
 | PATCH | `/api/v1/admin/products/{id}/variants/{variantId}/status` | `ativo (true\|false)` | 200 |
 | PATCH | `/api/v1/admin/products/{id}/variants/{variantId}/stock` | `tipo (ENTRADA\|SAIDA), quantidade, motivo` | 200 |
+| GET | `/api/v1/admin/products` | `nome?, categoriaId?, status?, destaque?, page, size, sort` | 200 paginado |
+| GET | `/api/v1/admin/products/{id}` | — | 200 detalhe / 404 |
 
 ---
 
