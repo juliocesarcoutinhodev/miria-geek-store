@@ -13,6 +13,7 @@ record AdminProductSummaryResponse(
         int totalVariants,
         int totalImages,
         int totalStock,
+        String principalImageUrl,
         Instant createdAt
 ) {
     record CategoryInfo(UUID id, String name) {}

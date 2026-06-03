@@ -24,6 +24,7 @@ class AdminProductCatalogWebMapper {
                 item.totalVariants(),
                 item.totalImages(),
                 item.totalStock(),
+                item.principalImageUrl(),
                 item.createdAt()
         );
     }

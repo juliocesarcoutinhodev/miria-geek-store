@@ -22,6 +22,7 @@ public record ListAdminProductsResult(
             int totalVariants,
             int totalImages,
             int totalStock,
+            String principalImageUrl,
             Instant createdAt
     ) {}
 }

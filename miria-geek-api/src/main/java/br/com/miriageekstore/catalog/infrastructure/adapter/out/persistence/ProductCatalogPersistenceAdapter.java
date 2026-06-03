@@ -193,9 +193,14 @@ class ProductCatalogPersistenceAdapter implements ProductCatalogRepository {
         String countSql = "SELECT COUNT(*) FROM products p WHERE 1=1" + conditions;
 
         // Data: LEFT JOINs to compute aggregates
+        // col indices: 0=id,1=name,2=slug,3=categoryId,4=categoryName,5=status,6=featured,
+        //              7=createdAt,8=principalImageUrl,9=totalVariants,10=totalImages,11=totalStock
         String dataSql =
                 "SELECT p.id, p.name, p.slug, p.category_id, c.name," +
                 " p.status, p.featured, p.created_at," +
+                " (SELECT pi.url FROM product_images pi" +
+                "  WHERE pi.product_id = p.id AND pi.principal = true" +
+                "  ORDER BY pi.image_order ASC LIMIT 1) AS principal_image_url," +
                 " CAST(COUNT(DISTINCT v.id) AS INTEGER)," +
                 " CAST(COUNT(DISTINCT img.id) AS INTEGER)," +
                 " COALESCE(SUM(v.stock), 0)" +
@@ -279,9 +284,10 @@ class ProductCatalogPersistenceAdapter implements ProductCatalogRepository {
                 (String)  row[4],
                 (String)  row[5],
                 (Boolean) row[6],
-                ((Number) row[8]).intValue(),
                 ((Number) row[9]).intValue(),
                 ((Number) row[10]).intValue(),
+                ((Number) row[11]).intValue(),
+                (String)  row[8],
                 toInstant(row[7])
         );
     }
