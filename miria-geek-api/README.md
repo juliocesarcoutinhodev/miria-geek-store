@@ -233,6 +233,13 @@ Tópicos publicados pelo módulo Identity:
 | `identity.password-reset-requested` | `PasswordResetRequested` | Solicitação de recuperação de senha |
 | `identity.admin-user-created` | `AdminUserCreated` | Criação de administrador |
 
+Tópicos publicados pelo módulo Catalog:
+
+| Tópico | Evento | Gatilho |
+|---|---|---|
+| `catalog.product-updated` | `ProductUpdated` | Atualização de produto (PUT/PATCH) |
+| `catalog.product-status-changed` | `ProductStatusChanged` | Ativação ou inativação de produto |
+
 ---
 
 ## E-mails
@@ -281,8 +288,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-02.02 | Gestão de categorias (admin) | 3 | `GET POST /api/v1/admin/categories` · `GET PUT DELETE /{id}` · `GET /api/v1/categories` |
 | US-02.03 | Cadastro de produto (admin) | 5 | `POST /api/v1/admin/products` |
 | US-02.04 | Upload de imagens do produto (admin) | 5 | `POST /{id}/images` · `PATCH /{id}/images/{imageId}/principal` · `PATCH /{id}/images/order` · `DELETE /{id}/images/{imageId}` |
+| US-02.05 | Atualização de produto (admin) | 3 | `PUT /api/v1/admin/products/{id}` · `PATCH /{id}` · `PATCH /{id}/status` |
 
-**4/? stories · 16 pontos · 185 testes passando**
+**5/? stories · 19 pontos · 195 testes passando**
 
 ---
 
@@ -347,6 +355,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | Método | Path | Body / Params | Resposta |
 |---|---|---|---|
 | POST | `/api/v1/admin/products` | `name, description, categoryId, featured?, variants[{attributeName, attributeValue, price, stock, sku?}]` | 201 |
+| PUT | `/api/v1/admin/products/{id}` | `name, description, categoryId, featured?` | 200 |
+| PATCH | `/api/v1/admin/products/{id}` | campos opcionais: `name, description, categoryId, featured` | 200 |
+| PATCH | `/api/v1/admin/products/{id}/status` | `status (ACTIVE\|INACTIVE)` | 200 |
 | POST | `/api/v1/admin/products/{id}/images` | `multipart/form-data campo: arquivo` (JPEG/PNG/WebP, máx 5MB) | 201 |
 | PATCH | `/api/v1/admin/products/{id}/images/{imageId}/principal` | — | 200 |
 | PATCH | `/api/v1/admin/products/{id}/images/order` | `items[{imageId, order}]` | 200 lista |

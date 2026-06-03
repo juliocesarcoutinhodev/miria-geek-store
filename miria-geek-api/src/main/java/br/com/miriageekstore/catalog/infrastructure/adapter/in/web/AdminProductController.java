@@ -1,12 +1,17 @@
 package br.com.miriageekstore.catalog.infrastructure.adapter.in.web;
 
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
+import br.com.miriageekstore.catalog.domain.model.ProductId;
 import br.com.miriageekstore.catalog.domain.port.in.CreateProductUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.DeleteProductImageCommand;
 import br.com.miriageekstore.catalog.domain.port.in.DeleteProductImageUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.PatchProductUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.ReorderProductImagesUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.SetPrincipalImageCommand;
 import br.com.miriageekstore.catalog.domain.port.in.SetPrincipalImageUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.UpdateProductStatusCommand;
+import br.com.miriageekstore.catalog.domain.port.in.UpdateProductStatusUseCase;
+import br.com.miriageekstore.catalog.domain.port.in.UpdateProductUseCase;
 import br.com.miriageekstore.catalog.domain.port.in.UploadProductImageCommand;
 import br.com.miriageekstore.catalog.domain.port.in.UploadProductImageUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +44,9 @@ import java.util.UUID;
 public class AdminProductController {
 
     private final CreateProductUseCase createProductUseCase;
+    private final UpdateProductUseCase updateProductUseCase;
+    private final PatchProductUseCase patchProductUseCase;
+    private final UpdateProductStatusUseCase updateProductStatusUseCase;
     private final UploadProductImageUseCase uploadProductImageUseCase;
     private final SetPrincipalImageUseCase setPrincipalImageUseCase;
     private final ReorderProductImagesUseCase reorderProductImagesUseCase;
@@ -50,6 +59,32 @@ public class AdminProductController {
     @ResponseStatus(HttpStatus.CREATED)
     ProductResponse createProduct(@Valid @RequestBody CreateProductRequest request) {
         return mapper.toResponse(createProductUseCase.execute(mapper.toCommand(request)));
+    }
+
+    @Operation(summary = "Atualizar produto completo (PUT)",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PutMapping("/{id}")
+    ProductResponse updateProduct(@PathVariable UUID id,
+                                   @Valid @RequestBody UpdateProductRequest request) {
+        return mapper.toResponse(updateProductUseCase.execute(mapper.toUpdateCommand(id, request)));
+    }
+
+    @Operation(summary = "Atualizar produto parcialmente (PATCH)",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PatchMapping("/{id}")
+    ProductResponse patchProduct(@PathVariable UUID id,
+                                  @RequestBody PatchProductRequest request) {
+        return mapper.toResponse(patchProductUseCase.execute(mapper.toPatchCommand(id, request)));
+    }
+
+    @Operation(summary = "Ativar ou inativar produto",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PatchMapping("/{id}/status")
+    UpdateProductStatusResponse updateProductStatus(@PathVariable UUID id,
+                                                     @Valid @RequestBody UpdateProductStatusRequest request) {
+        return mapper.toStatusResponse(
+                updateProductStatusUseCase.execute(
+                        new UpdateProductStatusCommand(ProductId.of(id), request.status())));
     }
 
     @Operation(summary = "Fazer upload de imagem do produto",

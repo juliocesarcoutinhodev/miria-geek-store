@@ -1,6 +1,7 @@
 package br.com.miriageekstore.shared.infrastructure.config;
 
 import br.com.miriageekstore.catalog.domain.exception.CannotRemovePrincipalImageException;
+import br.com.miriageekstore.catalog.domain.exception.ProductCannotBeActivatedException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryHasProductsException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryNameAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.CategoryNotFoundException;
@@ -234,6 +235,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(CannotRemovePrincipalImageException ex) {
         return ResponseEntity.status(422)
                 .body(new ErrorResponse("CANNOT_REMOVE_PRINCIPAL_IMAGE", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ProductCannotBeActivatedException.class)
+    ResponseEntity<ErrorResponse> handle(ProductCannotBeActivatedException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("PRODUCT_CANNOT_BE_ACTIVATED", ex.getMessage()));
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)

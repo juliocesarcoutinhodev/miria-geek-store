@@ -3668,6 +3668,336 @@
           ]
         },
         {
+          "name": "Update Product (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Funko Pop Batman Edição Especial\",\n  \"description\": \"Boneco colecionável do Batman — edição limitada 2026\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"featured\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Atualiza todos os campos editáveis do produto.\n\n**Requer:** `ROLE_ADMIN`\n\n**Comportamento:**\n- Slug regerado automaticamente se o nome mudar\n- Evento `ProductUpdated` publicado no Kafka (`catalog.product-updated`)\n\n**Respostas:**\n- `200 OK` — produto atualizado com variantes\n- `404 Not Found` — produto ou categoria inexistente"
+          },
+          "response": [
+            {
+              "name": "200 - Product updated",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Funko Pop Batman Edição Especial\",\n  \"slug\": \"funko-pop-batman-edicao-especial\",\n  \"description\": \"Boneco colecionável do Batman — edição limitada 2026\",\n  \"categoryId\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n  \"status\": \"INACTIVE\",\n  \"featured\": true,\n  \"variants\": [],\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Funko Pop Batman Edição Especial\",\n  \"description\": \"Desc\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"featured\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Patch Product (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"featured\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Atualiza apenas os campos enviados no body (atualização parcial).\n\n**Requer:** `ROLE_ADMIN`\n\n**Campos opcionais:** `name`, `description`, `categoryId`, `featured`\n\n**Comportamento:**\n- Slug regerado apenas se `name` for enviado\n- Evento `ProductUpdated` publicado no Kafka\n\n**Respostas:**\n- `200 OK` — produto atualizado\n- `404 Not Found` — produto ou categoria inexistente"
+          },
+          "response": [
+            {
+              "name": "200 - Destaque ativado",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Funko Pop Batman\",\n  \"slug\": \"funko-pop-batman\",\n  \"description\": \"Boneco colecionável\",\n  \"categoryId\": \"4ab95f64-5717-4562-b3fc-2c963f66afa6\",\n  \"status\": \"INACTIVE\",\n  \"featured\": true,\n  \"variants\": [],\n  \"createdAt\": \"2026-06-03T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"featured\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Product Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                "{{productId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Ativa ou inativa um produto.\n\n**Requer:** `ROLE_ADMIN`\n\n**Validações na ativação (ACTIVE):**\n- Produto deve ter ao menos 1 imagem cadastrada\n- Categoria do produto deve estar ativa\n\n**Comportamento:**\n- Evento `ProductStatusChanged` publicado no Kafka (`catalog.product-status-changed`)\n\n**Campo `status`:** `ACTIVE` | `INACTIVE`\n\n**Respostas:**\n- `200 OK` — status atualizado\n- `404 Not Found` — produto inexistente\n- `422 Unprocessable Entity` — condições para ativação não atendidas"
+          },
+          "response": [
+            {
+              "name": "200 - Ativado",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Funko Pop Batman\",\n  \"status\": \"ACTIVE\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "200 - Inativado",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"Funko Pop Batman\",\n  \"status\": \"INACTIVE\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"INACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "422 - Condições não atendidas",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"PRODUCT_CANNOT_BE_ACTIVATED\",\n  \"message\": \"Produto não pode ser ativado: o produto não possui imagens cadastradas; a categoria do produto está inativa\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/products/{{productId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "products",
+                    "{{productId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
           "name": "Upload Product Image",
           "event": [
             {

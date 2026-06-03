@@ -11,7 +11,7 @@ public class Product {
     private String name;
     private Slug slug;
     private String description;
-    private final CategoryId categoryId;
+    private CategoryId categoryId;
     private ProductStatus status;
     private boolean featured;
     private final List<ProductVariant> variants;
@@ -53,6 +53,28 @@ public class Product {
                                         CategoryId categoryId, ProductStatus status, boolean featured,
                                         List<ProductVariant> variants, Instant createdAt) {
         return new Product(id, name, slug, description, categoryId, status, featured, variants, createdAt);
+    }
+
+    public void update(String name, String description, CategoryId categoryId, boolean featured) {
+        this.slug = Slug.from(name);
+        this.name = name;
+        this.description = description;
+        this.categoryId = categoryId;
+        this.featured = featured;
+    }
+
+    public void partialUpdate(String name, String description, CategoryId categoryId, Boolean featured) {
+        if (name != null && !name.isBlank()) {
+            this.slug = Slug.from(name);
+            this.name = name;
+        }
+        if (description != null && !description.isBlank()) this.description = description;
+        if (categoryId != null) this.categoryId = categoryId;
+        if (featured != null) this.featured = featured;
+    }
+
+    public void changeStatus(ProductStatus status) {
+        this.status = status;
     }
 
     public ProductId getId() { return id; }
