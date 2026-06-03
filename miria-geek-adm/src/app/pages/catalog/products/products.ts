@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApplicationRef, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -27,6 +28,7 @@ import { ProductDetail, ProductImageInfo, ProductSummary } from '../../../core/c
     providers: [ConfirmationService],
     imports: [
         ReactiveFormsModule,
+        RouterModule,
         DatePipe,
         ButtonModule,
         CardModule,
@@ -53,6 +55,7 @@ import { ProductDetail, ProductImageInfo, ProductSummary } from '../../../core/c
                         <h2 class="text-xl font-semibold text-surface-900 dark:text-surface-0 m-0">Produtos</h2>
                         <p class="text-muted-color text-sm mt-1 mb-0">Gerencie os produtos do catálogo</p>
                     </div>
+                    <p-button icon="pi pi-plus" label="Novo produto" (onClick)="goToCreate()" />
                 </div>
             </ng-template>
 
@@ -99,19 +102,29 @@ import { ProductDetail, ProductImageInfo, ProductSummary } from '../../../core/c
 
                 <ng-template #header>
                     <tr>
-                        <th style="min-width: 18rem">Produto</th>
+                        <th style="width: 4.5rem"></th>
+                        <th style="min-width: 16rem">Produto</th>
                         <th style="min-width: 10rem">Categoria</th>
                         <th style="min-width: 8rem">Status</th>
                         <th style="min-width: 7rem; text-align: center">Destaque</th>
                         <th style="min-width: 10rem; text-align: center">Variantes / Estoque</th>
                         <th style="min-width: 7rem; text-align: center">Imagens</th>
                         <th style="min-width: 10rem">Criado em</th>
-                        <th style="width: 6rem; text-align: center">Ações</th>
+                        <th style="width: 7rem; text-align: center">Ações</th>
                     </tr>
                 </ng-template>
 
                 <ng-template #body let-product>
                     <tr class="cursor-pointer" (click)="onRowClick(product)">
+                        <td>
+                            @if (product.principalImageUrl) {
+                                <img [src]="product.principalImageUrl" alt="" class="w-12 h-12 object-cover rounded-lg border border-surface-200 dark:border-surface-700" />
+                            } @else {
+                                <div class="w-12 h-12 rounded-lg border border-dashed border-surface-300 dark:border-surface-600 flex items-center justify-center text-muted-color">
+                                    <i class="pi pi-image text-lg"></i>
+                                </div>
+                            }
+                        </td>
                         <td>
                             <p class="font-medium m-0">{{ product.name }}</p>
                             <p class="text-muted-color text-xs font-mono m-0 mt-1">{{ product.slug }}</p>
@@ -141,7 +154,8 @@ import { ProductDetail, ProductImageInfo, ProductSummary } from '../../../core/c
                         </td>
                         <td class="text-muted-color">{{ product.createdAt | date: 'dd/MM/yyyy' }}</td>
                         <td>
-                            <div class="flex items-center justify-center">
+                            <div class="flex items-center justify-center gap-1">
+                                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warn" pTooltip="Editar" tooltipPosition="top" (onClick)="$event.stopPropagation(); goToEdit(product.id)" />
                                 <p-button
                                     [icon]="product.status === 'ACTIVE' ? 'pi pi-eye-slash' : 'pi pi-eye'"
                                     [rounded]="true"
@@ -303,6 +317,7 @@ export class Products implements OnInit {
     private readonly confirmationService = inject(ConfirmationService);
     private readonly appRef = inject(ApplicationRef);
     private readonly fb = inject(FormBuilder);
+    private readonly router = inject(Router);
 
     readonly products = signal<ProductSummary[]>([]);
     readonly totalElements = signal(0);
@@ -351,6 +366,14 @@ export class Products implements OnInit {
 
     async ngOnInit(): Promise<void> {
         await this.loadProducts();
+    }
+
+    goToCreate(): void {
+        this.router.navigate(['/catalog/products/new']);
+    }
+
+    goToEdit(id: string): void {
+        this.router.navigate(['/catalog/products', id, 'edit']);
     }
 
     async loadProducts(): Promise<void> {

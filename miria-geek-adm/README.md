@@ -77,6 +77,10 @@ Por padrão, o seed do backend cria um admin com:
 | **Token refresh** | Refresh automático transparente quando o access token expira |
 | **Perfil** | Visualização, edição de nome e alteração de senha |
 | **Layout** | Sidebar, topbar com dark mode, configurador de tema |
+| **Usuários** | Listagem paginada com filtros, criar, editar, ativar/inativar |
+| **Categorias** | Listagem paginada com filtros, criar, editar, ativar/inativar, excluir |
+| **Produtos — listagem** | Tabela com thumbnail, filtros (nome/status/destaque/ordenação), drawer lateral com detalhes completos (imagens com lupa, variantes), toggle de status |
+| **Produtos — formulário** | Criar (info + variantes inline); editar em 3 seções independentes: informações, variantes (add/editar/ativar/estoque), imagens (upload/principal/remover) |
 
 ---
 
@@ -87,38 +91,57 @@ src/
 ├── app/
 │   ├── core/
 │   │   ├── auth/
-│   │   │   ├── auth.guard.ts         # Guard async: aguarda sessionReady antes de verificar auth
-│   │   │   ├── auth.interceptor.ts   # withCredentials + refresh automático de token em 401
-│   │   │   ├── auth.model.ts         # Interfaces (AuthUser, LoginRequest, ResetPasswordRequest)
-│   │   │   └── auth.service.ts       # Estado do usuário, login/logout/refresh, initializeSession
+│   │   │   ├── auth.guard.ts              # Guard async: aguarda sessionReady antes de verificar auth
+│   │   │   ├── auth.interceptor.ts        # withCredentials + refresh automático de token em 401
+│   │   │   ├── auth.model.ts              # Interfaces (AuthUser, LoginRequest, ResetPasswordRequest)
+│   │   │   └── auth.service.ts            # Estado do usuário, login/logout/refresh, initializeSession
+│   │   ├── admin/
+│   │   │   ├── admin-user.model.ts        # Interfaces (UserSummary, AdminUserDetail, PagedResponse, ...)
+│   │   │   └── admin-user.service.ts      # CRUD de usuários admin (/admin/users)
+│   │   ├── catalog/
+│   │   │   ├── category.model.ts          # Interfaces (Category, CategoryPagedResponse, CreateCategoryRequest, ...)
+│   │   │   ├── category.service.ts        # CRUD de categorias (/admin/categories)
+│   │   │   ├── product.model.ts           # Interfaces (ProductSummary, ProductDetail, ProductImageInfo,
+│   │   │   │                              #   ProductVariantInfo, CreateProductRequest, UpdateVariantRequest,
+│   │   │   │                              #   AdjustStockRequest, ReorderImagesRequest, ...)
+│   │   │   └── product.service.ts         # CRUD completo de produtos, variantes e imagens
 │   │   ├── errors/
-│   │   │   └── app-error-handler.ts  # ErrorHandler global — loga em dev, trata ChunkLoadError
+│   │   │   └── app-error-handler.ts       # ErrorHandler global — loga em dev, trata ChunkLoadError
 │   │   ├── interceptors/
 │   │   │   └── http-timeout.interceptor.ts  # Timeout de 30s em todas as requests HTTP
 │   │   ├── profile/
-│   │   │   ├── profile.model.ts      # Interfaces (UserProfile, UpdateProfileRequest, ChangePasswordRequest)
-│   │   │   └── profile.service.ts    # GET/PATCH /users/me + PATCH /users/me/password
+│   │   │   ├── profile.model.ts           # Interfaces (UserProfile, UpdateProfileRequest, ChangePasswordRequest)
+│   │   │   └── profile.service.ts         # GET/PATCH /users/me + PATCH /users/me/password
 │   │   └── router/
-│   │       └── app-title-strategy.ts # TitleStrategy: "Título da Rota | Miria Geek Store"
+│   │       └── app-title-strategy.ts      # TitleStrategy: "Título da Rota | Miria Geek Store"
 │   ├── layout/
-│   │   ├── component/                # Shell do painel (topbar, sidebar, menu, footer)
+│   │   ├── component/                     # Shell do painel (topbar, sidebar, menu, footer)
 │   │   └── service/
-│   │       └── layout.service.ts     # Estado do layout (tema, modo menu, dark mode)
+│   │       └── layout.service.ts          # Estado do layout (tema, modo menu, dark mode)
 │   └── pages/
 │       ├── auth/
-│       │   ├── login.ts              # Tela de login + dialog "Esqueceu a senha?"
-│       │   ├── reset-password.ts     # Tela de redefinição de senha (via token por e-mail)
-│       │   ├── access.ts             # Página de acesso negado
-│       │   └── auth.routes.ts        # Rotas do módulo auth (lazy)
-│       ├── dashboard/                # Dashboard inicial (widgets de exemplo)
+│       │   ├── login.ts                   # Tela de login + dialog "Esqueceu a senha?"
+│       │   ├── reset-password.ts          # Tela de redefinição de senha (via token por e-mail)
+│       │   ├── access.ts                  # Página de acesso negado
+│       │   └── auth.routes.ts             # Rotas do módulo auth (lazy)
+│       ├── cadastros/
+│       │   └── usuarios/
+│       │       └── usuarios.ts            # Listagem paginada + criar/editar/ativar/inativar usuários
+│       ├── catalog/
+│       │   ├── categories/
+│       │   │   └── categories.ts          # Listagem paginada + criar/editar/toggle/excluir categorias
+│       │   └── products/
+│       │       ├── products.ts            # Listagem com thumbnail, filtros, drawer de detalhes
+│       │       └── product-form.ts        # Criar e editar produto (3 seções: info, variantes, imagens)
+│       ├── dashboard/                     # Dashboard inicial (widgets de exemplo)
 │       └── profile/
-│           └── profile.ts            # Tela de perfil: dados pessoais + alteração de senha
+│           └── profile.ts                 # Tela de perfil: dados pessoais + alteração de senha
 ├── environments/
-│   ├── environment.ts                # Produção: apiUrl = '/api/v1'
-│   └── environment.development.ts    # Dev: apiUrl = '/api/v1' (proxy resolve o host)
-├── app.config.ts                     # Bootstrap: todos os providers, interceptors, estratégias
-├── app.routes.ts                     # Rotas raiz com lazy loading + títulos por rota
-└── app.component.ts                  # Componente raiz (só RouterOutlet)
+│   ├── environment.ts                     # Produção: apiUrl = '/api/v1'
+│   └── environment.development.ts        # Dev: apiUrl = '/api/v1' (proxy resolve o host)
+├── app.config.ts                          # Bootstrap: todos os providers, interceptors, estratégias
+├── app.routes.ts                          # Rotas raiz com lazy loading + títulos por rota
+└── app.component.ts                       # Componente raiz (só RouterOutlet)
 ```
 
 ---
@@ -160,10 +183,14 @@ O app usa `provideZonelessChangeDetection()` — **zone.js não está nos polyfi
 Todas as rotas usam `loadComponent` ou `loadChildren` — nenhuma feature é carregada no bundle inicial:
 
 ```
-Bundle inicial:  ~380 KB   (Angular core + PrimeNG core + layout básico)
+Bundle inicial:  ~544 KB   (Angular core + PrimeNG core + layout básico)
 dashboard:       carrega ao acessar /dashboard
 profile:         carrega ao acessar /profile
 auth-routes:     carrega ao acessar /auth/*
+usuarios:        carrega ao acessar /registrations/users
+categories:      carrega ao acessar /catalog/categories
+products:        carrega ao acessar /catalog/products
+product-form:    carrega ao acessar /catalog/products/new e /catalog/products/:id/edit
 ```
 
 ---

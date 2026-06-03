@@ -29,6 +29,16 @@ export const appRoutes: Routes = [
                 title: 'Produtos'
             },
             {
+                path: 'catalog/products/new',
+                loadComponent: () => import('./app/pages/catalog/products/product-form').then((m) => m.ProductForm),
+                title: 'Novo Produto'
+            },
+            {
+                path: 'catalog/products/:id/edit',
+                loadComponent: () => import('./app/pages/catalog/products/product-form').then((m) => m.ProductForm),
+                title: 'Editar Produto'
+            },
+            {
                 path: 'catalog/categories',
                 loadComponent: () => import('./app/pages/catalog/categories/categories').then((m) => m.Categories),
                 title: 'Categorias'
