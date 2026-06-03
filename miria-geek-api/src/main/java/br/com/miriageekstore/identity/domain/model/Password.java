@@ -11,7 +11,7 @@ public record Password(String hash) {
     private static final Pattern POLICY = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d).+$");
 
     public Password {
-        if (hash == null || hash.isBlank()) throw new IllegalArgumentException("Password hash cannot be blank");
+        if (hash == null || hash.isBlank()) throw new IllegalArgumentException("Hash cannot be null or blank");
     }
 
     public static Password hash(String raw, PasswordHasher hasher) {

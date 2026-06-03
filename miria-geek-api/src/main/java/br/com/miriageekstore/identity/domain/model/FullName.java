@@ -3,10 +3,10 @@ package br.com.miriageekstore.identity.domain.model;
 public record FullName(String value) {
 
     public FullName {
-        if (value == null || value.isBlank()) throw new IllegalArgumentException("Full name cannot be blank");
+        if (value == null || value.isBlank()) throw new IllegalArgumentException("O nome completo não pode estar em branco");
         value = value.strip();
         if (value.length() < 3 || value.length() > 255) {
-            throw new IllegalArgumentException("Full name must be between 3 and 255 characters");
+            throw new IllegalArgumentException("O nome completo deve conter entre 3 e 255 caracteres");
         }
     }
 

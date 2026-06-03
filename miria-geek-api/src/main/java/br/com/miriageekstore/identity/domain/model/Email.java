@@ -9,7 +9,7 @@ public record Email(String value) {
     private static final Pattern PATTERN = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
     public Email {
-        if (value == null || value.isBlank()) throw new InvalidEmailException("Email cannot be blank");
+        if (value == null || value.isBlank()) throw new InvalidEmailException("O e-mail não pode estar em branco");
         value = value.strip().toLowerCase();
         if (!PATTERN.matcher(value).matches()) throw new InvalidEmailException(value);
     }

@@ -1,5 +1,6 @@
 package br.com.miriageekstore.shared.infrastructure.config;
 
+import br.com.miriageekstore.catalog.domain.exception.StorageException;
 import br.com.miriageekstore.identity.domain.exception.AccountLockedException;
 import br.com.miriageekstore.identity.domain.exception.CannotChangeOwnRoleException;
 import br.com.miriageekstore.identity.domain.exception.AccountNotActiveException;
@@ -169,6 +170,12 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("; "));
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("VALIDATION_ERROR", message));
+    }
+
+    @ExceptionHandler(StorageException.class)
+    ResponseEntity<ErrorResponse> handle(StorageException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("STORAGE_ERROR", "Falha no armazenamento de arquivo"));
     }
 
     @ExceptionHandler(Exception.class)
