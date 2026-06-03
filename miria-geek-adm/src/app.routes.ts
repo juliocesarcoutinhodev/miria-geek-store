@@ -24,6 +24,11 @@ export const appRoutes: Routes = [
                 title: 'Usuários'
             },
             {
+                path: 'catalog/categories',
+                loadComponent: () => import('./app/pages/catalog/categories/categories').then((m) => m.Categories),
+                title: 'Categorias'
+            },
+            {
                 path: 'pages',
                 loadChildren: () => import('./app/pages/pages.routes')
             }

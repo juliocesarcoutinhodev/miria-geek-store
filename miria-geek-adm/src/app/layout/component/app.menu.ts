@@ -38,6 +38,16 @@ export class AppMenu {
                 ]
             },
             {
+                label: 'Catálogo',
+                items: [
+                    {
+                        label: 'Categorias',
+                        icon: 'pi pi-fw pi-tags',
+                        routerLink: ['/catalog/categories']
+                    }
+                ]
+            },
+            {
                 label: 'Pages',
                 items: [
                     {
