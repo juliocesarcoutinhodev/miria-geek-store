@@ -72,7 +72,7 @@ class ListAdminProductsUseCaseTest {
         var item = new ListAdminProductsResult.AdminProductItem(
                 UUID.randomUUID(), "Funko Pop Batman", "funko-pop-batman",
                 categoryId, "Action Figures", "ACTIVE", true,
-                3, 2, 150, Instant.now());
+                3, 2, 150, "localhost:8080/image", Instant.now());
         var expected = new ListAdminProductsResult(List.of(item), 0, 20, 1, 1);
         when(repository.searchForAdmin(query)).thenReturn(expected);
 
@@ -90,6 +90,6 @@ class ListAdminProductsUseCaseTest {
         return new ListAdminProductsResult.AdminProductItem(
                 UUID.randomUUID(), "Produto Teste", "produto-teste",
                 categoryId, "Categoria", status, false,
-                1, 0, 10, Instant.now());
+                1, 0, 10, "", Instant.now());
     }
 }
