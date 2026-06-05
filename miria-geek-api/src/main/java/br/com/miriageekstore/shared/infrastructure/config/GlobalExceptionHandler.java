@@ -14,6 +14,7 @@ import br.com.miriageekstore.catalog.domain.exception.ProductImageNotFoundExcept
 import br.com.miriageekstore.catalog.domain.exception.ProductNotFoundException;
 import br.com.miriageekstore.order.domain.exception.InvalidOrderStatusTransitionException;
 import br.com.miriageekstore.order.domain.exception.OrderNotFoundException;
+import br.com.miriageekstore.order.domain.exception.OrderNotShippedException;
 import br.com.miriageekstore.catalog.domain.exception.ProductSkuAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -228,6 +229,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(InvalidOrderStatusTransitionException ex) {
         return ResponseEntity.status(422)
                 .body(new ErrorResponse("INVALID_ORDER_STATUS_TRANSITION", ex.getMessage()));
+    }
+
+    @ExceptionHandler(OrderNotShippedException.class)
+    ResponseEntity<ErrorResponse> handle(OrderNotShippedException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("ORDER_NOT_SHIPPED", ex.getMessage()));
     }
 
     @ExceptionHandler(ProductImageNotFoundException.class)

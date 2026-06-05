@@ -221,6 +221,7 @@ class UpdateOrderStatusUseCaseTest {
     // ── helpers ───────────────────────────────────────────────────────────────
 
     private Order order(UUID id, OrderStatus status) {
-        return Order.reconstitute(OrderId.of(id), status, UUID.randomUUID(), Instant.now());
+        return Order.reconstitute(OrderId.of(id), status, UUID.randomUUID(),
+                "ORD-00000001", "customer@test.com", "Test Customer", Instant.now());
     }
 }

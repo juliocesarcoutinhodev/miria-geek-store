@@ -1,11 +1,14 @@
 package br.com.miriageekstore.order.infrastructure.adapter.in.web;
 
+import br.com.miriageekstore.order.domain.model.Carrier;
 import br.com.miriageekstore.order.domain.model.OrderStatus;
 import br.com.miriageekstore.order.domain.port.in.AdminOrderQuery;
 import br.com.miriageekstore.order.domain.port.in.GetAdminOrderDetailUseCase;
 import br.com.miriageekstore.order.domain.port.in.ListAdminOrdersUseCase;
 import br.com.miriageekstore.order.domain.port.in.UpdateOrderStatusCommand;
 import br.com.miriageekstore.order.domain.port.in.UpdateOrderStatusUseCase;
+import br.com.miriageekstore.order.domain.port.in.UpdateTrackingCommand;
+import br.com.miriageekstore.order.domain.port.in.UpdateTrackingUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,6 +39,7 @@ public class AdminOrderController {
     private final ListAdminOrdersUseCase listAdminOrdersUseCase;
     private final GetAdminOrderDetailUseCase getAdminOrderDetailUseCase;
     private final UpdateOrderStatusUseCase updateOrderStatusUseCase;
+    private final UpdateTrackingUseCase updateTrackingUseCase;
     private final AdminOrderWebMapper mapper;
 
     @Operation(summary = "List orders with filters (admin)",
@@ -86,5 +90,25 @@ public class AdminOrderController {
         updateOrderStatusUseCase.execute(command);
 
         return mapper.toDetailResponse(getAdminOrderDetailUseCase.execute(id));
+    }
+
+    @Operation(summary = "Add tracking code to shipped order (admin)",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PatchMapping("/{id}/tracking")
+    TrackingResponse updateTracking(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateTrackingRequest request) {
+
+        var carrier = Carrier.valueOf(request.carrier().toUpperCase());
+        var command = new UpdateTrackingCommand(
+                id, request.trackingCode(), carrier,
+                request.carrierName(), request.customTrackingUrl());
+
+        var result = updateTrackingUseCase.execute(command);
+
+        return new TrackingResponse(
+                result.id(), result.orderNumber(), result.status(),
+                result.trackingCode(), result.carrier(),
+                result.carrierName(), result.trackingUrl());
     }
 }

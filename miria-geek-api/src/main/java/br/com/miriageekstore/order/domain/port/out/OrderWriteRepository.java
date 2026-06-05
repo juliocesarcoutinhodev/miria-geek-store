@@ -1,5 +1,6 @@
 package br.com.miriageekstore.order.domain.port.out;
 
+import br.com.miriageekstore.order.domain.model.Carrier;
 import br.com.miriageekstore.order.domain.model.Order;
 import br.com.miriageekstore.order.domain.model.OrderId;
 import br.com.miriageekstore.order.domain.model.OrderStatus;
@@ -13,4 +14,5 @@ public interface OrderWriteRepository {
     void updateStatus(OrderId id, OrderStatus status, Instant updatedAt);
     void saveHistoryEntry(UUID id, OrderId orderId, OrderStatus status, String note, UUID adminId, Instant changedAt);
     void restoreStockForOrder(OrderId orderId);
+    void saveTracking(OrderId id, String trackingCode, Carrier carrier, String carrierName, String trackingUrl);
 }

@@ -328,8 +328,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-04.05 | Listagem de pedidos (admin) | 3 | `GET /api/v1/admin/orders` |
 | US-04.06 | Detalhe do pedido (admin) | 2 | `GET /api/v1/admin/orders/{id}` |
 | US-04.07 | Atualização de status do pedido (admin) | 3 | `PATCH /api/v1/admin/orders/{id}/status` |
+| US-04.08 | Código de rastreamento (admin) | 3 | `PATCH /api/v1/admin/orders/{id}/tracking` |
 
-**3/? stories · 8 pontos implementados**
+**4/? stories · 11 pontos implementados**
 
 ---
 
@@ -427,6 +428,7 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | GET | `/api/v1/admin/orders` | `orderNumber?, customerName?, customerEmail?, status?, startDate?, endDate?, minValue?, maxValue?, page, size, sort` | 200 paginado |
 | GET | `/api/v1/admin/orders/{id}` | — | 200 detalhe / 404 |
 | PATCH | `/api/v1/admin/orders/{id}/status` | `status (required), note (optional)` | 200 detalhe / 404 / 422 |
+| PATCH | `/api/v1/admin/orders/{id}/tracking` | `trackingCode, carrier, carrierName?, customTrackingUrl?` | 200 / 404 / 422 |
 
 > Ordenações: `latest` (padrão), `oldest`, `value_asc`, `value_desc`, `status`.
 > Status: `PENDING_PAYMENT`, `PAID`, `PREPARING`, `SHIPPED`, `DELIVERED`, `CANCELLED`.
@@ -434,6 +436,7 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 > Detalhe retorna: `customer`, `items[]` (com `sku` e `principalImage`), `deliveryAddress` (nullable), `payment` (nullable), `statusHistory[]` ordenado cronologicamente.
 > Transições válidas: `PENDING_PAYMENT→PAID`, `PAID→PREPARING`, `PREPARING→SHIPPED`, `SHIPPED→DELIVERED`, `PENDING_PAYMENT→CANCELLED`, `PAID→CANCELLED`. Transição inválida retorna 422.
 > Cancelamento: estoque das variantes restaurado automaticamente na mesma transação. Publica `order.status-changed` e `order.cancelled` no Kafka.
+> Tracking: pedido deve estar em `SHIPPED` (422 caso contrário). Carriers: `CORREIOS`, `JADLOG`, `LOGGI`, `TOTAL_EXPRESS`, `AZUL_CARGO`, `OUTRO`. Para `OUTRO`, `customTrackingUrl` é obrigatória. Publica `order.tracking-updated` → consumer no módulo notification dispara e-mail ao cliente.
 
 ---
 

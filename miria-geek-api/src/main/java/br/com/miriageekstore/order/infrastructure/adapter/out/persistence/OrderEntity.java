@@ -52,6 +52,18 @@ class OrderEntity {
     @Column(name = "delivery_address_id")
     private UUID deliveryAddressId;
 
+    @Column(name = "tracking_code", length = 50)
+    private String trackingCode;
+
+    @Column(length = 50)
+    private String carrier;
+
+    @Column(name = "carrier_name", length = 100)
+    private String carrierName;
+
+    @Column(name = "tracking_url", length = 500)
+    private String trackingUrl;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItemEntity> items = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package br.com.miriageekstore.order.infrastructure.adapter.out.persistence;
 
+import br.com.miriageekstore.order.domain.model.Carrier;
 import br.com.miriageekstore.order.domain.model.Order;
 import br.com.miriageekstore.order.domain.model.OrderId;
 import br.com.miriageekstore.order.domain.model.OrderStatus;
@@ -284,7 +285,11 @@ class OrderPersistenceAdapter implements AdminOrderRepository, OrderWriteReposit
     public Optional<Order> findById(OrderId id) {
         @SuppressWarnings("unchecked")
         List<Object[]> rows = em.createNativeQuery(
-                "SELECT o.id, o.status, o.user_id, o.created_at FROM orders o WHERE o.id = :id")
+                "SELECT o.id, o.status, o.user_id, o.order_number, o.created_at," +
+                " u.email, u.full_name" +
+                " FROM orders o" +
+                " JOIN users u ON u.id = o.user_id" +
+                " WHERE o.id = :id")
                 .setParameter("id", id.value())
                 .getResultList();
 
@@ -295,7 +300,10 @@ class OrderPersistenceAdapter implements AdminOrderRepository, OrderWriteReposit
                 OrderId.of((UUID) row[0]),
                 OrderStatus.valueOf((String) row[1]),
                 (UUID) row[2],
-                toInstant(row[3])
+                (String) row[3],
+                (String) row[5],
+                (String) row[6],
+                toInstant(row[4])
         ));
     }
 
@@ -321,6 +329,21 @@ class OrderPersistenceAdapter implements AdminOrderRepository, OrderWriteReposit
                 .setParameter("note", note)
                 .setParameter("adminId", adminId)
                 .setParameter("changedAt", changedAt)
+                .executeUpdate();
+    }
+
+    @Override
+    public void saveTracking(OrderId id, String trackingCode, Carrier carrier,
+                              String carrierName, String trackingUrl) {
+        em.createNativeQuery(
+                "UPDATE orders SET tracking_code = :trackingCode, carrier = :carrier," +
+                " carrier_name = :carrierName, tracking_url = :trackingUrl" +
+                " WHERE id = :id")
+                .setParameter("trackingCode", trackingCode)
+                .setParameter("carrier", carrier.name())
+                .setParameter("carrierName", carrierName)
+                .setParameter("trackingUrl", trackingUrl)
+                .setParameter("id", id.value())
                 .executeUpdate();
     }
 

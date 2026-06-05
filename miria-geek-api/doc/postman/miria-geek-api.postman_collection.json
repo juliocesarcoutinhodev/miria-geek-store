@@ -5655,6 +5655,25 @@
             "description": "Updates order status following valid transitions: PENDING_PAYMENT→PAID, PAID→PREPARING, PREPARING→SHIPPED, SHIPPED→DELIVERED, PENDING_PAYMENT→CANCELLED, PAID→CANCELLED. Invalid transition returns 422. Cancellation restores stock automatically and publishes order.cancelled to Kafka. Returns full order detail."
           },
           "response": []
+        },
+        {
+          "name": "Update Order Tracking",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/orders/{{orderId}}/tracking",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "orders", "{{orderId}}", "tracking"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trackingCode\": \"BR123456789BR\",\n  \"carrier\": \"CORREIOS\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Registers tracking code for a SHIPPED order. Carriers: CORREIOS, JADLOG, LOGGI, TOTAL_EXPRESS, AZUL_CARGO, OUTRO. For OUTRO, customTrackingUrl is required. Generates tracking URL automatically. Publishes order.tracking-updated to Kafka — notification module sends email to customer."
+          },
+          "response": []
         }
       ]
     },

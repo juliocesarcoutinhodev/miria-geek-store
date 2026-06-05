@@ -16,6 +16,8 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
+    listener:
+      auto-startup: false
 
   mail:
     host: localhost
@@ -49,3 +51,7 @@ app:
   cookie:
     domain: localhost
     secure: false
+  mail:
+    from: noreply@test.com
+  base-url: http://localhost:8080
+  frontend-url: http://localhost:4200

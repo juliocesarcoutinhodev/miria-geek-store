@@ -1,0 +1,10 @@
+package br.com.miriageekstore.order.infrastructure.adapter.in.web;
+
+import jakarta.validation.constraints.NotBlank;
+
+record UpdateTrackingRequest(
+        @NotBlank String trackingCode,
+        @NotBlank String carrier,
+        String carrierName,
+        String customTrackingUrl
+) {}
