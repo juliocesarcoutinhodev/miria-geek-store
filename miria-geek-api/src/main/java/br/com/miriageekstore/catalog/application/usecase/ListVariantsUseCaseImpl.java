@@ -26,7 +26,8 @@ public class ListVariantsUseCaseImpl implements ListVariantsUseCase {
         var items = product.getVariants().stream()
                 .map(v -> new ListVariantsResult.VariantItem(
                         v.getId().value(), v.getAttributeName(), v.getAttributeValue(),
-                        v.getPrice(), v.getStock(), v.getSku().value(), v.isActive(), v.getCreatedAt()))
+                        v.getPrice(), v.getStock(), v.getSku().value(), v.isActive(), v.getCreatedAt(),
+                        v.getWeight(), v.getWidth(), v.getHeight(), v.getDepth()))
                 .toList();
 
         return new ListVariantsResult(items);

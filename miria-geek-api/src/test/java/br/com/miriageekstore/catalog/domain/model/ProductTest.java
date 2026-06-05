@@ -67,6 +67,7 @@ class ProductTest {
     private ProductVariant variant() {
         var slug = Slug.from("Funko Pop Batman");
         return ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(89.90), 10,
-                Sku.generate(slug, "Cor", "Preto"));
+                Sku.generate(slug, "Cor", "Preto"),
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
     }
 }

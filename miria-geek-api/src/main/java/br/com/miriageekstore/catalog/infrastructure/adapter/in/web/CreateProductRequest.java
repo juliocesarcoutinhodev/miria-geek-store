@@ -5,6 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
@@ -42,6 +43,11 @@ record CreateProductRequest(
             @Min(value = 0, message = "O estoque não pode ser negativo")
             int stock,
 
-            String sku
+            String sku,
+
+            @NotNull @Positive BigDecimal weight,
+            @NotNull @Positive BigDecimal width,
+            @NotNull @Positive BigDecimal height,
+            @NotNull @Positive BigDecimal depth
     ) {}
 }

@@ -54,7 +54,8 @@ class ListVariantsUseCaseTest {
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private Product product() {
-        var variant = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99.90), 5, new Sku("SKU-001"));
+        var variant = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99.90), 5, new Sku("SKU-001"),
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         return Product.create("Funko Batman", "Desc", CategoryId.of(UUID.randomUUID()), false, List.of(variant));
     }
 }

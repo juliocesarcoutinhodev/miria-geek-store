@@ -107,6 +107,7 @@ class UpdateProductUseCaseTest {
         var sku = Sku.generate(slug, "Cor", "Preto");
         return Product.create("Funko Pop Batman", "Desc",
                 CategoryId.generate(), false,
-                List.of(ProductVariant.create("Cor", "Preto", BigDecimal.TEN, 5, sku)));
+                List.of(ProductVariant.create("Cor", "Preto", BigDecimal.TEN, 5, sku,
+                        BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20))));
     }
 }

@@ -35,7 +35,8 @@ public class AddVariantUseCaseImpl implements AddVariantUseCase {
 
         var variant = ProductVariant.create(
                 command.attributeName(), command.attributeValue(),
-                command.price(), command.stock(), sku);
+                command.price(), command.stock(), sku,
+                command.weight(), command.width(), command.height(), command.depth());
 
         product.addVariant(variant);
         productRepository.save(product);
@@ -43,6 +44,7 @@ public class AddVariantUseCaseImpl implements AddVariantUseCase {
         return new AddVariantResult(
                 variant.getId().value(), variant.getAttributeName(), variant.getAttributeValue(),
                 variant.getPrice(), variant.getStock(), variant.getSku().value(),
-                variant.isActive(), variant.getCreatedAt());
+                variant.isActive(), variant.getCreatedAt(),
+                variant.getWeight(), variant.getWidth(), variant.getHeight(), variant.getDepth());
     }
 }

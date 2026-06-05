@@ -86,8 +86,11 @@ public class Product {
     }
 
     public void updateVariant(VariantId id, String attributeName, String attributeValue,
-                               java.math.BigDecimal price, int stock, Sku sku) {
-        findVariantOrThrow(id).update(attributeName, attributeValue, price, stock, sku);
+                               java.math.BigDecimal price, int stock, Sku sku,
+                               java.math.BigDecimal weight, java.math.BigDecimal width,
+                               java.math.BigDecimal height, java.math.BigDecimal depth) {
+        findVariantOrThrow(id).update(attributeName, attributeValue, price, stock, sku,
+                weight, width, height, depth);
     }
 
     public void changeVariantStatus(VariantId id, boolean active) {

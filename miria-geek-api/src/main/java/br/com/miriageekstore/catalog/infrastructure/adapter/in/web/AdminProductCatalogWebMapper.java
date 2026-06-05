@@ -38,7 +38,8 @@ class AdminProductCatalogWebMapper {
         var variants = result.variants().stream()
                 .map(v -> new AdminProductDetailResponse.VariantInfo(
                         v.id(), v.attributeName(), v.attributeValue(),
-                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt()))
+                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt(),
+                        v.weight(), v.width(), v.height(), v.depth()))
                 .toList();
 
         return new AdminProductDetailResponse(

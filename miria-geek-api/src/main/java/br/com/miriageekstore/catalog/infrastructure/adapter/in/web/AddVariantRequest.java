@@ -12,5 +12,9 @@ record AddVariantRequest(
         @NotBlank String attributeValue,
         @NotNull @Positive BigDecimal price,
         @PositiveOrZero int stock,
-        String sku
+        String sku,
+        @NotNull @Positive BigDecimal weight,
+        @NotNull @Positive BigDecimal width,
+        @NotNull @Positive BigDecimal height,
+        @NotNull @Positive BigDecimal depth
 ) {}

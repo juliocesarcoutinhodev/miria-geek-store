@@ -113,7 +113,8 @@ class CreateProductUseCaseTest {
 
     private CreateProductCommand command(UUID categoryId, String sku) {
         var variant = new CreateProductCommand.VariantInput("Cor", "Preto",
-                BigDecimal.valueOf(89.90), 10, sku);
+                BigDecimal.valueOf(89.90), 10, sku,
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         return new CreateProductCommand("Funko Pop Batman", "Boneco colecionável Batman",
                 categoryId, false, List.of(variant));
     }

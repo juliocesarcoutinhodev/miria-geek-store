@@ -49,4 +49,16 @@ class ProductVariantEntity {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @Column(precision = 8, scale = 3)
+    private BigDecimal weight;
+
+    @Column(precision = 8, scale = 2)
+    private BigDecimal width;
+
+    @Column(precision = 8, scale = 2)
+    private BigDecimal height;
+
+    @Column(precision = 8, scale = 2)
+    private BigDecimal depth;
 }

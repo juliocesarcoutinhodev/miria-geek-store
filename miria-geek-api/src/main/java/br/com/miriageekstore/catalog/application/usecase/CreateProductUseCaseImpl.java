@@ -53,7 +53,8 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
             }
 
             return ProductVariant.create(input.attributeName(), input.attributeValue(),
-                    input.price(), input.stock(), sku);
+                    input.price(), input.stock(), sku,
+                    input.weight(), input.width(), input.height(), input.depth());
         }).toList();
     }
 
@@ -61,7 +62,8 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
         var variantSummaries = product.getVariants().stream()
                 .map(v -> new CreateProductResult.VariantSummary(
                         v.getId().value(), v.getAttributeName(), v.getAttributeValue(),
-                        v.getPrice(), v.getStock(), v.getSku().value(), v.isActive(), v.getCreatedAt()))
+                        v.getPrice(), v.getStock(), v.getSku().value(), v.isActive(), v.getCreatedAt(),
+                        v.getWeight(), v.getWidth(), v.getHeight(), v.getDepth()))
                 .toList();
 
         return new CreateProductResult(

@@ -168,6 +168,7 @@ import { Category } from '../../../core/catalog/category.model';
                                         <th style="text-align: right">Preço</th>
                                         <th style="text-align: right">Estoque</th>
                                         <th>SKU</th>
+                                        <th>Peso / Dimensões</th>
                                         <th>Status</th>
                                         <th style="width: 10rem; text-align: center">Ações</th>
                                     </tr>
@@ -183,6 +184,7 @@ import { Category } from '../../../core/catalog/category.model';
                                             <span [class]="variant.stock === 0 ? 'text-red-500 font-medium' : ''">{{ variant.stock }}</span>
                                         </td>
                                         <td class="font-mono text-xs text-muted-color">{{ variant.sku }}</td>
+                                        <td class="text-xs text-muted-color">{{ formatDimensions(variant.weight, variant.width, variant.height, variant.depth) }}</td>
                                         <td>
                                             <p-tag [value]="variant.active ? 'Ativa' : 'Inativa'" [severity]="variant.active ? 'success' : 'danger'" />
                                         </td>
@@ -216,6 +218,7 @@ import { Category } from '../../../core/catalog/category.model';
                                         <th style="text-align: right">Preço</th>
                                         <th style="text-align: right">Estoque</th>
                                         <th>SKU</th>
+                                        <th>Peso / Dimensões</th>
                                         <th style="width: 5rem; text-align: center">Ação</th>
                                     </tr>
                                 </ng-template>
@@ -228,6 +231,7 @@ import { Category } from '../../../core/catalog/category.model';
                                         <td style="text-align: right">{{ formatPrice(v.price) }}</td>
                                         <td style="text-align: right">{{ v.stock }}</td>
                                         <td class="font-mono text-xs text-muted-color">{{ v.sku || '—' }}</td>
+                                        <td class="text-xs text-muted-color">{{ formatDimensions(v.weight, v.width, v.height, v.depth) }}</td>
                                         <td class="text-center">
                                             <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Remover" tooltipPosition="top" (onClick)="removeLocalVariant(i)" />
                                         </td>
@@ -318,6 +322,34 @@ import { Category } from '../../../core/catalog/category.model';
                 <div>
                     <label for="vf-stock" class="block font-medium mb-2">Estoque inicial</label>
                     <p-inputnumber id="vf-stock" formControlName="stock" [min]="0" [showButtons]="true" class="w-full" />
+                </div>
+                <div>
+                    <label for="vf-weight" class="block font-medium mb-2">Peso (kg) <span class="text-red-500">*</span></label>
+                    <p-inputnumber id="vf-weight" formControlName="weight" mode="decimal" [min]="0.001" [minFractionDigits]="3" [maxFractionDigits]="3" class="w-full" placeholder="Ex: 0.350" />
+                    @if (variantForm.controls.weight.invalid && variantForm.controls.weight.touched) {
+                        <small class="text-red-500">Informe um peso válido</small>
+                    }
+                </div>
+                <div>
+                    <label for="vf-width" class="block font-medium mb-2">Largura (cm) <span class="text-red-500">*</span></label>
+                    <p-inputnumber id="vf-width" formControlName="width" mode="decimal" [min]="0.01" [minFractionDigits]="1" [maxFractionDigits]="2" class="w-full" placeholder="Ex: 15" />
+                    @if (variantForm.controls.width.invalid && variantForm.controls.width.touched) {
+                        <small class="text-red-500">Informe uma largura válida</small>
+                    }
+                </div>
+                <div>
+                    <label for="vf-height" class="block font-medium mb-2">Altura (cm) <span class="text-red-500">*</span></label>
+                    <p-inputnumber id="vf-height" formControlName="height" mode="decimal" [min]="0.01" [minFractionDigits]="1" [maxFractionDigits]="2" class="w-full" placeholder="Ex: 10" />
+                    @if (variantForm.controls.height.invalid && variantForm.controls.height.touched) {
+                        <small class="text-red-500">Informe uma altura válida</small>
+                    }
+                </div>
+                <div>
+                    <label for="vf-depth" class="block font-medium mb-2">Comprimento (cm) <span class="text-red-500">*</span></label>
+                    <p-inputnumber id="vf-depth" formControlName="depth" mode="decimal" [min]="0.01" [minFractionDigits]="1" [maxFractionDigits]="2" class="w-full" placeholder="Ex: 20" />
+                    @if (variantForm.controls.depth.invalid && variantForm.controls.depth.touched) {
+                        <small class="text-red-500">Informe um comprimento válido</small>
+                    }
                 </div>
                 <div class="col-span-2">
                     <label for="vf-sku" class="block font-medium mb-2">
@@ -427,7 +459,11 @@ export class ProductForm implements OnInit {
         attributeValue: ['', [Validators.required]],
         price: [null as number | null, [Validators.required, Validators.min(0.01)]],
         stock: [0, [Validators.min(0)]],
-        sku: ['']
+        sku: [''],
+        weight: [null as number | null, [Validators.required, Validators.min(0.001)]],
+        width: [null as number | null, [Validators.required, Validators.min(0.01)]],
+        height: [null as number | null, [Validators.required, Validators.min(0.01)]],
+        depth: [null as number | null, [Validators.required, Validators.min(0.01)]]
     });
 
     readonly stockForm = this.fb.group({
@@ -550,7 +586,7 @@ export class ProductForm implements OnInit {
 
     openAddVariantDialog(): void {
         this.editingVariant.set(null);
-        this.variantForm.reset({ attributeName: '', attributeValue: '', price: null, stock: 0, sku: '' });
+        this.variantForm.reset({ attributeName: '', attributeValue: '', price: null, stock: 0, sku: '', weight: null, width: null, height: null, depth: null });
         this.variantDialogVisible.set(true);
     }
 
@@ -561,7 +597,11 @@ export class ProductForm implements OnInit {
             attributeValue: variant.attributeValue,
             price: variant.price,
             stock: variant.stock,
-            sku: variant.sku
+            sku: variant.sku,
+            weight: variant.weight,
+            width: variant.width,
+            height: variant.height,
+            depth: variant.depth
         });
         this.variantDialogVisible.set(true);
     }
@@ -579,13 +619,17 @@ export class ProductForm implements OnInit {
             return;
         }
 
-        const { attributeName, attributeValue, price, stock, sku } = this.variantForm.value;
+        const { attributeName, attributeValue, price, stock, sku, weight, width, height, depth } = this.variantForm.value;
         const payload: UpdateVariantRequest = {
             attributeName: attributeName!,
             attributeValue: attributeValue!,
             price: price!,
             stock: stock ?? 0,
-            sku: sku || undefined
+            sku: sku || undefined,
+            weight: weight!,
+            width: width!,
+            height: height!,
+            depth: depth!
         };
 
         if (!this.isEditMode()) {
@@ -768,6 +812,18 @@ export class ProductForm implements OnInit {
 
     formatPrice(price: number): string {
         return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    formatDimensions(weight: number | null, width: number | null, height: number | null, depth: number | null): string {
+        if (weight == null || width == null || height == null || depth == null) return '—';
+
+        const weightLabel = `${weight.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} kg`;
+        const sizeLabel = `${width.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} x ${height.toLocaleString('pt-BR', {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 2
+        })} x ${depth.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} cm`;
+
+        return `${weightLabel} | ${sizeLabel}`;
     }
 
     nameError(ctrl: AbstractControl): string {

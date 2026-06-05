@@ -21,7 +21,8 @@ class ProductWebMapper {
         var variants = request.variants().stream()
                 .map(v -> new CreateProductCommand.VariantInput(
                         v.attributeName(), v.attributeValue(),
-                        v.price(), v.stock(), v.sku()))
+                        v.price(), v.stock(), v.sku(),
+                        v.weight(), v.width(), v.height(), v.depth()))
                 .toList();
 
         return new CreateProductCommand(
@@ -37,7 +38,8 @@ class ProductWebMapper {
         var variants = result.variants().stream()
                 .map(v -> new ProductResponse.VariantResponse(
                         v.id(), v.attributeName(), v.attributeValue(),
-                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt()))
+                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt(),
+                        v.weight(), v.width(), v.height(), v.depth()))
                 .toList();
 
         return new ProductResponse(
@@ -89,7 +91,8 @@ class ProductWebMapper {
         var variants = result.variants().stream()
                 .map(v -> new ProductResponse.VariantResponse(
                         v.id(), v.attributeName(), v.attributeValue(),
-                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt()))
+                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt(),
+                        v.weight(), v.width(), v.height(), v.depth()))
                 .toList();
 
         return new ProductResponse(

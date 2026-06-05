@@ -138,6 +138,7 @@ class UpdateProductStatusUseCaseTest {
         var slug = Slug.from("Produto Teste");
         var sku = Sku.generate(slug, "Cor", "Azul");
         return Product.create("Produto Teste", "Desc", categoryId, false,
-                List.of(ProductVariant.create("Cor", "Azul", BigDecimal.TEN, 5, sku)));
+                List.of(ProductVariant.create("Cor", "Azul", BigDecimal.TEN, 5, sku,
+                        BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20))));
     }
 }

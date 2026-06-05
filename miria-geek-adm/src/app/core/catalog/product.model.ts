@@ -33,6 +33,10 @@ export interface ProductVariantInfo {
     sku: string;
     active: boolean;
     createdAt: string;
+    weight: number | null;
+    width: number | null;
+    height: number | null;
+    depth: number | null;
 }
 
 export interface ProductDetail {
@@ -78,6 +82,10 @@ export interface CreateVariantRequest {
     price: number;
     stock: number;
     sku?: string;
+    weight: number;
+    width: number;
+    height: number;
+    depth: number;
 }
 
 export interface CreateProductRequest {
@@ -101,6 +109,10 @@ export interface UpdateVariantRequest {
     price: number;
     stock: number;
     sku?: string;
+    weight: number;
+    width: number;
+    height: number;
+    depth: number;
 }
 
 export interface AdjustStockRequest {

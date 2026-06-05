@@ -12,5 +12,9 @@ record VariantResponse(
         int stock,
         String sku,
         boolean active,
-        Instant createdAt
+        Instant createdAt,
+        BigDecimal weight,
+        BigDecimal width,
+        BigDecimal height,
+        BigDecimal depth
 ) {}

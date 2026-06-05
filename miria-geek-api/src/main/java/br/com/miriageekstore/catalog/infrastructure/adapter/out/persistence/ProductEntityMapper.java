@@ -44,7 +44,11 @@ class ProductEntityMapper {
                         v.getStock(),
                         new Sku(v.getSku()),
                         v.isActive(),
-                        v.getCreatedAt()
+                        v.getCreatedAt(),
+                        v.getWeight(),
+                        v.getWidth(),
+                        v.getHeight(),
+                        v.getDepth()
                 ))
                 .toList();
 
@@ -71,6 +75,10 @@ class ProductEntityMapper {
         entity.setSku(variant.getSku().value());
         entity.setActive(variant.isActive());
         entity.setCreatedAt(variant.getCreatedAt());
+        entity.setWeight(variant.getWeight());
+        entity.setWidth(variant.getWidth());
+        entity.setHeight(variant.getHeight());
+        entity.setDepth(variant.getDepth());
         return entity;
     }
 }

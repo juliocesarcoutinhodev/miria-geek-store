@@ -34,8 +34,8 @@ class UpdateVariantStatusUseCaseTest {
 
     @Test
     void shouldDeactivateVariantWhenProductHasMultipleActive() {
-        var v1 = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"));
-        var v2 = ProductVariant.create("Cor", "Branco", BigDecimal.valueOf(99), 5, new Sku("SKU-002"));
+        var v1 = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"), BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
+        var v2 = ProductVariant.create("Cor", "Branco", BigDecimal.valueOf(99), 5, new Sku("SKU-002"), BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         var product = Product.create("Funko Batman", "Desc", CategoryId.of(UUID.randomUUID()), false, List.of(v1, v2));
         var variantId = v1.getId().value();
 
@@ -50,8 +50,8 @@ class UpdateVariantStatusUseCaseTest {
 
     @Test
     void shouldActivateVariant() {
-        var v1 = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"));
-        var v2 = ProductVariant.create("Cor", "Branco", BigDecimal.valueOf(99), 5, new Sku("SKU-002"));
+        var v1 = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"), BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
+        var v2 = ProductVariant.create("Cor", "Branco", BigDecimal.valueOf(99), 5, new Sku("SKU-002"), BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         var product = Product.create("Funko Batman", "Desc", CategoryId.of(UUID.randomUUID()), false, List.of(v1, v2));
         product.changeVariantStatus(v1.getId(), false);
         var variantId = v1.getId().value();
@@ -66,7 +66,7 @@ class UpdateVariantStatusUseCaseTest {
 
     @Test
     void shouldThrowWhenTryingToDeactivateLastActiveVariant() {
-        var v = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"));
+        var v = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"), BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         var product = Product.create("Funko Batman", "Desc", CategoryId.of(UUID.randomUUID()), false, List.of(v));
         var variantId = v.getId().value();
 

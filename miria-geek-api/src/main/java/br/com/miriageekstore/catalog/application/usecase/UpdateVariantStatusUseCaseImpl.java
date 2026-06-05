@@ -31,6 +31,7 @@ public class UpdateVariantStatusUseCaseImpl implements UpdateVariantStatusUseCas
         return new UpdateVariantStatusResult(
                 variant.getId().value(), variant.getAttributeName(), variant.getAttributeValue(),
                 variant.getPrice(), variant.getStock(), variant.getSku().value(),
-                variant.isActive(), variant.getCreatedAt());
+                variant.isActive(), variant.getCreatedAt(),
+                variant.getWeight(), variant.getWidth(), variant.getHeight(), variant.getDepth());
     }
 }

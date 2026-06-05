@@ -127,7 +127,8 @@ class UploadProductImageUseCaseTest {
         var slug = br.com.miriageekstore.catalog.domain.model.Slug.from("Produto Teste");
         var sku = br.com.miriageekstore.catalog.domain.model.Sku.generate(slug, "Cor", "Azul");
         var variant = br.com.miriageekstore.catalog.domain.model.ProductVariant.create(
-                "Cor", "Azul", BigDecimal.TEN, 5, sku);
+                "Cor", "Azul", BigDecimal.TEN, 5, sku,
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         return Product.create("Produto Teste", "Desc",
                 br.com.miriageekstore.catalog.domain.model.CategoryId.generate(), false, List.of(variant));
     }

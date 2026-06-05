@@ -24,14 +24,19 @@ class VariantWebMapper {
                 request.attributeValue(),
                 request.price(),
                 request.stock(),
-                request.sku()
+                request.sku(),
+                request.weight(),
+                request.width(),
+                request.height(),
+                request.depth()
         );
     }
 
     VariantResponse toResponse(AddVariantResult result) {
         return new VariantResponse(
                 result.id(), result.attributeName(), result.attributeValue(),
-                result.price(), result.stock(), result.sku(), result.active(), result.createdAt()
+                result.price(), result.stock(), result.sku(), result.active(), result.createdAt(),
+                result.weight(), result.width(), result.height(), result.depth()
         );
     }
 
@@ -39,7 +44,8 @@ class VariantWebMapper {
         return result.variants().stream()
                 .map(v -> new VariantResponse(
                         v.id(), v.attributeName(), v.attributeValue(),
-                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt()))
+                        v.price(), v.stock(), v.sku(), v.active(), v.createdAt(),
+                        v.weight(), v.width(), v.height(), v.depth()))
                 .toList();
     }
 
@@ -51,14 +57,19 @@ class VariantWebMapper {
                 request.attributeValue(),
                 request.price(),
                 request.stock(),
-                request.sku()
+                request.sku(),
+                request.weight(),
+                request.width(),
+                request.height(),
+                request.depth()
         );
     }
 
     VariantResponse toResponse(UpdateVariantResult result) {
         return new VariantResponse(
                 result.id(), result.attributeName(), result.attributeValue(),
-                result.price(), result.stock(), result.sku(), result.active(), result.createdAt()
+                result.price(), result.stock(), result.sku(), result.active(), result.createdAt(),
+                result.weight(), result.width(), result.height(), result.depth()
         );
     }
 
@@ -69,7 +80,8 @@ class VariantWebMapper {
     VariantResponse toResponse(UpdateVariantStatusResult result) {
         return new VariantResponse(
                 result.id(), result.attributeName(), result.attributeValue(),
-                result.price(), result.stock(), result.sku(), result.active(), result.createdAt()
+                result.price(), result.stock(), result.sku(), result.active(), result.createdAt(),
+                result.weight(), result.width(), result.height(), result.depth()
         );
     }
 

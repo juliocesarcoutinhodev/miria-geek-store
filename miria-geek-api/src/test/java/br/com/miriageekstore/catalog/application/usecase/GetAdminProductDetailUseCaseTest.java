@@ -81,10 +81,12 @@ class GetAdminProductDetailUseCaseTest {
 
         var activeVariant = new GetAdminProductDetailResult.VariantItem(
                 UUID.randomUUID(), "Cor", "Preto", BigDecimal.valueOf(89.90), 10,
-                "SKU-001", true, Instant.now());
+                "SKU-001", true, Instant.now(),
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         var inactiveVariant = new GetAdminProductDetailResult.VariantItem(
                 UUID.randomUUID(), "Cor", "Branco", BigDecimal.valueOf(89.90), 5,
-                "SKU-002", false, Instant.now());
+                "SKU-002", false, Instant.now(),
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
 
         return new GetAdminProductDetailResult(
                 id, "Funko Pop Batman", "funko-pop-batman", "Descrição",

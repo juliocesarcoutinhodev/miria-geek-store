@@ -9,5 +9,9 @@ public record AddVariantCommand(
         String attributeValue,
         BigDecimal price,
         int stock,
-        String sku
+        String sku,
+        BigDecimal weight,
+        BigDecimal width,
+        BigDecimal height,
+        BigDecimal depth
 ) {}

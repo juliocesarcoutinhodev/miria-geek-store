@@ -12,5 +12,9 @@ record UpdateVariantRequest(
         @NotBlank String attributeValue,
         @NotNull @Positive BigDecimal price,
         @PositiveOrZero int stock,
-        @NotBlank String sku
+        @NotBlank String sku,
+        @NotNull @Positive BigDecimal weight,
+        @NotNull @Positive BigDecimal width,
+        @NotNull @Positive BigDecimal height,
+        @NotNull @Positive BigDecimal depth
 ) {}

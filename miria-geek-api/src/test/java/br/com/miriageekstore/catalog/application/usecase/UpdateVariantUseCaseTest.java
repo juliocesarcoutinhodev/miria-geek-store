@@ -93,11 +93,13 @@ class UpdateVariantUseCaseTest {
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private Product product() {
-        var v = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"));
+        var v = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"),
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         return Product.create("Funko Batman", "Desc", CategoryId.of(UUID.randomUUID()), false, List.of(v));
     }
 
     private UpdateVariantCommand command(UUID productId, UUID variantId, String sku) {
-        return new UpdateVariantCommand(productId, variantId, "Tamanho", "P", BigDecimal.valueOf(79.90), 2, sku);
+        return new UpdateVariantCommand(productId, variantId, "Tamanho", "P", BigDecimal.valueOf(79.90), 2, sku,
+                BigDecimal.valueOf(0.500), BigDecimal.valueOf(18), BigDecimal.valueOf(12), BigDecimal.valueOf(25));
     }
 }

@@ -317,7 +317,8 @@ class ProductCatalogPersistenceAdapter implements ProductCatalogRepository {
         var variants = product.getVariants().stream()
                 .map(v -> new GetAdminProductDetailResult.VariantItem(
                         v.getId(), v.getAttributeName(), v.getAttributeValue(),
-                        v.getPrice(), v.getStock(), v.getSku(), v.isActive(), v.getCreatedAt()))
+                        v.getPrice(), v.getStock(), v.getSku(), v.isActive(), v.getCreatedAt(),
+                        v.getWeight(), v.getWidth(), v.getHeight(), v.getDepth()))
                 .toList();
 
         return Optional.of(new GetAdminProductDetailResult(

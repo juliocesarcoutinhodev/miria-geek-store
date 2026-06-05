@@ -85,11 +85,13 @@ class AddVariantUseCaseTest {
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private Product product() {
-        var v = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"));
+        var v = ProductVariant.create("Cor", "Preto", BigDecimal.valueOf(99), 5, new Sku("SKU-001"),
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         return Product.create("Funko Batman", "Desc", CategoryId.of(UUID.randomUUID()), false, List.of(v));
     }
 
     private AddVariantCommand command(UUID productId, String sku) {
-        return new AddVariantCommand(productId, "Tamanho", "M", BigDecimal.valueOf(59.90), 3, sku);
+        return new AddVariantCommand(productId, "Tamanho", "M", BigDecimal.valueOf(59.90), 3, sku,
+                BigDecimal.valueOf(0.350), BigDecimal.valueOf(15), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
     }
 }

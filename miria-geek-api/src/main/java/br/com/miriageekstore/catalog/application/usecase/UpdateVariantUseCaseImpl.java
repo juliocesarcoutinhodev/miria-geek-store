@@ -38,12 +38,14 @@ public class UpdateVariantUseCaseImpl implements UpdateVariantUseCase {
         }
 
         product.updateVariant(variantId, command.attributeName(), command.attributeValue(),
-                command.price(), command.stock(), newSku);
+                command.price(), command.stock(), newSku,
+                command.weight(), command.width(), command.height(), command.depth());
         productRepository.save(product);
 
         return new UpdateVariantResult(
                 variant.getId().value(), variant.getAttributeName(), variant.getAttributeValue(),
                 variant.getPrice(), variant.getStock(), variant.getSku().value(),
-                variant.isActive(), variant.getCreatedAt());
+                variant.isActive(), variant.getCreatedAt(),
+                variant.getWeight(), variant.getWidth(), variant.getHeight(), variant.getDepth());
     }
 }
