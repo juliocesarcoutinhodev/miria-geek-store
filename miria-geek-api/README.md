@@ -38,7 +38,7 @@ Construído com **Spring Boot 4.0**, arquitetura **Hexagonal (Ports & Adapters)*
 Na raiz do monorepo (`miria-geek-store/`):
 
 ```bash
-docker compose up -d
+docker compose -f docker-compose.local.yml up -d
 ```
 
 Serviços iniciados:
@@ -49,6 +49,9 @@ Serviços iniciados:
 | Apache Kafka 3.9 | `9092` | Mensageria |
 | Kafka UI | `8090` | Painel web do Kafka |
 | MinIO | `9000` / `9001` | Armazenamento de imagens (API / Console) |
+| Mailpit | `1025` / `8025` | SMTP local para dev (captura e-mails sem enviá-los) |
+
+> O arquivo `docker-compose.yml` na raiz é reservado para produção (VPS). Para desenvolvimento use sempre `docker-compose.local.yml`.
 
 ---
 
@@ -232,6 +235,8 @@ Migrations gerenciadas pelo **Flyway** (`src/main/resources/db/migration/`):
 | V12 | Tabelas `products` e `product_variants` (id, name, slug, category_id, status, featured, variants com SKU único) |
 | V13 | Tabela `product_images` (id, product_id, url, filename, principal, image_order, created_at) |
 | V14 | Coluna `active boolean` em `product_variants` + Tabela `stock_movements` (id, variant_id, product_id, type, quantity, motivo, admin_id, created_at) |
+| V15 | Tabelas `orders` e `order_items` + sequence `orders_order_number_seq` + trigger de geração automática de `order_number` (`ORD-00000001`) |
+| V16 | Colunas `sku` e `principal_image` em `order_items` + `delivery_address_id` em `orders` + tabelas `payments` e `order_status_history` |
 
 ---
 
@@ -313,6 +318,17 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 **9/9 stories · 31 pontos · 230 testes passando**
 
 > **Nota:** a query de listagem admin (`GET /api/v1/admin/products`) retorna `principalImageUrl` (nullable) com a URL pública da imagem principal de cada produto, obtida via subquery no PostgreSQL.
+
+---
+
+## EP-04 · Order — Status das stories
+
+| Story | Descrição | Pontos | Endpoint(s) |
+|---|---|---|---|
+| US-04.05 | Listagem de pedidos (admin) | 3 | `GET /api/v1/admin/orders` |
+| US-04.06 | Detalhe do pedido (admin) | 2 | `GET /api/v1/admin/orders/{id}` |
+
+**2/? stories · 5 pontos implementados**
 
 ---
 
@@ -402,6 +418,18 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | PATCH | `/api/v1/admin/products/{id}/variants/{variantId}/stock` | `tipo (ENTRADA\|SAIDA), quantidade, motivo` | 200 |
 | GET | `/api/v1/admin/products` | `nome?, categoriaId?, status?, destaque?, page, size, sort` | 200 paginado |
 | GET | `/api/v1/admin/products/{id}` | — | 200 detalhe / 404 |
+
+### Admin Orders — requer `ROLE_ADMIN`
+
+| Método | Path | Params | Resposta |
+|---|---|---|---|
+| GET | `/api/v1/admin/orders` | `orderNumber?, customerName?, customerEmail?, status?, startDate?, endDate?, minValue?, maxValue?, page, size, sort` | 200 paginado |
+| GET | `/api/v1/admin/orders/{id}` | — | 200 detalhe / 404 |
+
+> Ordenações: `latest` (padrão), `oldest`, `value_asc`, `value_desc`, `status`.
+> Status: `PENDING_PAYMENT`, `PAID`, `PREPARING`, `SHIPPED`, `DELIVERED`, `CANCELLED`.
+> Datas no formato ISO 8601 (ex: `2026-01-01T00:00:00Z`).
+> Detalhe retorna: `customer`, `items[]` (com `sku` e `principalImage`), `deliveryAddress` (nullable), `payment` (nullable), `statusHistory[]` ordenado cronologicamente.
 
 ---
 

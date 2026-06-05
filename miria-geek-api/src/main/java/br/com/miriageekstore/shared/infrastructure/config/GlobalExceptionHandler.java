@@ -12,6 +12,7 @@ import br.com.miriageekstore.catalog.domain.exception.ImageLimitExceededExceptio
 import br.com.miriageekstore.catalog.domain.exception.InvalidImageTypeException;
 import br.com.miriageekstore.catalog.domain.exception.ProductImageNotFoundException;
 import br.com.miriageekstore.catalog.domain.exception.ProductNotFoundException;
+import br.com.miriageekstore.order.domain.exception.OrderNotFoundException;
 import br.com.miriageekstore.catalog.domain.exception.ProductSkuAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -214,6 +215,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(ProductNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("PRODUCT_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(OrderNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("ORDER_NOT_FOUND", ex.getMessage()));
     }
 
     @ExceptionHandler(ProductImageNotFoundException.class)
