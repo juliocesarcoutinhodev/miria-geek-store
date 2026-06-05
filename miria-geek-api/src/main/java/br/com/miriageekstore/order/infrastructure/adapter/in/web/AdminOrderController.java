@@ -1,15 +1,23 @@
 package br.com.miriageekstore.order.infrastructure.adapter.in.web;
 
+import br.com.miriageekstore.order.domain.model.OrderStatus;
 import br.com.miriageekstore.order.domain.port.in.AdminOrderQuery;
 import br.com.miriageekstore.order.domain.port.in.GetAdminOrderDetailUseCase;
 import br.com.miriageekstore.order.domain.port.in.ListAdminOrdersUseCase;
+import br.com.miriageekstore.order.domain.port.in.UpdateOrderStatusCommand;
+import br.com.miriageekstore.order.domain.port.in.UpdateOrderStatusUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +35,7 @@ public class AdminOrderController {
 
     private final ListAdminOrdersUseCase listAdminOrdersUseCase;
     private final GetAdminOrderDetailUseCase getAdminOrderDetailUseCase;
+    private final UpdateOrderStatusUseCase updateOrderStatusUseCase;
     private final AdminOrderWebMapper mapper;
 
     @Operation(summary = "List orders with filters (admin)",
@@ -59,6 +68,23 @@ public class AdminOrderController {
                security = @SecurityRequirement(name = "cookieAuth"))
     @GetMapping("/{id}")
     AdminOrderDetailResponse getOrderDetail(@PathVariable UUID id) {
+        return mapper.toDetailResponse(getAdminOrderDetailUseCase.execute(id));
+    }
+
+    @Operation(summary = "Update order status (admin)",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PatchMapping("/{id}/status")
+    AdminOrderDetailResponse updateOrderStatus(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateOrderStatusRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        var adminId   = UUID.fromString(jwt.getSubject());
+        var newStatus = OrderStatus.valueOf(request.status().toUpperCase());
+        var command   = new UpdateOrderStatusCommand(id, newStatus, request.note(), adminId);
+
+        updateOrderStatusUseCase.execute(command);
+
         return mapper.toDetailResponse(getAdminOrderDetailUseCase.execute(id));
     }
 }

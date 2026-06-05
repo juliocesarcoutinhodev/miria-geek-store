@@ -1,9 +1,13 @@
 package br.com.miriageekstore.order.infrastructure.adapter.out.persistence;
 
+import br.com.miriageekstore.order.domain.model.Order;
+import br.com.miriageekstore.order.domain.model.OrderId;
+import br.com.miriageekstore.order.domain.model.OrderStatus;
 import br.com.miriageekstore.order.domain.port.in.AdminOrderQuery;
 import br.com.miriageekstore.order.domain.port.in.GetAdminOrderDetailResult;
 import br.com.miriageekstore.order.domain.port.in.ListAdminOrdersResult;
 import br.com.miriageekstore.order.domain.port.out.AdminOrderRepository;
+import br.com.miriageekstore.order.domain.port.out.OrderWriteRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +23,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-class OrderPersistenceAdapter implements AdminOrderRepository {
+class OrderPersistenceAdapter implements AdminOrderRepository, OrderWriteRepository {
 
     private final EntityManager em;
 
@@ -272,6 +276,65 @@ class OrderPersistenceAdapter implements AdminOrderRepository {
                 payment,
                 history
         );
+    }
+
+    // ── Write ─────────────────────────────────────────────────────────────────
+
+    @Override
+    public Optional<Order> findById(OrderId id) {
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = em.createNativeQuery(
+                "SELECT o.id, o.status, o.user_id, o.created_at FROM orders o WHERE o.id = :id")
+                .setParameter("id", id.value())
+                .getResultList();
+
+        if (rows.isEmpty()) return Optional.empty();
+
+        Object[] row = rows.get(0);
+        return Optional.of(Order.reconstitute(
+                OrderId.of((UUID) row[0]),
+                OrderStatus.valueOf((String) row[1]),
+                (UUID) row[2],
+                toInstant(row[3])
+        ));
+    }
+
+    @Override
+    public void updateStatus(OrderId id, OrderStatus status, Instant updatedAt) {
+        em.createNativeQuery(
+                "UPDATE orders SET status = :status, updated_at = :updatedAt WHERE id = :id")
+                .setParameter("status", status.name())
+                .setParameter("updatedAt", updatedAt)
+                .setParameter("id", id.value())
+                .executeUpdate();
+    }
+
+    @Override
+    public void saveHistoryEntry(UUID id, OrderId orderId, OrderStatus status,
+                                  String note, UUID adminId, Instant changedAt) {
+        em.createNativeQuery(
+                "INSERT INTO order_status_history (id, order_id, status, note, admin_id, changed_at)" +
+                " VALUES (:id, :orderId, :status, :note, :adminId, :changedAt)")
+                .setParameter("id", id)
+                .setParameter("orderId", orderId.value())
+                .setParameter("status", status.name())
+                .setParameter("note", note)
+                .setParameter("adminId", adminId)
+                .setParameter("changedAt", changedAt)
+                .executeUpdate();
+    }
+
+    @Override
+    public void restoreStockForOrder(OrderId orderId) {
+        em.createNativeQuery(
+                "UPDATE product_variants pv" +
+                " SET stock = pv.stock + oi.quantity" +
+                " FROM order_items oi" +
+                " WHERE oi.order_id = :orderId" +
+                " AND pv.id = oi.variant_id" +
+                " AND oi.variant_id IS NOT NULL")
+                .setParameter("orderId", orderId.value())
+                .executeUpdate();
     }
 
     private Instant toInstant(Object obj) {

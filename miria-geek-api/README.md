@@ -327,8 +327,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 |---|---|---|---|
 | US-04.05 | Listagem de pedidos (admin) | 3 | `GET /api/v1/admin/orders` |
 | US-04.06 | Detalhe do pedido (admin) | 2 | `GET /api/v1/admin/orders/{id}` |
+| US-04.07 | Atualização de status do pedido (admin) | 3 | `PATCH /api/v1/admin/orders/{id}/status` |
 
-**2/? stories · 5 pontos implementados**
+**3/? stories · 8 pontos implementados**
 
 ---
 
@@ -425,11 +426,14 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 |---|---|---|---|
 | GET | `/api/v1/admin/orders` | `orderNumber?, customerName?, customerEmail?, status?, startDate?, endDate?, minValue?, maxValue?, page, size, sort` | 200 paginado |
 | GET | `/api/v1/admin/orders/{id}` | — | 200 detalhe / 404 |
+| PATCH | `/api/v1/admin/orders/{id}/status` | `status (required), note (optional)` | 200 detalhe / 404 / 422 |
 
 > Ordenações: `latest` (padrão), `oldest`, `value_asc`, `value_desc`, `status`.
 > Status: `PENDING_PAYMENT`, `PAID`, `PREPARING`, `SHIPPED`, `DELIVERED`, `CANCELLED`.
 > Datas no formato ISO 8601 (ex: `2026-01-01T00:00:00Z`).
 > Detalhe retorna: `customer`, `items[]` (com `sku` e `principalImage`), `deliveryAddress` (nullable), `payment` (nullable), `statusHistory[]` ordenado cronologicamente.
+> Transições válidas: `PENDING_PAYMENT→PAID`, `PAID→PREPARING`, `PREPARING→SHIPPED`, `SHIPPED→DELIVERED`, `PENDING_PAYMENT→CANCELLED`, `PAID→CANCELLED`. Transição inválida retorna 422.
+> Cancelamento: estoque das variantes restaurado automaticamente na mesma transação. Publica `order.status-changed` e `order.cancelled` no Kafka.
 
 ---
 

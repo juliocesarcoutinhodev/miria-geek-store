@@ -12,6 +12,7 @@ import br.com.miriageekstore.catalog.domain.exception.ImageLimitExceededExceptio
 import br.com.miriageekstore.catalog.domain.exception.InvalidImageTypeException;
 import br.com.miriageekstore.catalog.domain.exception.ProductImageNotFoundException;
 import br.com.miriageekstore.catalog.domain.exception.ProductNotFoundException;
+import br.com.miriageekstore.order.domain.exception.InvalidOrderStatusTransitionException;
 import br.com.miriageekstore.order.domain.exception.OrderNotFoundException;
 import br.com.miriageekstore.catalog.domain.exception.ProductSkuAlreadyExistsException;
 import br.com.miriageekstore.catalog.domain.exception.StorageException;
@@ -221,6 +222,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(OrderNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("ORDER_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidOrderStatusTransitionException.class)
+    ResponseEntity<ErrorResponse> handle(InvalidOrderStatusTransitionException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("INVALID_ORDER_STATUS_TRANSITION", ex.getMessage()));
     }
 
     @ExceptionHandler(ProductImageNotFoundException.class)
