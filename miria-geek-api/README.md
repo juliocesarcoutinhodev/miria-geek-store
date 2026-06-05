@@ -329,8 +329,9 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | US-04.06 | Detalhe do pedido (admin) | 2 | `GET /api/v1/admin/orders/{id}` |
 | US-04.07 | Atualização de status do pedido (admin) | 3 | `PATCH /api/v1/admin/orders/{id}/status` |
 | US-04.08 | Código de rastreamento (admin) | 3 | `PATCH /api/v1/admin/orders/{id}/tracking` |
+| US-04.09 | Resumo de pedidos por status (admin) | 2 | `GET /api/v1/admin/orders/summary` |
 
-**4/? stories · 11 pontos implementados**
+**5/? stories · 13 pontos implementados**
 
 ---
 
@@ -426,6 +427,7 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | Método | Path | Params | Resposta |
 |---|---|---|---|
 | GET | `/api/v1/admin/orders` | `orderNumber?, customerName?, customerEmail?, status?, startDate?, endDate?, minValue?, maxValue?, page, size, sort` | 200 paginado |
+| GET | `/api/v1/admin/orders/summary` | `startDate?, endDate?` (ISO 8601, default: hoje) | 200 |
 | GET | `/api/v1/admin/orders/{id}` | — | 200 detalhe / 404 |
 | PATCH | `/api/v1/admin/orders/{id}/status` | `status (required), note (optional)` | 200 detalhe / 404 / 422 |
 | PATCH | `/api/v1/admin/orders/{id}/tracking` | `trackingCode, carrier, carrierName?, customTrackingUrl?` | 200 / 404 / 422 |
@@ -437,6 +439,7 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 > Transições válidas: `PENDING_PAYMENT→PAID`, `PAID→PREPARING`, `PREPARING→SHIPPED`, `SHIPPED→DELIVERED`, `PENDING_PAYMENT→CANCELLED`, `PAID→CANCELLED`. Transição inválida retorna 422.
 > Cancelamento: estoque das variantes restaurado automaticamente na mesma transação. Publica `order.status-changed` e `order.cancelled` no Kafka.
 > Tracking: pedido deve estar em `SHIPPED` (422 caso contrário). Carriers: `CORREIOS`, `JADLOG`, `LOGGI`, `TOTAL_EXPRESS`, `AZUL_CARGO`, `OUTRO`. Para `OUTRO`, `customTrackingUrl` é obrigatória. Publica `order.tracking-updated` → consumer no módulo notification dispara e-mail ao cliente.
+> Summary: retorna `period` com as datas efetivas usadas, `totals` com `totalOrders`, `totalRevenue` e `averageTicket`, e `byStatus[]` com `status`, `count`, `percentage` (1 decimal, soma 100%) e `totalValue`. Sem parâmetros usa início e fim do dia atual (UTC).
 
 ---
 

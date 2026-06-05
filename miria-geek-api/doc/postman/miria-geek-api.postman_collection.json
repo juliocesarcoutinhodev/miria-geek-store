@@ -5603,23 +5603,118 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/orders?page=0&size=20&sort=latest",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "orders"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "orders"
+              ],
               "query": [
-                { "key": "orderNumber",  "value": "",       "description": "Exact match on order number (e.g. ORD-00000001)", "disabled": true },
-                { "key": "customerName", "value": "",       "description": "Partial case-insensitive search on customer name", "disabled": true },
-                { "key": "customerEmail","value": "",       "description": "Partial case-insensitive search on customer email", "disabled": true },
-                { "key": "status",       "value": "",       "description": "PENDING_PAYMENT | PAID | PREPARING | SHIPPED | DELIVERED | CANCELLED", "disabled": true },
-                { "key": "startDate",    "value": "",       "description": "ISO 8601 datetime — filter createdAt >= startDate (e.g. 2026-01-01T00:00:00Z)", "disabled": true },
-                { "key": "endDate",      "value": "",       "description": "ISO 8601 datetime — filter createdAt <= endDate (e.g. 2026-12-31T23:59:59Z)", "disabled": true },
-                { "key": "minValue",     "value": "",       "description": "Minimum order total", "disabled": true },
-                { "key": "maxValue",     "value": "",       "description": "Maximum order total", "disabled": true },
-                { "key": "page",         "value": "0",      "description": "Page index (0-based)" },
-                { "key": "size",         "value": "20",     "description": "Page size (max 100)" },
-                { "key": "sort",         "value": "latest", "description": "latest (default) | oldest | value_asc | value_desc | status" }
+                {
+                  "key": "orderNumber",
+                  "value": "",
+                  "description": "Exact match on order number (e.g. ORD-00000001)",
+                  "disabled": true
+                },
+                {
+                  "key": "customerName",
+                  "value": "",
+                  "description": "Partial case-insensitive search on customer name",
+                  "disabled": true
+                },
+                {
+                  "key": "customerEmail",
+                  "value": "",
+                  "description": "Partial case-insensitive search on customer email",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "PENDING_PAYMENT | PAID | PREPARING | SHIPPED | DELIVERED | CANCELLED",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "description": "ISO 8601 datetime — filter createdAt >= startDate (e.g. 2026-01-01T00:00:00Z)",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "description": "ISO 8601 datetime — filter createdAt <= endDate (e.g. 2026-12-31T23:59:59Z)",
+                  "disabled": true
+                },
+                {
+                  "key": "minValue",
+                  "value": "",
+                  "description": "Minimum order total",
+                  "disabled": true
+                },
+                {
+                  "key": "maxValue",
+                  "value": "",
+                  "description": "Maximum order total",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "description": "Page index (0-based)"
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "description": "Page size (max 100)"
+                },
+                {
+                  "key": "sort",
+                  "value": "latest",
+                  "description": "latest (default) | oldest | value_asc | value_desc | status"
+                }
               ]
             },
             "description": "Returns a paginated list of all orders. All filters are optional and combinable."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/orders/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "orders",
+                "summary"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-06-01T00:00:00Z",
+                  "description": "ISO 8601 — default: start of current day (UTC)",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-06-30T23:59:59Z",
+                  "description": "ISO 8601 — default: end of current day (UTC)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Returns order summary grouped by status for the given period. Defaults to the current day (UTC) when no dates are provided. Response includes period, totals (totalOrders, totalRevenue, averageTicket) and byStatus[] (status, count, percentage, totalValue)."
           },
           "response": []
         },
@@ -5630,8 +5725,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/orders/{{orderId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "orders", "{{orderId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "orders",
+                "{{orderId}}"
+              ]
             },
             "description": "Returns full order detail including customer, items, delivery address, payment and status history. Returns 404 if order not found."
           },
@@ -5641,16 +5744,34 @@
           "name": "Update Order Status",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/orders/{{orderId}}/status",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "orders", "{{orderId}}", "status"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "orders",
+                "{{orderId}}",
+                "status"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"PAID\",\n  \"note\": \"Payment confirmed via Stripe\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Updates order status following valid transitions: PENDING_PAYMENT→PAID, PAID→PREPARING, PREPARING→SHIPPED, SHIPPED→DELIVERED, PENDING_PAYMENT→CANCELLED, PAID→CANCELLED. Invalid transition returns 422. Cancellation restores stock automatically and publishes order.cancelled to Kafka. Returns full order detail."
           },
@@ -5660,16 +5781,34 @@
           "name": "Update Order Tracking",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/orders/{{orderId}}/tracking",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "orders", "{{orderId}}", "tracking"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "orders",
+                "{{orderId}}",
+                "tracking"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"trackingCode\": \"BR123456789BR\",\n  \"carrier\": \"CORREIOS\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Registers tracking code for a SHIPPED order. Carriers: CORREIOS, JADLOG, LOGGI, TOTAL_EXPRESS, AZUL_CARGO, OUTRO. For OUTRO, customTrackingUrl is required. Generates tracking URL automatically. Publishes order.tracking-updated to Kafka — notification module sends email to customer."
           },

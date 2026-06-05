@@ -2,6 +2,7 @@ package br.com.miriageekstore.order.infrastructure.adapter.in.web;
 
 import br.com.miriageekstore.order.domain.port.in.GetAdminOrderDetailResult;
 import br.com.miriageekstore.order.domain.port.in.ListAdminOrdersResult;
+import br.com.miriageekstore.order.domain.port.in.OrderSummaryResult;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,6 +26,20 @@ class AdminOrderWebMapper {
                 item.createdAt(),
                 item.updatedAt()
         );
+    }
+
+    OrderSummaryResponse toSummaryResponse(OrderSummaryResult result) {
+        var period = new OrderSummaryResponse.Period(
+                result.period().startDate(), result.period().endDate());
+        var totals = new OrderSummaryResponse.Totals(
+                result.totals().totalOrders(),
+                result.totals().totalRevenue(),
+                result.totals().averageTicket());
+        var byStatus = result.byStatus().stream()
+                .map(s -> new OrderSummaryResponse.StatusSummary(
+                        s.status(), s.count(), s.percentage(), s.totalValue()))
+                .toList();
+        return new OrderSummaryResponse(period, totals, byStatus);
     }
 
     AdminOrderDetailResponse toDetailResponse(GetAdminOrderDetailResult result) {

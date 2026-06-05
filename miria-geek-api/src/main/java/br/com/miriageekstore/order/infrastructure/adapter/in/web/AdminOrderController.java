@@ -4,7 +4,9 @@ import br.com.miriageekstore.order.domain.model.Carrier;
 import br.com.miriageekstore.order.domain.model.OrderStatus;
 import br.com.miriageekstore.order.domain.port.in.AdminOrderQuery;
 import br.com.miriageekstore.order.domain.port.in.GetAdminOrderDetailUseCase;
+import br.com.miriageekstore.order.domain.port.in.GetOrderSummaryUseCase;
 import br.com.miriageekstore.order.domain.port.in.ListAdminOrdersUseCase;
+import br.com.miriageekstore.order.domain.port.in.OrderSummaryQuery;
 import br.com.miriageekstore.order.domain.port.in.UpdateOrderStatusCommand;
 import br.com.miriageekstore.order.domain.port.in.UpdateOrderStatusUseCase;
 import br.com.miriageekstore.order.domain.port.in.UpdateTrackingCommand;
@@ -38,6 +40,7 @@ public class AdminOrderController {
 
     private final ListAdminOrdersUseCase listAdminOrdersUseCase;
     private final GetAdminOrderDetailUseCase getAdminOrderDetailUseCase;
+    private final GetOrderSummaryUseCase getOrderSummaryUseCase;
     private final UpdateOrderStatusUseCase updateOrderStatusUseCase;
     private final UpdateTrackingUseCase updateTrackingUseCase;
     private final AdminOrderWebMapper mapper;
@@ -66,6 +69,17 @@ public class AdminOrderController {
                 sort
         );
         return mapper.toPageResponse(listAdminOrdersUseCase.execute(query));
+    }
+
+    @Operation(summary = "Get order summary grouped by status (admin)",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @GetMapping("/summary")
+    OrderSummaryResponse getOrderSummary(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate) {
+
+        return mapper.toSummaryResponse(
+                getOrderSummaryUseCase.execute(new OrderSummaryQuery(startDate, endDate)));
     }
 
     @Operation(summary = "Get order detail by ID (admin)",

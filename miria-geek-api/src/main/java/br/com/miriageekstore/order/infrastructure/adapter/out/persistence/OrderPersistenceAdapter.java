@@ -7,6 +7,7 @@ import br.com.miriageekstore.order.domain.model.OrderStatus;
 import br.com.miriageekstore.order.domain.port.in.AdminOrderQuery;
 import br.com.miriageekstore.order.domain.port.in.GetAdminOrderDetailResult;
 import br.com.miriageekstore.order.domain.port.in.ListAdminOrdersResult;
+import br.com.miriageekstore.order.domain.port.in.OrderSummaryResult;
 import br.com.miriageekstore.order.domain.port.out.AdminOrderRepository;
 import br.com.miriageekstore.order.domain.port.out.OrderWriteRepository;
 import jakarta.persistence.EntityManager;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -358,6 +360,60 @@ class OrderPersistenceAdapter implements AdminOrderRepository, OrderWriteReposit
                 " AND oi.variant_id IS NOT NULL")
                 .setParameter("orderId", orderId.value())
                 .executeUpdate();
+    }
+
+    // ── Summary ───────────────────────────────────────────────────────────────
+
+    @Override
+    public OrderSummaryResult getSummary(Instant startDate, Instant endDate) {
+        String totalsSql =
+                "SELECT COUNT(*), COALESCE(SUM(total), 0)" +
+                " FROM orders" +
+                " WHERE created_at >= :start AND created_at <= :end";
+
+        Object[] totalsRow = (Object[]) em.createNativeQuery(totalsSql)
+                .setParameter("start", startDate)
+                .setParameter("end", endDate)
+                .getSingleResult();
+
+        long totalOrders   = ((Number) totalsRow[0]).longValue();
+        BigDecimal revenue = (BigDecimal) totalsRow[1];
+        BigDecimal avgTicket = totalOrders > 0
+                ? revenue.divide(BigDecimal.valueOf(totalOrders), 2, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        String statusSql =
+                "SELECT status, COUNT(*), COALESCE(SUM(total), 0)" +
+                " FROM orders" +
+                " WHERE created_at >= :start AND created_at <= :end" +
+                " GROUP BY status ORDER BY status";
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> statusRows = em.createNativeQuery(statusSql)
+                .setParameter("start", startDate)
+                .setParameter("end", endDate)
+                .getResultList();
+
+        var byStatus = statusRows.stream().map(row -> {
+            long count = ((Number) row[1]).longValue();
+            double percentage = totalOrders > 0
+                    ? BigDecimal.valueOf(count * 100L)
+                            .divide(BigDecimal.valueOf(totalOrders), 1, RoundingMode.HALF_UP)
+                            .doubleValue()
+                    : 0.0;
+            return new OrderSummaryResult.StatusSummary(
+                    (String) row[0],
+                    count,
+                    percentage,
+                    (BigDecimal) row[2]
+            );
+        }).toList();
+
+        return new OrderSummaryResult(
+                new OrderSummaryResult.Period(startDate, endDate),
+                new OrderSummaryResult.Totals(totalOrders, revenue, avgTicket),
+                byStatus
+        );
     }
 
     private Instant toInstant(Object obj) {
