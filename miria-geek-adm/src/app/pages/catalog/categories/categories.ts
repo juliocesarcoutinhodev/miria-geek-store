@@ -81,6 +81,7 @@ interface SortEvent {
                 dataKey="id"
                 [lazy]="true"
                 [paginator]="true"
+                [first]="first"
                 [rows]="pageSize"
                 [totalRecords]="totalElements()"
                 [loading]="loading()"
@@ -216,7 +217,8 @@ export class Categories implements OnInit {
     readonly sortField = signal('name');
     readonly sortOrder = signal(1);
 
-    readonly pageSize = 20;
+    pageSize = 20;
+    first = 0;
     private currentPage = 0;
     private editingId = '';
 
@@ -272,7 +274,9 @@ export class Categories implements OnInit {
     }
 
     async onPage(event: TablePageEvent): Promise<void> {
-        this.currentPage = Math.floor((event.first ?? 0) / this.pageSize);
+        this.pageSize = event.rows ?? this.pageSize;
+        this.first = event.first ?? 0;
+        this.currentPage = Math.floor(this.first / this.pageSize);
         await this.loadCategories();
     }
 
@@ -280,17 +284,20 @@ export class Categories implements OnInit {
         this.sortField.set(event.field ?? 'name');
         this.sortOrder.set(event.order ?? 1);
         this.currentPage = 0;
+        this.first = 0;
         this.loadCategories();
     }
 
     async applyFilters(): Promise<void> {
         this.currentPage = 0;
+        this.first = 0;
         await this.loadCategories();
     }
 
     async clearFilters(): Promise<void> {
         this.filterForm.reset({ name: '', active: null });
         this.currentPage = 0;
+        this.first = 0;
         await this.loadCategories();
     }
 

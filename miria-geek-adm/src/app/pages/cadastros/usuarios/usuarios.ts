@@ -93,6 +93,7 @@ interface SortEvent {
                 dataKey="id"
                 [lazy]="true"
                 [paginator]="true"
+                [first]="first"
                 [rows]="pageSize"
                 [totalRecords]="totalElements()"
                 [loading]="loading()"
@@ -293,7 +294,8 @@ export class Usuarios implements OnInit {
     readonly sortField = signal('createdAt');
     readonly sortOrder = signal(-1);
 
-    readonly pageSize = 20;
+    pageSize = 20;
+    first = 0;
     private currentPage = 0;
     private editingUserId = '';
 
@@ -367,7 +369,9 @@ export class Usuarios implements OnInit {
     }
 
     async onPage(event: TablePageEvent): Promise<void> {
-        this.currentPage = Math.floor((event.first ?? 0) / this.pageSize);
+        this.pageSize = event.rows ?? this.pageSize;
+        this.first = event.first ?? 0;
+        this.currentPage = Math.floor(this.first / this.pageSize);
         await this.loadUsers();
     }
 
@@ -375,6 +379,7 @@ export class Usuarios implements OnInit {
         this.sortField.set(event.field ?? 'createdAt');
         this.sortOrder.set(event.order ?? -1);
         this.currentPage = 0;
+        this.first = 0;
         this.loadUsers();
     }
 
@@ -397,12 +402,14 @@ export class Usuarios implements OnInit {
 
     async applyFilters(): Promise<void> {
         this.currentPage = 0;
+        this.first = 0;
         await this.loadUsers();
     }
 
     async clearFilters(): Promise<void> {
         this.filterForm.reset({ nome: '', email: '', status: null, role: null });
         this.currentPage = 0;
+        this.first = 0;
         await this.loadUsers();
     }
 

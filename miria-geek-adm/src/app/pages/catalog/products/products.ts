@@ -82,6 +82,7 @@ import { ProductDetail, ProductImageInfo, ProductSummary } from '../../../core/c
                 dataKey="id"
                 [lazy]="true"
                 [paginator]="true"
+                [first]="first"
                 [rows]="pageSize"
                 [totalRecords]="totalElements()"
                 [loading]="loading()"
@@ -334,7 +335,8 @@ export class Products implements OnInit {
         })
     );
 
-    readonly pageSize = 20;
+    pageSize = 20;
+    first = 0;
     private currentPage = 0;
 
     readonly statusOptions = [
@@ -402,18 +404,22 @@ export class Products implements OnInit {
     }
 
     async onPage(event: TablePageEvent): Promise<void> {
-        this.currentPage = Math.floor((event.first ?? 0) / this.pageSize);
+        this.pageSize = event.rows ?? this.pageSize;
+        this.first = event.first ?? 0;
+        this.currentPage = Math.floor(this.first / this.pageSize);
         await this.loadProducts();
     }
 
     async applyFilters(): Promise<void> {
         this.currentPage = 0;
+        this.first = 0;
         await this.loadProducts();
     }
 
     async clearFilters(): Promise<void> {
         this.filterForm.reset({ nome: '', status: null, destaque: null, sort: 'mais_recente' });
         this.currentPage = 0;
+        this.first = 0;
         await this.loadProducts();
     }
 
