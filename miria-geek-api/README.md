@@ -237,6 +237,9 @@ Migrations gerenciadas pelo **Flyway** (`src/main/resources/db/migration/`):
 | V14 | Coluna `active boolean` em `product_variants` + Tabela `stock_movements` (id, variant_id, product_id, type, quantity, motivo, admin_id, created_at) |
 | V15 | Tabelas `orders` e `order_items` + sequence `orders_order_number_seq` + trigger de geração automática de `order_number` (`ORD-00000001`) |
 | V16 | Colunas `sku` e `principal_image` em `order_items` + `delivery_address_id` em `orders` + tabelas `payments` e `order_status_history` |
+| V17 | Coluna `tracking_code`, `carrier`, `carrier_name`, `tracking_url` em `orders` |
+| V18 | Colunas `weight`, `width`, `height`, `depth` em `product_variants` |
+| V19 | Tabelas `carts` e `cart_items` (id, user_id único, items com price_snapshot e UNIQUE por variante por carrinho) |
 
 ---
 
@@ -318,6 +321,18 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 **9/9 stories · 31 pontos · 230 testes passando**
 
 > **Nota:** a query de listagem admin (`GET /api/v1/admin/products`) retorna `principalImageUrl` (nullable) com a URL pública da imagem principal de cada produto, obtida via subquery no PostgreSQL.
+
+---
+
+## EP-03 · Cart — Status das stories
+
+| Story | Descrição | Pontos | Endpoint(s) |
+|---|---|---|---|
+| US-03.01 | Adicionar item ao carrinho | 5 | `POST /api/v1/cart/items` |
+
+**1/? stories · 5 pontos implementados · 10 testes passando**
+
+> **Nota:** o carrinho é criado automaticamente no primeiro item adicionado. Preço é snapshotado no momento da adição. Se a variante já existe no carrinho, a quantidade é somada (merge). Qualquer opção de frete selecionada é removida ao adicionar novo item.
 
 ---
 
@@ -421,6 +436,16 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | PATCH | `/api/v1/admin/products/{id}/variants/{variantId}/stock` | `tipo (ENTRADA\|SAIDA), quantidade, motivo` | 200 |
 | GET | `/api/v1/admin/products` | `nome?, categoriaId?, status?, destaque?, page, size, sort` | 200 paginado |
 | GET | `/api/v1/admin/products/{id}` | — | 200 detalhe / 404 |
+
+### Cart — requer autenticação
+
+| Método | Path | Body | Resposta |
+|---|---|---|---|
+| POST | `/api/v1/cart/items` | `variantId, quantity` | 200 carrinho completo |
+
+> Requer `access_token` (qualquer role). Carrinho criado automaticamente no primeiro item.
+> Validações 422: variante ou produto inativo, variante sem dimensões (`weight/width/height/depth`), estoque insuficiente (mensagem inclui quantidade disponível).
+> Resposta inclui: `id`, `userId`, `items[]` (com `productName`, `attributeName`, `attributeValue`, `sku`, `principalImageUrl`, `priceSnapshot`, `subtotal`, `availableStock`), `subtotal` total e `itemCount`.
 
 ### Admin Orders — requer `ROLE_ADMIN`
 

@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Miria Geek API",
-    "description": "Collection da API REST da Miria Geek Store.\n\n**Variáveis da collection:**\n- `baseUrl` — URL base da API (padrão: `http://localhost:8080`)\n- `accessToken` — JWT Bearer token (preenchido após login)\n- `verificationToken` — UUID do token de verificação de e-mail\n\n**Como usar:**\n1. Configure `baseUrl` ou use o valor padrão.\n2. Execute `Register Customer` para criar um usuário.\n3. Copie o `verificationToken` do e-mail ou do Kafka UI e execute `Verify Email`.\n4. Execute `Login` — os cookies `access_token` e `refresh_token` serão setados automaticamente.",
+    "description": "Collection da API REST da Miria Geek Store.\n\n**Variáveis de dados (edite antes de começar):**\n- `customerFullName` — nome do cliente de teste (padrão: `Maria Silva`)\n- `customerEmail` — e-mail do cliente de teste (padrão: `maria.silva@email.com`)\n- `customerPassword` — senha do cliente de teste (padrão: `SenhaForte@123`)\n- `baseUrl` — URL base da API (padrão: `http://localhost:8080`)\n\n**Variáveis preenchidas automaticamente pelos scripts:**\n- `userId` — salvo após `Register Customer`\n- `verificationToken` — copiar do Kafka UI após cadastro\n- `resetToken` — copiar do Kafka UI após forgot-password\n- `addressId` — salvo após `Create Address`\n- `targetUserId` — salvo após `List Users` (admin)\n- `categoryId` — salvo após `Create Category` (admin)\n- `productId` / `productSlug` — salvos após `Create Product` (admin)\n- `imageId` — salvo após `Upload Product Image` (admin)\n- `variantId` — salvo após `Add Variant` ou `List Variants` (admin)\n- `orderId` — salvo após `List Orders` (admin)\n- `cartId` — salvo após `Add Item to Cart`\n\n**Fluxo rápido:**\n1. Ajuste `customerEmail` e `customerPassword` se quiser.\n2. Execute `Register Customer` → `userId` salvo.\n3. Copie o `verificationToken` do Kafka UI e execute `Verify Email`.\n4. Execute `Login` — cookies setados automaticamente.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -10,6 +10,36 @@
       "value": "http://localhost:8080",
       "type": "string",
       "description": "URL base da API. Altere para o ambiente desejado."
+    },
+    {
+      "key": "customerFullName",
+      "value": "Maria Silva",
+      "type": "string",
+      "description": "Nome completo do cliente de teste. Usado em Register e Update Profile."
+    },
+    {
+      "key": "customerEmail",
+      "value": "maria.silva@email.com",
+      "type": "string",
+      "description": "E-mail do cliente de teste. Usado em Register, Login, Resend Verification e Forgot Password."
+    },
+    {
+      "key": "customerPassword",
+      "value": "SenhaForte@123",
+      "type": "string",
+      "description": "Senha do cliente de teste. Usado em Register e Login."
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string",
+      "description": "UUID do usuário autenticado. Salvo automaticamente após Register Customer."
+    },
+    {
+      "key": "cartId",
+      "value": "",
+      "type": "string",
+      "description": "UUID do carrinho. Salvo automaticamente após Add Item to Cart."
     },
     {
       "key": "accessToken",
@@ -33,13 +63,13 @@
       "key": "addressId",
       "value": "",
       "type": "string",
-      "description": "UUID de um endereço do usuário. Preencher após criar um endereço via POST /api/v1/users/me/addresses."
+      "description": "UUID de um endereço do usuário. Salvo automaticamente após Create Address."
     },
     {
       "key": "targetUserId",
       "value": "",
       "type": "string",
-      "description": "UUID do usuário alvo para operações admin (ativar/desativar conta)."
+      "description": "UUID do usuário alvo para operações admin. Salvo automaticamente após List Users (admin)."
     },
     {
       "key": "categoryId",
@@ -73,7 +103,7 @@
       "key": "orderId",
       "value": "",
       "type": "string",
-      "description": "UUID of an order. Fill after querying GET /api/v1/admin/orders."
+      "description": "UUID de um pedido. Salvo automaticamente após List Orders (admin)."
     }
   ],
   "item": [
@@ -83,6 +113,20 @@
       "item": [
         {
           "name": "Register Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('userId', json.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -105,7 +149,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"password\": \"SenhaForte@123\",\n  \"passwordConfirmation\": \"SenhaForte@123\"\n}",
+              "raw": "{\n  \"fullName\": \"{{customerFullName}}\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\",\n  \"passwordConfirmation\": \"{{customerPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -148,7 +192,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"SenhaForte@123\",\n  \"passwordConfirmation\": \"SenhaForte@123\"\n}",
+                  "raw": "{\n  \"fullName\": \"{{customerFullName}}\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\",\n  \"passwordConfirmation\": \"{{customerPassword}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -232,7 +276,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"fullName\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"password\": \"SenhaForte@123\",\n  \"passwordConfirmation\": \"SenhaForte@123\"\n}",
+                  "raw": "{\n  \"fullName\": \"{{customerFullName}}\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\",\n  \"passwordConfirmation\": \"{{customerPassword}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -432,7 +476,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\"\n}",
+              "raw": "{\n  \"email\": \"{{customerEmail}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -470,7 +514,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\"\n}",
+                  "raw": "{\n  \"email\": \"{{customerEmail}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -519,7 +563,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"password\": \"SenhaForte@123\"\n}",
+              "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -570,7 +614,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\",\n  \"password\": \"SenhaForte@123\"\n}",
+                  "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -731,7 +775,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\"\n}",
+              "raw": "{\n  \"email\": \"{{customerEmail}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -769,7 +813,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"juliocesar.coutinho@outlook.com\"\n}",
+                  "raw": "{\n  \"email\": \"{{customerEmail}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1521,6 +1565,19 @@
         },
         {
           "name": "Create Address",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('addressId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -1790,6 +1847,22 @@
       "item": [
         {
           "name": "List Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.content && json.content.length > 0) {",
+                  "        pm.collectionVariables.set('targetUserId', json.content[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -5598,6 +5671,22 @@
       "item": [
         {
           "name": "List Orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.content && json.content.length > 0) {",
+                  "        pm.collectionVariables.set('orderId', json.content[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -5813,6 +5902,229 @@
             "description": "Registers tracking code for a SHIPPED order. Carriers: CORREIOS, JADLOG, LOGGI, TOTAL_EXPRESS, AZUL_CARGO, OUTRO. For OUTRO, customTrackingUrl is required. Generates tracking URL automatically. Publishes order.tracking-updated to Kafka — notification module sends email to customer."
           },
           "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "description": "Cart management — requires authentication (any role).",
+      "item": [
+        {
+          "name": "Add Item to Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set('cartId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variantId\": \"{{variantId}}\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Adds a product variant to the authenticated user's cart.\n\n**Behavior:**\n- Cart is created automatically on first item\n- If the variant is already in the cart, the quantity is merged\n- Price is snapshotted at add time\n- Any previously selected shipping option is cleared\n\n**Validations (400):**\n- `variantId` required, `quantity` must be ≥ 1\n\n**Validations (404):**\n- Variant not found\n\n**Validations (422):**\n- Variant inactive\n- Product inactive\n- Variant missing dimensions (weight/width/height/depth)\n- Insufficient stock (message includes available count)"
+          },
+          "response": [
+            {
+              "name": "200 - Item added",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"userId\": \"a1b2c3d4-5678-4562-b3fc-2c963f66afa6\",\n  \"items\": [\n    {\n      \"id\": \"c1d2e3f4-5678-4562-b3fc-2c963f66afa6\",\n      \"variantId\": \"{{variantId}}\",\n      \"productId\": \"p1q2r3s4-5678-4562-b3fc-2c963f66afa6\",\n      \"productName\": \"Funko Pop Batman\",\n      \"attributeName\": \"Cor\",\n      \"attributeValue\": \"Preto\",\n      \"sku\": \"FUNKO-POP-BATMAN-COR-PRETO-001\",\n      \"principalImageUrl\": \"http://localhost:9000/miria-products/product.jpg\",\n      \"quantity\": 1,\n      \"priceSnapshot\": 89.90,\n      \"subtotal\": 89.90,\n      \"availableStock\": 10,\n      \"variantActive\": true,\n      \"addedAt\": \"2026-06-08T12:00:00Z\"\n    }\n  ],\n  \"subtotal\": 89.90,\n  \"itemCount\": 1,\n  \"updatedAt\": \"2026-06-08T12:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"variantId\": \"{{variantId}}\",\n  \"quantity\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "404 - Variant not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"CART_VARIANT_NOT_FOUND\",\n  \"message\": \"Variante não encontrada\",\n  \"timestamp\": \"2026-06-08T12:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"variantId\": \"00000000-0000-0000-0000-000000000000\",\n  \"quantity\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "422 - Insufficient stock",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"CART_INSUFFICIENT_STOCK\",\n  \"message\": \"Estoque insuficiente. Disponível: 3\",\n  \"timestamp\": \"2026-06-08T12:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"variantId\": \"{{variantId}}\",\n  \"quantity\": 99\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "422 - Variant missing dimensions",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"VARIANT_MISSING_DIMENSIONS\",\n  \"message\": \"Produto sem dimensões cadastradas, não é possível calcular o frete\",\n  \"timestamp\": \"2026-06-08T12:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"variantId\": \"{{variantId}}\",\n  \"quantity\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
         }
       ]
     },

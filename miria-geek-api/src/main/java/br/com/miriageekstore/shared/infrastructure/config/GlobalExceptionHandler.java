@@ -1,5 +1,10 @@
 package br.com.miriageekstore.shared.infrastructure.config;
 
+import br.com.miriageekstore.cart.domain.exception.CartInsufficientStockException;
+import br.com.miriageekstore.cart.domain.exception.CartVariantNotFoundException;
+import br.com.miriageekstore.cart.domain.exception.ProductInactiveException;
+import br.com.miriageekstore.cart.domain.exception.VariantInactiveException;
+import br.com.miriageekstore.cart.domain.exception.VariantMissingDimensionsException;
 import br.com.miriageekstore.catalog.domain.exception.CannotRemovePrincipalImageException;
 import br.com.miriageekstore.catalog.domain.exception.InsufficientStockException;
 import br.com.miriageekstore.catalog.domain.exception.LastActiveVariantException;
@@ -289,6 +294,36 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(MaxUploadSizeExceededException ex) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("FILE_TOO_LARGE", "O arquivo excede o tamanho máximo permitido de 5MB"));
+    }
+
+    @ExceptionHandler(CartVariantNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(CartVariantNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("CART_VARIANT_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(VariantInactiveException.class)
+    ResponseEntity<ErrorResponse> handle(VariantInactiveException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("VARIANT_INACTIVE", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ProductInactiveException.class)
+    ResponseEntity<ErrorResponse> handle(ProductInactiveException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("PRODUCT_INACTIVE", ex.getMessage()));
+    }
+
+    @ExceptionHandler(VariantMissingDimensionsException.class)
+    ResponseEntity<ErrorResponse> handle(VariantMissingDimensionsException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("VARIANT_MISSING_DIMENSIONS", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CartInsufficientStockException.class)
+    ResponseEntity<ErrorResponse> handle(CartInsufficientStockException ex) {
+        return ResponseEntity.status(422)
+                .body(new ErrorResponse("CART_INSUFFICIENT_STOCK", ex.getMessage()));
     }
 
     @ExceptionHandler(StorageException.class)
