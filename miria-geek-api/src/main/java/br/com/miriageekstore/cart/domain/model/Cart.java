@@ -52,6 +52,22 @@ public class Cart {
         return items.stream().filter(i -> i.getVariantId().equals(variantId)).findFirst();
     }
 
+    public Optional<CartItem> findItemById(UUID itemId) {
+        return items.stream().filter(i -> i.getId().value().equals(itemId)).findFirst();
+    }
+
+    public void updateItemQuantity(UUID itemId, int quantity, java.math.BigDecimal newPriceSnapshot) {
+        var item = findItemById(itemId).orElseThrow();
+        if (quantity == 0) {
+            items.remove(item);
+        } else {
+            item.updateQuantity(quantity);
+            item.updatePriceSnapshot(newPriceSnapshot);
+        }
+        this.selectedShippingOptionId = null;
+        this.updatedAt = Instant.now();
+    }
+
     public CartId getId()                          { return id; }
     public UUID getUserId()                        { return userId; }
     public List<CartItem> getItems()               { return Collections.unmodifiableList(items); }

@@ -3,6 +3,8 @@ package br.com.miriageekstore.cart.infrastructure.adapter.in.web;
 import br.com.miriageekstore.cart.domain.port.in.AddToCartCommand;
 import br.com.miriageekstore.cart.domain.port.in.AddToCartUseCase;
 import br.com.miriageekstore.cart.domain.port.in.GetCartUseCase;
+import br.com.miriageekstore.cart.domain.port.in.UpdateCartItemCommand;
+import br.com.miriageekstore.cart.domain.port.in.UpdateCartItemUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +30,7 @@ class CartController {
 
     private final AddToCartUseCase addToCartUseCase;
     private final GetCartUseCase getCartUseCase;
+    private final UpdateCartItemUseCase updateCartItemUseCase;
     private final CartWebMapper mapper;
 
     @Operation(summary = "Get cart",
@@ -44,5 +49,16 @@ class CartController {
         var userId  = UUID.fromString(jwt.getSubject());
         var command = new AddToCartCommand(userId, request.variantId(), request.quantity());
         return mapper.toResponse(addToCartUseCase.execute(command));
+    }
+
+    @Operation(summary = "Update cart item quantity (0 removes the item)",
+               security = @SecurityRequirement(name = "cookieAuth"))
+    @PatchMapping("/items/{itemId}")
+    CartResponse updateItem(@AuthenticationPrincipal Jwt jwt,
+                            @PathVariable UUID itemId,
+                            @Valid @RequestBody UpdateCartItemRequest request) {
+        var userId  = UUID.fromString(jwt.getSubject());
+        var command = new UpdateCartItemCommand(userId, itemId, request.quantity());
+        return mapper.toResponse(updateCartItemUseCase.execute(command));
     }
 }

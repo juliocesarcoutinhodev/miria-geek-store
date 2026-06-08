@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Miria Geek API",
-    "description": "Collection da API REST da Miria Geek Store.\n\n**Variáveis de dados (edite antes de começar):**\n- `customerFullName` — nome do cliente de teste (padrão: `Maria Silva`)\n- `customerEmail` — e-mail do cliente de teste (padrão: `maria.silva@email.com`)\n- `customerPassword` — senha do cliente de teste (padrão: `SenhaForte@123`)\n- `baseUrl` — URL base da API (padrão: `http://localhost:8080`)\n\n**Variáveis preenchidas automaticamente pelos scripts:**\n- `userId` — salvo após `Register Customer`\n- `verificationToken` — copiar do Kafka UI após cadastro\n- `resetToken` — copiar do Kafka UI após forgot-password\n- `addressId` — salvo após `Create Address`\n- `targetUserId` — salvo após `List Users` (admin)\n- `categoryId` — salvo após `Create Category` (admin)\n- `productId` / `productSlug` — salvos após `Create Product` (admin)\n- `imageId` — salvo após `Upload Product Image` (admin)\n- `variantId` — salvo após `Add Variant` ou `List Variants` (admin)\n- `orderId` — salvo após `List Orders` (admin)\n- `cartId` — salvo após `Add Item to Cart`\n\n**Fluxo rápido:**\n1. Ajuste `customerEmail` e `customerPassword` se quiser.\n2. Execute `Register Customer` → `userId` salvo.\n3. Copie o `verificationToken` do Kafka UI e execute `Verify Email`.\n4. Execute `Login` — cookies setados automaticamente.",
+    "description": "Collection da API REST da Miria Geek Store.\n\n**Variáveis de dados (edite antes de começar):**\n- `customerFullName` — nome do cliente de teste (padrão: `Maria Silva`)\n- `customerEmail` — e-mail do cliente de teste (padrão: `maria.silva@email.com`)\n- `customerPassword` — senha do cliente de teste (padrão: `SenhaForte@123`)\n- `baseUrl` — URL base da API (padrão: `http://localhost:8080`)\n\n**Variáveis preenchidas automaticamente pelos scripts:**\n- `userId` — salvo após `Register Customer`\n- `verificationToken` — copiar do Kafka UI após cadastro\n- `resetToken` — copiar do Kafka UI após forgot-password\n- `addressId` — salvo após `Create Address`\n- `targetUserId` — salvo após `List Users` (admin)\n- `categoryId` — salvo após `Create Category` (admin)\n- `productId` / `productSlug` — salvos após `Create Product` (admin)\n- `imageId` — salvo após `Upload Product Image` (admin)\n- `variantId` — salvo após `Add Variant` ou `List Variants` (admin)\n- `orderId` — salvo após `List Orders` (admin)\n- `cartId` — salvo após `Add Item to Cart` ou `Get Cart`\n- `cartItemId` — copiar do campo `id` dentro de `items` (Add Item to Cart ou Get Cart)\n\n**Fluxo rápido:**\n1. Ajuste `customerEmail` e `customerPassword` se quiser.\n2. Execute `Register Customer` → `userId` salvo.\n3. Copie o `verificationToken` do Kafka UI e execute `Verify Email`.\n4. Execute `Login` — cookies setados automaticamente.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -40,6 +40,12 @@
       "value": "",
       "type": "string",
       "description": "UUID do carrinho. Salvo automaticamente após Add Item to Cart."
+    },
+    {
+      "key": "cartItemId",
+      "value": "",
+      "type": "string",
+      "description": "UUID do item do carrinho. Copiar do campo `id` dentro do array `items` após Add Item to Cart ou Get Cart."
     },
     {
       "key": "accessToken",
@@ -6209,6 +6215,129 @@
                     "v1",
                     "cart"
                   ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items/{{cartItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items",
+                "{{cartItemId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Updates the quantity of a cart item. Set `quantity` to `0` to remove the item.\n\n**Behavior:**\n- `quantity > 0`: updates quantity and refreshes the price snapshot with the current variant price; clears selected shipping option\n- `quantity = 0`: removes the item from the cart\n\n**Errors:**\n- 400: `quantity` missing or negative\n- 403: item belongs to another user's cart\n- 404: item not found\n- 422: requested quantity exceeds available stock"
+          },
+          "response": [
+            {
+              "name": "200 - Quantity updated",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"userId\": \"a1b2c3d4-5678-4562-b3fc-2c963f66afa6\",\n  \"items\": [\n    {\n      \"id\": \"{{cartItemId}}\",\n      \"variantId\": \"{{variantId}}\",\n      \"productId\": \"p1q2r3s4-5678-4562-b3fc-2c963f66afa6\",\n      \"productName\": \"Funko Pop Batman\",\n      \"attributeName\": \"Cor\",\n      \"attributeValue\": \"Preto\",\n      \"sku\": \"FUNKO-POP-BATMAN-COR-PRETO-001\",\n      \"principalImageUrl\": \"http://localhost:9000/miria-products/product.jpg\",\n      \"quantity\": 3,\n      \"priceSnapshot\": 94.90,\n      \"currentPrice\": 94.90,\n      \"subtotal\": 284.70,\n      \"availableStock\": 8,\n      \"variantActive\": true,\n      \"priceChanged\": false,\n      \"insufficientStock\": false,\n      \"weight\": 0.350,\n      \"width\": 10.00,\n      \"height\": 15.00,\n      \"depth\": 8.00,\n      \"addedAt\": \"2026-06-08T10:00:00Z\"\n    }\n  ],\n  \"selectedShipping\": null,\n  \"subtotal\": 284.70,\n  \"freight\": 0.00,\n  \"total\": 284.70,\n  \"itemCount\": 3,\n  \"createdAt\": \"2026-06-08T09:00:00Z\",\n  \"updatedAt\": \"2026-06-08T12:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{cartItemId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{cartItemId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quantity\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "200 - Item removed (quantity 0)",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"userId\": \"a1b2c3d4-5678-4562-b3fc-2c963f66afa6\",\n  \"items\": [],\n  \"selectedShipping\": null,\n  \"subtotal\": 0.00,\n  \"freight\": 0.00,\n  \"total\": 0.00,\n  \"itemCount\": 0,\n  \"createdAt\": \"2026-06-08T09:00:00Z\",\n  \"updatedAt\": \"2026-06-08T12:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{cartItemId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{cartItemId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quantity\": 0\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
                 }
               }
             }

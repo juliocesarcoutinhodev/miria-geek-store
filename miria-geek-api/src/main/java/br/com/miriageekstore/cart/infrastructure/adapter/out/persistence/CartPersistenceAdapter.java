@@ -24,6 +24,11 @@ class CartPersistenceAdapter implements CartRepository {
     }
 
     @Override
+    public Optional<Cart> findByItemId(UUID itemId) {
+        return jpaRepository.findByItemId(itemId).map(this::toDomain);
+    }
+
+    @Override
     public Cart save(Cart cart) {
         var entity = jpaRepository.findById(cart.getId().value())
                 .orElseGet(() -> {

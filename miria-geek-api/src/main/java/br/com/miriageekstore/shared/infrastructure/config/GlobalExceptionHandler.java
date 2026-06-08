@@ -1,6 +1,8 @@
 package br.com.miriageekstore.shared.infrastructure.config;
 
 import br.com.miriageekstore.cart.domain.exception.CartInsufficientStockException;
+import br.com.miriageekstore.cart.domain.exception.CartItemNotFoundException;
+import br.com.miriageekstore.cart.domain.exception.CartItemNotOwnedException;
 import br.com.miriageekstore.cart.domain.exception.CartVariantNotFoundException;
 import br.com.miriageekstore.cart.domain.exception.ProductInactiveException;
 import br.com.miriageekstore.cart.domain.exception.VariantInactiveException;
@@ -294,6 +296,18 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handle(MaxUploadSizeExceededException ex) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("FILE_TOO_LARGE", "O arquivo excede o tamanho máximo permitido de 5MB"));
+    }
+
+    @ExceptionHandler(CartItemNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(CartItemNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("CART_ITEM_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CartItemNotOwnedException.class)
+    ResponseEntity<ErrorResponse> handle(CartItemNotOwnedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse("CART_ITEM_NOT_OWNED", ex.getMessage()));
     }
 
     @ExceptionHandler(CartVariantNotFoundException.class)

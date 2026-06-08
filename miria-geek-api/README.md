@@ -330,14 +330,16 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 |---|---|---|---|
 | US-03.01 | Adicionar item ao carrinho | 5 | `POST /api/v1/cart/items` |
 | US-03.02 | Visualizar carrinho | 3 | `GET /api/v1/cart` |
+| US-03.03 | Atualizar quantidade de item | 2 | `PATCH /api/v1/cart/items/{itemId}` |
 
-**2/? stories · 8 pontos implementados · 17 testes passando**
+**3/? stories · 10 pontos implementados · 23 testes passando**
 
 > **Notas:**
 > - Carrinho criado automaticamente no primeiro item adicionado. Preço snapshotado no momento da adição.
-> - Variante já presente no carrinho: quantidade somada (merge). Frete selecionado limpo ao adicionar item.
+> - Variante já presente no carrinho: quantidade somada (merge). Frete selecionado limpo ao adicionar ou atualizar item.
 > - `GET /api/v1/cart` nunca retorna 404 — carrinho inexistente retorna 200 com itens `[]` e totais zerados.
-> - Cada item retorna `priceChanged` (preço atual difere do snapshot), `insufficientStock` (estoque < quantidade no carrinho), `currentPrice` e dimensões do produto.
+> - Cada item retorna `priceChanged`, `insufficientStock`, `currentPrice` e dimensões do produto.
+> - `PATCH` com `quantity = 0` remove o item. `quantity > 0` atualiza quantidade e refresca o snapshot de preço com o preço atual da variante.
 > - `selectedShipping` é sempre `null` e `freight` sempre `0.00` até a story de cálculo de frete ser implementada.
 
 ---
@@ -449,12 +451,15 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 |---|---|---|---|
 | GET | `/api/v1/cart` | — | 200 carrinho completo (nunca 404) |
 | POST | `/api/v1/cart/items` | `variantId, quantity` | 200 carrinho completo |
+| PATCH | `/api/v1/cart/items/{itemId}` | `quantity` (≥ 0) | 200 carrinho completo |
 
 > Requer `access_token` (qualquer role).
 >
 > **GET /api/v1/cart** — Nunca retorna 404; se o usuário não tem carrinho retorna 200 com `items: []` e totais zerados. Cada item inclui: `priceSnapshot`, `currentPrice`, `priceChanged`, `insufficientStock`, `availableStock`, dimensões (`weight`, `width`, `height`, `depth`). Resposta inclui: `selectedShipping` (null), `subtotal`, `freight` (0.00), `total`, `createdAt`, `updatedAt`.
 >
 > **POST /api/v1/cart/items** — Carrinho criado automaticamente no primeiro item. Preço snapshotado no momento da adição. Variante já presente: quantidade somada. Frete selecionado limpo. Validações 422: variante ou produto inativo, variante sem dimensões, estoque insuficiente.
+>
+> **PATCH /api/v1/cart/items/{itemId}** — `quantity = 0` remove o item; `quantity > 0` atualiza quantidade e refresca snapshot de preço com preço atual da variante. 403 se item pertence a outro usuário. 404 se item não existe. 422 se estoque insuficiente.
 
 ### Admin Orders — requer `ROLE_ADMIN`
 

@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface CartRepository {
     Optional<Cart> findByUserId(UUID userId);
+    Optional<Cart> findByItemId(UUID itemId);
     Cart save(Cart cart);
 }

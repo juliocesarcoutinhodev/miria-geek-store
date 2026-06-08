@@ -9,7 +9,7 @@ public class CartItem {
     private final CartItemId id;
     private final UUID variantId;
     private int quantity;
-    private final BigDecimal priceSnapshot;
+    private BigDecimal priceSnapshot;
     private final Instant addedAt;
 
     private CartItem(CartItemId id, UUID variantId, int quantity, BigDecimal priceSnapshot, Instant addedAt) {
@@ -31,6 +31,10 @@ public class CartItem {
 
     void updateQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    void updatePriceSnapshot(BigDecimal priceSnapshot) {
+        this.priceSnapshot = priceSnapshot;
     }
 
     public CartItemId getId()            { return id; }
