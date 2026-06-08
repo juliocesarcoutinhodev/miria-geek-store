@@ -9,7 +9,19 @@ public record CartResult(
         UUID id,
         UUID userId,
         List<CartItemResult> items,
+        SelectedShipping selectedShipping,
         BigDecimal subtotal,
+        BigDecimal freight,
+        BigDecimal total,
         int itemCount,
+        Instant createdAt,
         Instant updatedAt
-) {}
+) {
+    public record SelectedShipping(
+            String id,
+            String name,
+            String carrier,
+            BigDecimal value,
+            int deliveryDays
+    ) {}
+}

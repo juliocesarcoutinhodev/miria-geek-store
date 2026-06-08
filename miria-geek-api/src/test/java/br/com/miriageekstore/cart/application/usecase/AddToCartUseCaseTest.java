@@ -199,7 +199,9 @@ class AddToCartUseCaseTest {
         return new CartVariantView(
                 variantId, UUID.randomUUID(), "Produto Teste",
                 "Cor", "Preto", "SKU-001", null,
-                price, stock, true, true, true);
+                price, stock, true, true, true,
+                java.math.BigDecimal.valueOf(0.5), java.math.BigDecimal.valueOf(20.0),
+                java.math.BigDecimal.valueOf(10.0), java.math.BigDecimal.valueOf(15.0));
     }
 
     private CartVariantView variantView(UUID variantId, int stock,
@@ -207,16 +209,17 @@ class AddToCartUseCaseTest {
         return new CartVariantView(
                 variantId, UUID.randomUUID(), "Produto Teste",
                 "Cor", "Preto", "SKU-001", null,
-                BigDecimal.TEN, stock, variantActive, productActive, hasDimensions);
+                BigDecimal.TEN, stock, variantActive, productActive, hasDimensions,
+                null, null, null, null);
     }
 
     private Cart emptyCart(UUID userId) {
-        return Cart.reconstitute(CartId.generate(), userId, List.of(), Instant.now(), null);
+        return Cart.reconstitute(CartId.generate(), userId, List.of(), Instant.now(), Instant.now(), null);
     }
 
     private Cart cartWithItem(UUID userId, UUID variantId, int quantity, BigDecimal price) {
         var item = CartItem.reconstitute(
                 CartItemId.generate(), variantId, quantity, price, Instant.now());
-        return Cart.reconstitute(CartId.generate(), userId, List.of(item), Instant.now(), "shipping-123");
+        return Cart.reconstitute(CartId.generate(), userId, List.of(item), Instant.now(), Instant.now(), "shipping-123");
     }
 }

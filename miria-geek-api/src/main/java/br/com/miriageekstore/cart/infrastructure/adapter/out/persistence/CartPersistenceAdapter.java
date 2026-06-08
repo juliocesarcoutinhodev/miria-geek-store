@@ -29,6 +29,7 @@ class CartPersistenceAdapter implements CartRepository {
                 .orElseGet(() -> {
                     var e = new CartEntity();
                     e.setId(cart.getId().value());
+                    e.setCreatedAt(cart.getCreatedAt());
                     return e;
                 });
 
@@ -64,6 +65,7 @@ class CartPersistenceAdapter implements CartRepository {
                 CartId.of(e.getId()),
                 e.getUserId(),
                 items,
+                e.getCreatedAt(),
                 e.getUpdatedAt(),
                 e.getSelectedShippingOptionId());
     }

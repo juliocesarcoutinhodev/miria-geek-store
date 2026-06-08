@@ -15,8 +15,15 @@ record CartItemResponse(
         String principalImageUrl,
         int quantity,
         BigDecimal priceSnapshot,
+        BigDecimal currentPrice,
         BigDecimal subtotal,
         int availableStock,
         boolean variantActive,
+        boolean priceChanged,
+        boolean insufficientStock,
+        BigDecimal weight,
+        BigDecimal width,
+        BigDecimal height,
+        BigDecimal depth,
         Instant addedAt
 ) {}

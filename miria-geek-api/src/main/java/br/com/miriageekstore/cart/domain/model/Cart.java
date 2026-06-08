@@ -12,25 +12,29 @@ public class Cart {
     private final CartId id;
     private final UUID userId;
     private final List<CartItem> items;
+    private final Instant createdAt;
     private Instant updatedAt;
     private String selectedShippingOptionId;
 
     private Cart(CartId id, UUID userId, List<CartItem> items,
-                 Instant updatedAt, String selectedShippingOptionId) {
+                 Instant createdAt, Instant updatedAt, String selectedShippingOptionId) {
         this.id                        = id;
         this.userId                    = userId;
         this.items                     = new ArrayList<>(items);
+        this.createdAt                 = createdAt;
         this.updatedAt                 = updatedAt;
         this.selectedShippingOptionId  = selectedShippingOptionId;
     }
 
     public static Cart create(UUID userId) {
-        return new Cart(CartId.generate(), userId, new ArrayList<>(), Instant.now(), null);
+        var now = Instant.now();
+        return new Cart(CartId.generate(), userId, new ArrayList<>(), now, now, null);
     }
 
     public static Cart reconstitute(CartId id, UUID userId, List<CartItem> items,
-                                    Instant updatedAt, String selectedShippingOptionId) {
-        return new Cart(id, userId, items, updatedAt, selectedShippingOptionId);
+                                    Instant createdAt, Instant updatedAt,
+                                    String selectedShippingOptionId) {
+        return new Cart(id, userId, items, createdAt, updatedAt, selectedShippingOptionId);
     }
 
     public void addItem(UUID variantId, int quantity, java.math.BigDecimal priceSnapshot) {
@@ -51,6 +55,7 @@ public class Cart {
     public CartId getId()                          { return id; }
     public UUID getUserId()                        { return userId; }
     public List<CartItem> getItems()               { return Collections.unmodifiableList(items); }
+    public Instant getCreatedAt()                  { return createdAt; }
     public Instant getUpdatedAt()                  { return updatedAt; }
     public String getSelectedShippingOptionId()    { return selectedShippingOptionId; }
 }

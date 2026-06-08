@@ -5966,7 +5966,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"userId\": \"a1b2c3d4-5678-4562-b3fc-2c963f66afa6\",\n  \"items\": [\n    {\n      \"id\": \"c1d2e3f4-5678-4562-b3fc-2c963f66afa6\",\n      \"variantId\": \"{{variantId}}\",\n      \"productId\": \"p1q2r3s4-5678-4562-b3fc-2c963f66afa6\",\n      \"productName\": \"Funko Pop Batman\",\n      \"attributeName\": \"Cor\",\n      \"attributeValue\": \"Preto\",\n      \"sku\": \"FUNKO-POP-BATMAN-COR-PRETO-001\",\n      \"principalImageUrl\": \"http://localhost:9000/miria-products/product.jpg\",\n      \"quantity\": 1,\n      \"priceSnapshot\": 89.90,\n      \"subtotal\": 89.90,\n      \"availableStock\": 10,\n      \"variantActive\": true,\n      \"addedAt\": \"2026-06-08T12:00:00Z\"\n    }\n  ],\n  \"subtotal\": 89.90,\n  \"itemCount\": 1,\n  \"updatedAt\": \"2026-06-08T12:00:00Z\"\n}",
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"userId\": \"a1b2c3d4-5678-4562-b3fc-2c963f66afa6\",\n  \"items\": [\n    {\n      \"id\": \"c1d2e3f4-5678-4562-b3fc-2c963f66afa6\",\n      \"variantId\": \"{{variantId}}\",\n      \"productId\": \"p1q2r3s4-5678-4562-b3fc-2c963f66afa6\",\n      \"productName\": \"Funko Pop Batman\",\n      \"attributeName\": \"Cor\",\n      \"attributeValue\": \"Preto\",\n      \"sku\": \"FUNKO-POP-BATMAN-COR-PRETO-001\",\n      \"principalImageUrl\": \"http://localhost:9000/miria-products/product.jpg\",\n      \"quantity\": 1,\n      \"priceSnapshot\": 89.90,\n      \"currentPrice\": 89.90,\n      \"subtotal\": 89.90,\n      \"availableStock\": 10,\n      \"variantActive\": true,\n      \"priceChanged\": false,\n      \"insufficientStock\": false,\n      \"weight\": 0.350,\n      \"width\": 10.00,\n      \"height\": 15.00,\n      \"depth\": 8.00,\n      \"addedAt\": \"2026-06-08T12:00:00Z\"\n    }\n  ],\n  \"selectedShipping\": null,\n  \"subtotal\": 89.90,\n  \"freight\": 0.00,\n  \"total\": 89.90,\n  \"itemCount\": 1,\n  \"createdAt\": \"2026-06-08T12:00:00Z\",\n  \"updatedAt\": \"2026-06-08T12:00:00Z\"\n}",
               "originalRequest": {
                 "method": "POST",
                 "header": [
@@ -6121,6 +6121,94 @@
                       "language": "json"
                     }
                   }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 && pm.response.json().id) {",
+                  "    pm.collectionVariables.set('cartId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart"
+              ]
+            },
+            "description": "Returns the authenticated user's cart with enriched item data.\n\n**Behavior:**\n- Returns 200 even if the cart doesn't exist yet (empty cart with zero totals)\n- Each item includes `priceChanged` flag if current price differs from snapshot\n- Each item includes `insufficientStock` flag if available stock < cart quantity\n- `selectedShipping` is always `null` until shipping calculation is implemented\n- `freight` is always `0.00` until shipping calculation is implemented\n- `total` = `subtotal` + `freight`"
+          },
+          "response": [
+            {
+              "name": "200 - Cart with items",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"userId\": \"a1b2c3d4-5678-4562-b3fc-2c963f66afa6\",\n  \"items\": [\n    {\n      \"id\": \"c1d2e3f4-5678-4562-b3fc-2c963f66afa6\",\n      \"variantId\": \"{{variantId}}\",\n      \"productId\": \"p1q2r3s4-5678-4562-b3fc-2c963f66afa6\",\n      \"productName\": \"Funko Pop Batman\",\n      \"attributeName\": \"Cor\",\n      \"attributeValue\": \"Preto\",\n      \"sku\": \"FUNKO-POP-BATMAN-COR-PRETO-001\",\n      \"principalImageUrl\": \"http://localhost:9000/miria-products/product.jpg\",\n      \"quantity\": 2,\n      \"priceSnapshot\": 89.90,\n      \"currentPrice\": 94.90,\n      \"subtotal\": 179.80,\n      \"availableStock\": 5,\n      \"variantActive\": true,\n      \"priceChanged\": true,\n      \"insufficientStock\": false,\n      \"weight\": 0.350,\n      \"width\": 10.00,\n      \"height\": 15.00,\n      \"depth\": 8.00,\n      \"addedAt\": \"2026-06-08T10:00:00Z\"\n    }\n  ],\n  \"selectedShipping\": null,\n  \"subtotal\": 179.80,\n  \"freight\": 0.00,\n  \"total\": 179.80,\n  \"itemCount\": 2,\n  \"createdAt\": \"2026-06-08T09:00:00Z\",\n  \"updatedAt\": \"2026-06-08T10:00:00Z\"\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "200 - Empty cart",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": null,\n  \"userId\": \"a1b2c3d4-5678-4562-b3fc-2c963f66afa6\",\n  \"items\": [],\n  \"selectedShipping\": null,\n  \"subtotal\": 0.00,\n  \"freight\": 0.00,\n  \"total\": 0.00,\n  \"itemCount\": 0,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart"
+                  ]
                 }
               }
             }

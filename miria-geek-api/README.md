@@ -329,10 +329,16 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 | Story | Descrição | Pontos | Endpoint(s) |
 |---|---|---|---|
 | US-03.01 | Adicionar item ao carrinho | 5 | `POST /api/v1/cart/items` |
+| US-03.02 | Visualizar carrinho | 3 | `GET /api/v1/cart` |
 
-**1/? stories · 5 pontos implementados · 10 testes passando**
+**2/? stories · 8 pontos implementados · 17 testes passando**
 
-> **Nota:** o carrinho é criado automaticamente no primeiro item adicionado. Preço é snapshotado no momento da adição. Se a variante já existe no carrinho, a quantidade é somada (merge). Qualquer opção de frete selecionada é removida ao adicionar novo item.
+> **Notas:**
+> - Carrinho criado automaticamente no primeiro item adicionado. Preço snapshotado no momento da adição.
+> - Variante já presente no carrinho: quantidade somada (merge). Frete selecionado limpo ao adicionar item.
+> - `GET /api/v1/cart` nunca retorna 404 — carrinho inexistente retorna 200 com itens `[]` e totais zerados.
+> - Cada item retorna `priceChanged` (preço atual difere do snapshot), `insufficientStock` (estoque < quantidade no carrinho), `currentPrice` e dimensões do produto.
+> - `selectedShipping` é sempre `null` e `freight` sempre `0.00` até a story de cálculo de frete ser implementada.
 
 ---
 
@@ -441,11 +447,14 @@ O envio é **assíncrono** (`@Async`) — nunca bloqueia a resposta HTTP. Falhas
 
 | Método | Path | Body | Resposta |
 |---|---|---|---|
+| GET | `/api/v1/cart` | — | 200 carrinho completo (nunca 404) |
 | POST | `/api/v1/cart/items` | `variantId, quantity` | 200 carrinho completo |
 
-> Requer `access_token` (qualquer role). Carrinho criado automaticamente no primeiro item.
-> Validações 422: variante ou produto inativo, variante sem dimensões (`weight/width/height/depth`), estoque insuficiente (mensagem inclui quantidade disponível).
-> Resposta inclui: `id`, `userId`, `items[]` (com `productName`, `attributeName`, `attributeValue`, `sku`, `principalImageUrl`, `priceSnapshot`, `subtotal`, `availableStock`), `subtotal` total e `itemCount`.
+> Requer `access_token` (qualquer role).
+>
+> **GET /api/v1/cart** — Nunca retorna 404; se o usuário não tem carrinho retorna 200 com `items: []` e totais zerados. Cada item inclui: `priceSnapshot`, `currentPrice`, `priceChanged`, `insufficientStock`, `availableStock`, dimensões (`weight`, `width`, `height`, `depth`). Resposta inclui: `selectedShipping` (null), `subtotal`, `freight` (0.00), `total`, `createdAt`, `updatedAt`.
+>
+> **POST /api/v1/cart/items** — Carrinho criado automaticamente no primeiro item. Preço snapshotado no momento da adição. Variante já presente: quantidade somada. Frete selecionado limpo. Validações 422: variante ou produto inativo, variante sem dimensões, estoque insuficiente.
 
 ### Admin Orders — requer `ROLE_ADMIN`
 

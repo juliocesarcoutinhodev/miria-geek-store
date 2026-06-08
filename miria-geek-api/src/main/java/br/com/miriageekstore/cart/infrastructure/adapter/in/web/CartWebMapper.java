@@ -8,13 +8,25 @@ import org.springframework.stereotype.Component;
 class CartWebMapper {
 
     CartResponse toResponse(CartResult result) {
-        var items = result.items().stream().map(this::toItemResponse).toList();
+        var items    = result.items().stream().map(this::toItemResponse).toList();
+        var shipping = result.selectedShipping() == null ? null
+                : new CartResponse.SelectedShippingResponse(
+                        result.selectedShipping().id(),
+                        result.selectedShipping().name(),
+                        result.selectedShipping().carrier(),
+                        result.selectedShipping().value(),
+                        result.selectedShipping().deliveryDays());
+
         return new CartResponse(
                 result.id(),
                 result.userId(),
                 items,
+                shipping,
                 result.subtotal(),
+                result.freight(),
+                result.total(),
                 result.itemCount(),
+                result.createdAt(),
                 result.updatedAt());
     }
 
@@ -30,9 +42,16 @@ class CartWebMapper {
                 item.principalImageUrl(),
                 item.quantity(),
                 item.priceSnapshot(),
+                item.currentPrice(),
                 item.subtotal(),
                 item.availableStock(),
                 item.variantActive(),
+                item.priceChanged(),
+                item.insufficientStock(),
+                item.weight(),
+                item.width(),
+                item.height(),
+                item.depth(),
                 item.addedAt());
     }
 }

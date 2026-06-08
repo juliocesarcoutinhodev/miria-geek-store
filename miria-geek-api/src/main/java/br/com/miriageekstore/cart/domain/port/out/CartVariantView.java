@@ -15,5 +15,9 @@ public record CartVariantView(
         int stock,
         boolean variantActive,
         boolean productActive,
-        boolean hasDimensions
+        boolean hasDimensions,
+        BigDecimal weight,
+        BigDecimal width,
+        BigDecimal height,
+        BigDecimal depth
 ) {}

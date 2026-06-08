@@ -25,7 +25,8 @@ class CartVariantPersistenceAdapter implements CartVariantRepository {
             " pv.price, pv.stock, pv.active, p.status," +
             " CASE WHEN pv.weight IS NOT NULL AND pv.width IS NOT NULL" +
             "           AND pv.height IS NOT NULL AND pv.depth IS NOT NULL" +
-            "      THEN true ELSE false END" +
+            "      THEN true ELSE false END," +
+            " pv.weight, pv.width, pv.height, pv.depth" +
             " FROM product_variants pv" +
             " JOIN products p ON pv.product_id = p.id";
 
@@ -62,7 +63,11 @@ class CartVariantPersistenceAdapter implements CartVariantRepository {
                 ((Number)    row[8]).intValue(),
                 (Boolean)    row[9],
                 "ACTIVE".equals(row[10]),
-                (Boolean)    row[11]
+                (Boolean)    row[11],
+                (BigDecimal) row[12],
+                (BigDecimal) row[13],
+                (BigDecimal) row[14],
+                (BigDecimal) row[15]
         );
     }
 }
